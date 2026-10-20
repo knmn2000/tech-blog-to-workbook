@@ -1,0 +1,14 @@
+{
+  "name": "tech-blog-to-workbook",
+  "description": "Learn what a technical blog post teaches by building it: LeetCode-style workbooks made by Claude.",
+  "owner": {
+    "name": "knmn2000"
+  },
+  "plugins": [
+    {
+      "name": "tech-blog-to-workbook",
+      "source": "./",
+      "description": "Turn a technical blog post into a LeetCode-style learn-by-building workbook."
+    }
+  ]
+}
