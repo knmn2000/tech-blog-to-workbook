@@ -10,7 +10,7 @@ checkpoints in a post, how to design each contract, and how to present the map t
 4. Posts with no code
 5. Designing the contract
 6. The map you show the user
-7. A worked map (TrueType renderer, 22 snippets -> 18 checkpoints)
+7. Sketches: three kinds of post
 
 ## 1. What makes a good checkpoint
 
@@ -84,14 +84,14 @@ For each kernel:
 
 ## 5. Designing the contract
 
-- **Text, line based.** Input lines start with a keyword (`font <path>`, `glyph <id> <offset>
-  <length>`, `lookup U+0041`); output lines too. One output record per input request, in order.
+- **Text, line based.** Input lines start with a keyword (`file <path>`, `record <offset>
+  <length>`, `get user:42`); output lines too. One output record per input request, in order.
   Canonical formatting (integers plainly, words not symbols), and the checker normalises
   whitespace.
 - **Include what earlier checkpoints produce.** E.g. "decode the record at this offset" rather than
-  "find the glyph for this character".
+  "find the record for this key", when finding it is an earlier checkpoint's job.
 - **Make each output detailed enough to localise mistakes.** Separate lines for separate concerns
-  (header, list, points), named tuple fields (`points=x,y,curve`) so the checker can say exactly
+  (header, list, items), named tuple fields (`items=key,value,flag`) so the checker can say exactly
   which field differs, and an `explain` mapping from output location to likely requirement.
 - **Pick the comparison:** `records` (line by line, named tuples, optional numeric tolerance),
   `unordered` (same lines, any order: map/set outputs), `image band=1 allow=...` (pictures, edges
@@ -113,32 +113,31 @@ A table, one row per checkpoint:
 Below it: what you merged or dropped and why, the blog's bugs you found and how the tests treat
 them, and anything you need to download. Get approval before authoring.
 
-## 7. A worked map
+## 7. Sketches: three kinds of post
 
-*Writing a tiny TrueType parser and renderer from scratch* (C++, 22 code blocks):
+These show the shape of a map, not a finished one. A real map has every checkpoint, the bugs
+found in the snippets, and the downloads needed.
+
+**A post with code** (e.g. building a log-structured key-value store, Go):
 
 | # | Checkpoint | Built from | Contract | Oracle |
 |---|---|---|---|---|
-| 01 | Read big-endian numbers | byte readers | file + read ops -> values | Python struct |
-| 02 | Read the table directory | constructor | font -> table records (any order) | struct + fontTools |
-| 03 | Map characters to glyphs | cmap snippet | font + code points -> glyph ids | fontTools cmap |
-| 04 | Locate glyph records | loca snippet | font + glyph ids -> offset, length | fontTools loca |
-| 05 | Read the horizontal metrics | hhea/hmtx snippet | font + glyph ids -> advance, lsb | fontTools hmtx |
-| 06 | Draw on a framebuffer | canvas snippet + demo | draw commands -> PNG | reference validated geometrically |
-| 07 | Decode simple glyphs | glyph structs + parser | record offset -> contours and points | fontTools glyf |
-| 08 | Draw an outline with lines | outline renderer + demo | outline -> PNG | reference validated against points |
-| 09 | Resolve compound glyphs | compound parser | records -> transformed outlines | fontTools getCoordinates |
-| 10 | Lerp and Bezier | geometry helper | params -> point | exact fractions |
-| 11 | Draw an outline with curves | curve renderer | outline -> PNG | fontTools pen decomposition |
-| 12 | Intersect two segments | geometry helper | segments -> point or none | exact fractions |
-| 13 | Line x quadratic curve | geometry helper | curve + line -> points | exact arithmetic |
-| 14 | Even-odd fill | even-odd v1 + its vertex fix (merged) | outline -> PNG | fontTools PointInsidePen |
-| 15 | Lowest point of a curve | geometry helper | curve -> min y | exact fractions |
-| 16 | Non-zero fill, lines | non-zero for lines | polygon -> PNG | PointInsidePen |
-| 17 | Non-zero fill, curves | non-zero with curves | outline -> PNG | PointInsidePen |
-| 18 | Render a line of text | the post's goal (capstone) | font + text -> PNG | fontTools cmap/hmtx/outlines + PointInsidePen |
+| 01 | Encode a record | record struct + `encode` | key, value -> bytes (hex) | Python `struct` |
+| 02 | Replay the log | `Open` + read loop | log file -> final key/value pairs | a dict replaying the same writes |
+| 03 | Build the hash index | index snippet | log file -> key -> offset | offsets computed while writing the test log |
+| 04 | Compact | compaction snippet + its fix (merged) | log -> compacted log contents | the dict from 02 |
+| 05 | Recover from a torn write | recovery snippet | log with a truncated tail -> pairs kept | hand-made cases, checked by 02's oracle |
+| 06 | The store end to end (capstone) | the post's goal | operations -> results | a dict |
 
-Bugs found and tested against: on-curve flag lost for repeated points (42 of 90 ASCII glyphs
-affected), last glyph never checked for emptiness, glyphs past numberOfHMetrics without metrics,
-1-byte component offsets read unsigned, nested compound transforms dropped, a scanline compared
-with an x coordinate, non-zero filling only counts above zero.
+**A post with pseudocode** (e.g. a consensus algorithm's leader election): one checkpoint per
+procedure (handle a vote request, handle a vote reply, the election timer), each as events in ->
+state after each event out, with a brute-force or library simulation as the oracle, and a capstone
+that runs a small cluster from a scripted event list.
+
+**A post with no code** (e.g. how rate limiters work): one kernel per mechanism (fixed window,
+sliding log, token bucket), each as capacity + request times in -> allowed/denied per request out,
+with a direct simulation of the post's definition as the oracle; the capstone compares all three on
+the same traffic.
+
+`assets/example-checkpoint/` has one finished checkpoint from a past run, for the shape of the
+files (page, starters, reference, generator, cases); its subject doesn't matter.

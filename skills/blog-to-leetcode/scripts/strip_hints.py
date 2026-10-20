@@ -1,7 +1,7 @@
 """Makes the copy of a problem page that the independent solver gets: no hints, and no
 "After you pass" section (it names the author's approach and the snippet's bugs).
 
-    python strip_hints.py problems/07-simple-glyph.md <solver-folder>/problem.md
+    python strip_hints.py problems/03-replay-log.md <solver-folder>/problem.md
 """
 
 import re

@@ -3,7 +3,7 @@
 Rule for every generator: expected outputs come from a source that is independent of the
 reference solution (an established library, exact Fraction arithmetic, a brute-force method
 written differently) or, for pictures, from the reference program *validated* against such a
-source. Put domain helpers (file formats, fonts, ...) in a separate module next to this one.
+source. Put domain helpers (file formats, sample data, ...) in a separate module next to this one.
 """
 
 import argparse

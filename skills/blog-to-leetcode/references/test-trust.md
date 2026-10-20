@@ -47,7 +47,7 @@ All of these hold before a checkpoint is done:
    rounding. A correct variant that fails means the tolerance or the spec is too strict.
 5. **Every requirement has cases**, and every case names one requirement.
 6. **The independent solver passes** (section 4).
-7. **Real-data coverage is measured**: e.g. the reference over every glyph in the font, not only the
+7. **Real-data coverage is measured**: e.g. the reference over every record in the real data (every entry in a file, every row of a dataset), not only the
    sample in the tests.
 
 Build planted bugs and variants as text substitutions on copies of the reference, compiled into
@@ -79,7 +79,7 @@ exact integer data).
 A separate subagent solves the checkpoint using **only what the learner gets**:
 - the problem page with hints and "After you pass" removed (`scripts/strip_hints.py`),
 - the starter file and provided headers,
-- the data files the examples reference, and the input fonts or files;
+- the data files the examples reference, and the input data files;
 - no tests, no reference, no blog, no web.
 
 It may compile and run the page's examples. Then you run the full suite against its program. If it

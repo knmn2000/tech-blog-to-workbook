@@ -26,17 +26,17 @@ completely and use it as the model for the rest: copy its shape exactly.
 Every checkpoint is registered in `workbook.json` before work starts:
 
 ```json
-"07": {
-  "title": "Decode simple glyphs",
-  "solution": "solutions/p07_simple_glyph.cpp",
-  "problem": "problems/07-simple-glyph.md",
-  "cases": "tests/07/cases.txt",
-  "generator": "py -P tools/gen_p07.py --seed {seed} --out {out}",
-  "generatorNeedsReference": true
+"03": {
+  "title": "Replay the log",
+  "solution": "solutions/p03_replay_log.cpp",
+  "problem": "problems/03-replay-log.md",
+  "cases": "tests/03/cases.txt",
+  "generator": "py -P tools/gen_p03.py --seed {seed} --out {out}"
 }
 ```
 
-(`generatorNeedsReference` only when the generator runs the reference program, i.e. pictures.)
+(Add `"generatorNeedsReference": true` only when the generator runs the reference program,
+e.g. to draw expected pictures.)
 For C++, add `add_checkpoint(NN slug)` to `CMakeLists.txt`.
 
 ## 2. The problem page
@@ -140,7 +140,7 @@ your own understanding, never copied from the blog. Header comment:
 
 Use `tools/wbcore.py`: `wbcore.parse_args("NN")`, `wbcore.Cases(out, seed, compare, requirements,
 explain, source=...)`, `cases.add(id, req, title, input_lines, expected=... | expected_file=...)`,
-`cases.save()`. Domain helpers (fonts, formats) go in a workbook-specific module next to it.
+`cases.save()`. Domain helpers (file formats, sample data) go in a workbook-specific module next to it.
 
 The case file header:
 - `source` (default source of expected values; cases may override),

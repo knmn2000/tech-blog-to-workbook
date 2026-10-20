@@ -1,7 +1,7 @@
 ---
 name: blog-to-leetcode
 description: Turns a technical blog post, tutorial or article (given as a URL) into a LeetCode-style learn-by-doing workbook - a series of implementation checkpoints where the learner writes a program whose output is checked against independently computed answers, with full problem pages, tiered hints, starter code, reference solutions, a checker that supports disputes and fresh test sets, and a web problem book. Use this whenever someone wants to learn from a blog or article by building it themselves, turn a post's code snippets or ideas into exercises, problems, challenges or "leetcode questions", practise implementing what a write-up describes, or make a hands-on course or workbook from an article - even if they never say "leetcode" or "workbook", and even if the post has little or no code.
-compatibility: Claude Code. Needs a shell, Python 3 (plus whatever independent libraries the chosen test oracles need, e.g. fontTools), a compiler or runtime for the learner's language, and a way to read the blog (the desktop app's browser pane or WebFetch).
+compatibility: Claude Code. Needs a shell, Python 3 (plus whatever independent libraries the chosen test oracles need), a compiler or runtime for the learner's language, and a way to read the blog (the desktop app's browser pane or WebFetch).
 ---
 
 # Blog to LeetCode-style workbook
@@ -28,7 +28,7 @@ copied snippets from the post. Everything below serves that.
    and in "After you pass". Where the snippet is wrong, the tests follow the spec, and the page
    says so neutrally.
 4. **Checkpoints stand alone, and can still build on each other.** Each input carries what
-   earlier checkpoints would produce (an offset, an outline, a parsed record), so any checkpoint
+   earlier checkpoints would produce (an offset, a parsed record, an intermediate result), so any checkpoint
    can be done first. Code the learner keeps in `solutions/common/` is shared by every
    checkpoint, so a final capstone can call their own earlier work.
 5. **The learner writes everything by default.** The starter they get is blank (a comment and an
@@ -50,7 +50,7 @@ Work in stages and keep the user in the loop at the two decision points marked *
 Ask which language the learner wants (default: the blog's own language) and where the workbook
 should go (default: a new folder next to the current one, named after the post). Check the
 toolchain exists (`g++`/`cmake`, `python`, `node`, ...). Mention anything you'll need to download
-(an oracle library, a font, a header) with its source and size, and get a yes before downloading.
+(an oracle library, a sample data file, a header) with its source and size, and get a yes before downloading.
 
 ### 2. Read the blog
 
@@ -142,7 +142,7 @@ These came from building the first workbook; they apply broadly.
   closed slivers or forgives stray lines.
 - Validate generated expected values against the independent source, and treat exact boundary ties
   (a sample point exactly on an edge) as either answer.
-- Real data hides edge cases. Count them (e.g. "42 of 90 glyphs use the tricky encoding") and make
+- Real data hides edge cases. Count them (e.g. "42 of 90 records use the tricky encoding") and make
   sure tests cover them; hand-made inputs cover the rest, checked by the oracle before use.
 - Keep generated pictures small (the checker decodes them in pure Python) and make thin features at
   least ~2 pixels wide, or different correct samplings disagree.
