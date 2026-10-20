@@ -5,6 +5,8 @@
   "author": {
     "name": "knmn2000"
   },
+  "homepage": "https://github.com/knmn2000/tech-blog-to-workbook",
+  "repository": "https://github.com/knmn2000/tech-blog-to-workbook",
   "license": "Apache-2.0",
   "keywords": ["learning", "exercises", "workbook", "leetcode", "blog", "tutorial", "education"]
 }
