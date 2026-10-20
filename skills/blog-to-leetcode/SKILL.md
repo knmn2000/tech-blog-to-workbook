@@ -1,7 +1,7 @@
 ---
 name: blog-to-leetcode
-description: Turns a technical blog post, tutorial or article (given as a URL) into a LeetCode-style learn-by-doing workbook - a series of implementation checkpoints where the learner writes a program whose output is checked against independently computed answers, with full problem pages, tiered hints, starter code, reference solutions, a checker that supports disputes and fresh test sets, and a web problem book. Use this whenever someone wants to learn from a blog or article by building it themselves, turn a post's code snippets or ideas into exercises, problems, challenges or "leetcode questions", practise implementing what a write-up describes, or make a hands-on course or workbook from an article - even if they never say "leetcode" or "workbook", and even if the post has little or no code.
-compatibility: Claude Code. Needs a shell, Python 3 (plus whatever independent libraries the chosen test oracles need), a compiler or runtime for the learner's language, and a way to read the blog (the desktop app's browser pane or WebFetch).
+description: Turns a technical blog post, tutorial or article (given as a URL) into a LeetCode-style learn-by-doing workbook - a series of implementation checkpoints where the learner writes a program whose output is checked against independently computed answers, with full problem pages, tiered hints, starter code, reference solutions, a checker that supports disputes and fresh test sets, and a web problem book. Use this whenever someone wants to learn from a blog or article by building it themselves, turn a post's code snippets or ideas into exercises, problems, challenges or "leetcode questions", practise implementing what a write-up describes, or make a hands-on course or workbook from an article - even if they never say "leetcode" or "workbook", and even if the post has little or no code. Also use it to open, set up or continue an existing workbook (one made earlier, or cloned from a shared collection), e.g. "open my workbook", "set up this workbook", "I cloned the TrueType workbook", and for "review my disputes".
+compatibility: Claude Code. Needs a shell, Python 3.11+ (plus whatever independent libraries the chosen test oracles need), a compiler or runtime for the learner's language, and a way to read the blog (the desktop app's browser pane or WebFetch).
 ---
 
 # Blog to LeetCode-style workbook
@@ -128,8 +128,37 @@ author's code; it opens by itself on Accepted and is one click away before that)
 Blank / Boilerplate switch (drafts stay in the browser), and the examples as test cases. Submit
 copies the code and shows the command to run; pasting the checker's output back shows the verdict
 and records Accepted. The template is generic: everything comes from the problem pages' sections,
-`starters/` and `workbook.json`, so keep the section headings exact. Update the README. Report:
-what was built, per checkpoint the verification results, any judgement calls, and the link.
+`starters/` and `workbook.json`, so keep the section headings exact. Update the README.
+
+The published page can't run code (it uses copy mode: Submit copies the code and shows the
+command). The learner's real workspace is the **study server**, so finish by opening the workbook
+for them as in the next section. Report: what was built, per checkpoint the verification results,
+any judgement calls, the link, and how to come back later (double-click `study.cmd`, or ask you to
+"open my workbook").
+
+## When the learner wants to open, set up or continue a workbook
+
+This is also the whole setup for someone who cloned a workbook. The learner should never have to
+run more than one thing, so you do the setup.
+
+1. **Find the workbook**: the folder with `workbook.json` (the current folder, a folder they
+   name, or a `workbooks/<name>/` folder inside a cloned collection).
+2. **Check it can build**: `py -P tools/serve.py --check` (`python3` on macOS or Linux). It names
+   any missing tool (compiler, CMake, Ninja), does the first-time build setup, and exits 0 when
+   ready. Python itself must be 3.11 or newer.
+3. **Install what's missing, with consent.** Say what you'd install, from where and roughly how
+   big (e.g. `winget install BrechtSanders.WinLibs.POSIX.UCRT`, `winget install Kitware.CMake`,
+   `brew install cmake ninja`), and get a yes first. Then run the check again.
+4. **Open the book.** In the Claude desktop app, start the workbook's `study` entry from
+   `.claude/launch.json` with the browser pane's preview tool, so the book sits next to the chat.
+   Elsewhere, run the study server in the background and give the learner its address
+   (`http://127.0.0.1:8787/`). Tell them they can come back by double-clicking `study.cmd`
+   (`study.command` on macOS) or by asking you again.
+
+In the book they write code, Run (one example) and Submit (all tests), and see the verdict, the
+failing tests and, for pictures, expected/theirs/difference side by side. Their code is saved to
+`solutions/` as they type, and edits made in another editor show up in the book. You stay
+available for hints, explanations and disputes.
 
 ## When the learner says "review my disputes"
 

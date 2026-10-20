@@ -6,9 +6,21 @@ can structure it your own way, in any language, with any library.
 
 The problems are in `problems/` and, nicer to read, in the web problem book
 (`book/problem-book.html`). The book has a problem list with your progress, and for each
-checkpoint the statement, hints that open in order, an Editorial with a solution proven to pass every test, an editor preloaded with the starter, and the
-example test cases. Its Submit button copies your code and shows the command to run; paste the
-checker's output back into Test Result to record the verdict.
+checkpoint the statement, hints that open in order, an Editorial with a solution proven to pass
+every test, an editor preloaded with the starter, and the example test cases.
+
+## Start here
+
+Open the book with Run and Submit working: double-click `study.cmd` on Windows or
+`study.command` on macOS, or run `.\study` (PowerShell) or `./study.sh` from this folder. It
+opens in your browser; what you type is saved to `solutions/`, and the verdict appears right in
+the page, with the failing tests (and pictures, where there are any). Leave its window open while
+you work; close it to stop. The first start sets up the build. If a tool is missing, it tells you
+which, or ask Claude to set the workbook up.
+
+You can also work in your own editor and check from a terminal, as below; the book picks up
+changes you save to the solution files. (A copy of the book opened without `study`, such as a
+published page, can't run your code: its Submit copies your code and shows the command to run.)
 
 <!-- The checkpoint list: one row per checkpoint, filled in when the workbook is built. -->
 
@@ -65,6 +77,8 @@ one-off program without changing the config: `.\check 01 -Run "path/to/program {
 | `starters/boilerplate/` | Starters with the input/output code done, if you want them |
 | `tools/blank_starters.py` | Writes the blank starters and puts them in `solutions/` (never over your own code) |
 | `tests/NN/` | Test inputs and expected outputs |
+| `study.cmd`, `study.command`, `study.ps1`, `study.sh` | Open the book with Run and Submit working (they start `tools/serve.py`) |
+| `tools/serve.py` | The study server: only reachable from this computer; loads and saves solution files and runs the checker |
 | `tools/check.py` | The checker (`check.ps1`, `check.cmd` and `check.sh` call it) |
 | `tools/gen_pNN.py` | Each checkpoint's test generator (used by `-Fresh`) |
 | `tools/build_book.py` | Builds `book/problem-book.html` from `problems/` and `starters/` (the page design is `tools/book_template.html`) |

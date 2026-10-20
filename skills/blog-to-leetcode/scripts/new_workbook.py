@@ -82,6 +82,13 @@ def main():
     config["checkpoints"] = {}
     (dest / "workbook.json").write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
+    # Lets the Claude desktop app open the book (with Run and Submit working) in its browser pane.
+    launch = {"version": "0.0.1", "configurations": [{
+        "name": "study", "runtimeExecutable": "py" if os.name == "nt" else "python3",
+        "runtimeArgs": ["-P", "tools/serve.py", "--no-browser", "--port", "8787"], "port": 8787}]}
+    (dest / ".claude").mkdir(exist_ok=True)
+    (dest / ".claude" / "launch.json").write_text(json.dumps(launch, indent=2) + "\n", encoding="utf-8")
+
     readme = (dest / "README.md").read_text(encoding="utf-8")
     for key, value in (("TITLE", args.title), ("SOURCE_URL", args.source_url), ("SOURCE_TITLE", args.source_title),
                        ("AUTHOR", args.author)):

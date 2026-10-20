@@ -32,7 +32,8 @@ renderer, built on Yohei Yamasaki's post
   shared by all your checkpoints, so the last one can call your earlier work.
 - **Full problem pages.** A description, numbered requirements, worked examples, constraints,
   sources and tags (language features, libraries, concepts), four hints that open in order, and
-  an editorial comparing your approach with the author's once you pass.
+  an Editorial with a complete solution that's proven to pass every test, then a comparison with
+  the author's code. It opens when you pass and is one click away before that.
 - **Tests you can trust.** Expected answers come from an independent source (a library, a
   specification, a hand calculation), never from the reference solution. Every test traces to a
   requirement, and the checks are checked before a checkpoint ships:
@@ -43,9 +44,14 @@ renderer, built on Yohei Yamasaki's post
 - **Never blocked by a wrong test.** `-Dispute` sets a test aside so you can carry on, and
   `-Fresh` generates new tests you haven't seen. Ask Claude to "review my disputes" and it fixes
   the test or shows you the evidence.
-- **A problem book.** A problem list with progress and topic filters, then a split view with the
-  statement, an editor and the test cases. Paste the checker's output into Test Result and it
-  shows the verdict.
+- **A problem book that runs your code.** A problem list with progress and topic filters, then a
+  split view with the statement, an editor and the test cases. Double-click `study.cmd` in the
+  workbook (or ask Claude to "open my workbook") and Run and Submit build and check your code
+  right there: the verdict, the failing tests, and for pictures the expected, yours and the
+  difference side by side. Your code is saved to the workbook as you type, and edits from your own
+  editor show up too.
+- **One-step setup.** Claude checks the tools the workbook needs, offers to install anything
+  missing, and opens the book. Coming back later is a double-click.
 
 | Problem list | Test result |
 |---|---|
