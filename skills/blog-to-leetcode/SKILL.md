@@ -105,17 +105,26 @@ one *different but correct* variant passes; fresh seeds pass; and an independent
 subagent given only the hint-stripped page (`scripts/strip_hints.py`), passes the full suite.
 Fold the solver's feedback into the page.
 
+The learner must always be able to see a solution that works. Each Editorial shows the reference
+in full (with the files it includes from `_spoilers/`), and it may only claim "Passes all N tests"
+for exactly the code that passed. An Accepted `check NN -Ref` run on the committed tests records
+that code's fingerprint in `_spoilers/verified.json`. Run it last, after every change to a
+reference.
+
 ### 7. Publish
 
 First run `py -P tools/blank_starters.py`: it moves each boilerplate into `starters/boilerplate/`,
 writes the blank starters into `starters/blank/` and installs them in `solutions/`. Check that
 `.\check NN` on a blank starter says "Not started yet".
 
-Then run `py -P tools/build_book.py` to build `book/problem-book.html` from the problem pages, look
-at it once in the browser pane (desktop and phone width), and publish it with the Artifact tool as
-a private page. The book looks and works like a coding-practice site: a problem list with progress
-and topic filters, then per checkpoint a split view with the statement, hints that open in order,
-an Editorial tab locked until the learner passes, an editor that opens on the blank starter with a
+Then run `py -P tools/build_book.py` to build `book/problem-book.html` from the problem pages. It
+exits with warnings if any reference is unchecked or has changed since it passed; fix those (rerun
+`check NN -Ref`) before going on, because the Editorial would otherwise show a solution nobody has
+proven. Look at the book once in the browser pane (desktop and phone width), and publish it with the
+Artifact tool as a private page. The book looks and works like a coding-practice site: a problem
+list with progress and topic filters, then per checkpoint a split view with the statement, hints
+that open in order, an Editorial tab (a solution proven to pass, then the comparison with the
+author's code; it opens by itself on Accepted and is one click away before that), an editor that opens on the blank starter with a
 Blank / Boilerplate switch (drafts stay in the browser), and the examples as test cases. Submit
 copies the code and shows the command to run; pasting the checker's output back shows the verdict
 and records Accepted. The template is generic: everything comes from the problem pages' sections,

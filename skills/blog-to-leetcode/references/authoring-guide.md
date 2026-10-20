@@ -136,6 +136,13 @@ your own understanding, never copied from the blog. Header comment:
 `Reference solution - checkpoint NN (...). SPOILERS: try it yourself first.` Shared reference code
 (for a capstone, or several picture checkpoints) can live in `_spoilers/reference/common/`.
 
+Learners read it: the Editorial shows the reference in full, with every file it includes from
+`_spoilers/`, as "a solution that passes". Write it as a model answer: clear names, a short comment
+wherever the reasoning isn't obvious, no dead code or debugging leftovers. An Accepted
+`check NN -Ref` run on the committed tests records its fingerprint in `_spoilers/verified.json`, and
+the book only says "Passes all N tests" while the files still match; after any change, run it
+again. `build_book.py` warns (and exits non-zero) for any reference that isn't proven.
+
 ## 5. The generator and the case file
 
 Use `tools/wbcore.py`: `wbcore.parse_args("NN")`, `wbcore.Cases(out, seed, compare, requirements,
