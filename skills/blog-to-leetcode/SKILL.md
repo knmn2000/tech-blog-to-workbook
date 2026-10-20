@@ -159,8 +159,11 @@ In the book they write code, Run (one example) and Submit (all tests), and see t
 failing tests (their output and the expected output with the differing words highlighted, judged
 the way the checker judges them) and, for pictures, expected/theirs/difference side by side. Their
 code is saved to `solutions/` as they type (Ctrl+S, or `:w` with the editor's Vim toggle on), and
-edits made in another editor show up in the book. You stay available for hints, explanations and
-disputes.
+edits made in another editor show up in the book. The Files panel shows their project as it grows
+(`solutions/common/` plus each checkpoint's file); after each Accepted the book suggests moving
+reusable code into `common/`, and **Re-check solved** reruns every solved checkpoint so a change to
+shared code that breaks an earlier one shows at once. Inputs stay independent, so nothing blocks
+unless they choose to share code. You stay available for hints, explanations and disputes.
 
 ## When the learner says "review my disputes"
 
