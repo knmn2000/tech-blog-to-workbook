@@ -156,9 +156,11 @@ run more than one thing, so you do the setup.
    (`study.command` on macOS) or by asking you again.
 
 In the book they write code, Run (one example) and Submit (all tests), and see the verdict, the
-failing tests and, for pictures, expected/theirs/difference side by side. Their code is saved to
-`solutions/` as they type, and edits made in another editor show up in the book. You stay
-available for hints, explanations and disputes.
+failing tests (their output and the expected output with the differing words highlighted, judged
+the way the checker judges them) and, for pictures, expected/theirs/difference side by side. Their
+code is saved to `solutions/` as they type (Ctrl+S, or `:w` with the editor's Vim toggle on), and
+edits made in another editor show up in the book. You stay available for hints, explanations and
+disputes.
 
 ## When the learner says "review my disputes"
 
