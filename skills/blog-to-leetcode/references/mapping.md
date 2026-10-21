@@ -1,9 +1,9 @@
 # Mapping a blog to assignments
 
-An assignment is one step of a real project: a properly named file the learner writes, plus a
-small entry program with one input/output contract that the checker runs. This file covers how to
-find the assignments in a post, how to lay out the project they add up to, how to design each
-contract, and how to present the map to the user.
+An assignment is one step of a real project: a file named for its module that the learner writes,
+plus a small entry program with one input/output contract that the checker runs. Use this file to
+find the assignments in a post, lay out the project they add up to, design each contract, and
+present the map to the user.
 
 ## Contents
 1. What makes a good assignment
@@ -18,19 +18,19 @@ contract, and how to present the map to the user.
 ## 1. What makes a good assignment
 
 - **One idea.** It teaches one thing the post explains: a format, an algorithm, a rule, a
-  mechanism. The learner writes roughly 20-150 lines.
-- **Observable.** Its result can be written as text (or a picture) and compared exactly or within
-  a stated tolerance.
+  mechanism. The learner writes about 20-150 lines.
+- **Observable.** The program can write its result as text (or a picture), and the checker
+  compares that for equality or within a stated tolerance.
 - **Independent oracle exists.** Something other than your own reference can produce the expected
   output: an established library, exact arithmetic, a brute-force method, a simulation written
-  differently, a hand calculation for small cases. If nothing does, see section 4.
+  another way, a hand calculation for small cases. If nothing does, see section 4.
 - **Standalone tests.** Its input includes whatever earlier assignments would have produced, so
-  its tests only depend on the earlier files the learner chooses to import.
+  its tests depend only on the earlier files the learner chooses to import.
 - **A home in the project.** Its logic lives in a named file of the project layout (section 6),
   where later assignments can import it.
 
 Aim for one assignment per substantive section of the post, plus a capstone that runs the whole
-pipeline. 6-20 assignments is typical.
+pipeline. A typical map has 6-20 assignments.
 
 ## 2. Posts with code
 
@@ -47,9 +47,10 @@ Go through every code block and label it:
 Then for each assignment:
 - **Scope = the snippet's scope.** If the snippet supports one format, one platform or one case,
   so does the assignment. Say what's out of scope in Constraints.
-- **Bugs: follow the spec.** Note every place the snippet is wrong (read it carefully: off-by-one,
-  sign handling, lost state across recursion, typos comparing x with y). The tests require correct
-  behaviour, and "After you pass" mentions the difference neutrally ("something to look for").
+- **Bugs: follow the spec.** Note every place the snippet is wrong (read it line by line, looking
+  for off-by-one errors, sign handling, lost state across recursion, typos comparing x with y). The
+  tests require correct behaviour, and "After you pass" mentions the difference in a neutral tone
+  ("something to look for").
   Check how often the bug would matter on real data; that's a good fact for the page.
 - **Two blocks with the same output become one assignment.** Output-only tests can't tell a first
   version from its fix if both produce the right answer. Make the fix's subject (the trap it
@@ -59,14 +60,14 @@ Then for each assignment:
 
 Treat the pseudocode as the snippet: same scope, same steps. The contract's input is the
 pseudocode's input (as text lines) and its output the pseudocode's result. Your reference is a
-faithful transcription in the learner's language. The oracle is usually a brute-force or library
-implementation of the same mathematical task, or small cases worked by hand.
+faithful transcription in the learner's language. In most cases the oracle is a brute-force or
+library implementation of the same mathematical task, or small cases worked by hand.
 
 ## 4. Posts with no code
 
 The post explains how something works (a protocol, a storage engine, a scheduler, a cache
 policy) without code. Every such idea still has a **testable kernel**: a function that captures
-the mechanism with clear inputs and outputs. Look for these, in roughly this order:
+the mechanism with clear inputs and outputs. Check for these kernels, in about this order:
 
 | Kernel | Example post content | Contract |
 |---|---|---|
@@ -86,72 +87,74 @@ For each kernel:
   oracle in a different style from your reference (e.g. brute force or a direct simulation of the
   definition) and require both to agree on every case, plus property checks (invariants the post
   states).
-- **The capstone** is usually a small end-to-end simulation of the system the post describes.
+- **The capstone** is, in most posts, a small end-to-end simulation of the system the post
+  describes.
 
 ## 5. Designing the contract
 
 - **Text, line based.** Input lines start with a keyword (`file <path>`, `record <offset>
-  <length>`, `get user:42`); output lines too. One output record per input request, in order.
-  Canonical formatting (integers plainly, words not symbols), and the checker normalises
-  whitespace.
+  <length>`, `get user:42`), and so do output lines. Write one output record per input request,
+  in order, in canonical formatting (plain integers, words instead of symbols); the checker
+  normalises whitespace.
 - **Include what earlier assignments produce.** E.g. "decode the record at this offset" rather than
   "find the record for this key", when finding it is an earlier assignment's job.
-- **Make each output detailed enough to localise mistakes.** Separate lines for separate concerns
-  (header, list, items), named tuple fields (`items=key,value,flag`) so the checker can say exactly
-  which field differs, and an `explain` mapping from output location to likely requirement.
+- **Make each output detailed enough to localise mistakes.** Use separate lines for separate
+  concerns (header, list, items), named tuple fields (`items=key,value,flag`) so the checker can
+  name the field that differs, and an `explain` mapping from each output location to the
+  requirement behind it.
 - **Pick the comparison:** `records` (line by line, named tuples, optional numeric tolerance),
   `unordered` (same lines, any order: map/set outputs), `image band=1 allow=...` (pictures, edges
   may move one pixel).
-- **Pictures:** PNG (or binary PPM) at an output path ending in `.png`. Define the rule precisely
-  (e.g. "a pixel is filled when its centre is inside"), allow 1-pixel edge movement, and keep
-  canvases under about 600 x 600 pixels.
+- **Pictures:** PNG (or binary PPM) at an output path ending in `.png`. Define the rule in full
+  (e.g. "fill a pixel when its centre is inside"), allow 1-pixel edge movement, and keep canvases
+  under about 600 x 600 pixels.
 - **Floating point:** state the tolerance in the requirement and print enough digits.
-- **Errors:** if a case can't be done (unsupported format, end of data), the output is a defined
-  line (`unsupported`, `eof`), not a crash.
+- **Errors:** if the program can't handle a case (unsupported format, end of data), it writes a
+  defined line (`unsupported`, `eof`) instead of crashing.
 
 ## 6. The project layout
 
-The learner should finish with a project, not a folder of exercises. Before writing the map,
-sketch the file tree a real implementation of the post would have, and give every assignment a
-place in it.
+The learner should finish with a project instead of a folder of exercises. Before writing the
+map, sketch the file tree a real implementation of the post would have, and give every assignment
+a place in it.
 
 - **Mirror the author.** If the post or the author's repository shows file and folder names, use
-  them. Looking at a repository's list of files is fine; never read or copy its code. Where the
-  author keeps several steps in one big file, either give each step its own file in a folder named
-  after it (a `font/` folder for a `FontParser`, holding `cmap`, `loca`, ...), or let later
-  assignments extend the earlier file when that's how the code really grows (another method on the
-  same type, a fix).
-- **No layout to mirror?** Use the language's usual conventions, and name files after the post's
-  own terms, so the tree reads as a summary of the post.
-- **One home per assignment.** Each assignment names the file(s) it creates or extends. A
+  them. You may look at a repository's list of files; never read or copy its code. If the author
+  keeps several steps in one big file, either give each step its own file in a folder named after
+  it (a `font/` folder for a `FontParser`, holding `cmap`, `loca`, ...), or let later assignments
+  extend the earlier file when that's how the code grows (another method on the same type, a fix).
+- **No layout to mirror.** If the author published none, use the language's usual conventions,
+  and name files after the post's own terms, so the tree reads as a summary of the post.
+- **One home per assignment.** Each assignment names the file(s) it creates or extends. An
   assignment that fixes an earlier one extends that file.
 - **Imports run one way.** Later files import earlier ones, never the reverse, so the project
   builds at every point in the series. Small helpers that several steps use (byte reading, a
   canvas, geometry) get their own early files.
-- **Entry programs stay thin.** Each assignment's entry program (`solutions/pNN_slug.<ext>`) reads
-  the test input, calls the project and writes the output. It's test scaffolding, like a real
-  project's tests or examples, so nothing later should need to import it.
+- **Entry programs stay thin.** Each assignment's entry program
+  (`assignments/assignment_NN_slug.<ext>` in the project) reads the test input, calls the project
+  and writes the output. It's test scaffolding, like a real project's tests or examples, so no
+  later file should import it.
 - **The capstone is the real program**: the project's `main`, doing what the post's finished
   program does.
-- **Aim for recognisable.** Someone who knows the author's repository should see its shape in the
-  learner's: the main modules and folders, if not every file. Other languages keep the same
-  module names in their own naming conventions (`references/languages.md`).
+- **Aim for a recognisable shape.** Someone who knows the author's repository should see its
+  shape in the learner's: the main modules and folders, if not every file. Other languages keep
+  the same module names in their own naming conventions (`references/languages.md`).
 
 ## 7. The map you show the user
 
-A table, one row per assignment:
+Show a table with one row per assignment:
 
 | # | Assignment | Built from | File(s) | Contract (one line) | Oracle | Difficulty |
 |---|---|---|---|---|---|---|
 
-Beside it, the project tree the learner ends up with, and the author's tree when there is one
-(file names only). Below them: what you merged or dropped and why, the blog's bugs you found and
-how the tests treat them, and anything you need to download. Get approval before authoring.
+Beside it, show the project tree the learner ends up with, and the author's tree when there is one
+(file names only). Below them, list what you merged or dropped and why, the blog's bugs you found
+and how the tests treat them, and anything you need to download. Get approval before authoring.
 
 ## 8. Sketches: three kinds of post
 
-These show the shape of a map, not a finished one. A real map has every assignment, the bugs
-found in the snippets, and the downloads needed.
+These sketches show the shape of a map and leave parts out. A real map has every assignment, the
+bugs you found in the snippets, and the downloads you need.
 
 **A post with code** (e.g. building a log-structured key-value store, Go):
 

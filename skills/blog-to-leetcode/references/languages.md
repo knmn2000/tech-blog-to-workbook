@@ -1,9 +1,9 @@
 # Languages: choosing one, and switching
 
-A workbook is authored in one language: its starters, boilerplate and reference project are in
-it, and `assets/lang/<lang>/` has its project skeleton (only C++ so far). The learner can still
-build the project in any language, because the checker only reads output. Set up only the
-language the learner picks: nothing is created for the others.
+You author a workbook in one language: its starters, boilerplate and reference project are in
+that language, and `assets/lang/<lang>/` has its project skeleton (only C++ so far). The learner
+can still build the project in any language, because the checker reads only the output. Set up
+only the language the learner picks, and create nothing for the others.
 
 ## Contents
 1. Asking which language
@@ -13,9 +13,9 @@ language the learner picks: nothing is created for the others.
 
 ## 1. Asking which language
 
-When the learner opens or sets up a workbook with no project yet, run `py -P tools/langs.py` (it
-lists the eight languages, which are installed, and the install command for the rest) and ask
-which one they want, as a question with options:
+If the learner opens or sets up a workbook with no project yet, run `py -P tools/langs.py` (it
+lists the eight languages, which ones the machine has, and the install command for the rest) and
+ask which one they want, as a question with options:
 
 - the workbook's own language first, saying it comes with the boilerplate and the Editorial's
   solutions, and whether it's installed;
@@ -23,8 +23,8 @@ which one they want, as a question with options:
 - languages that aren't installed, with what installing them takes.
 
 For the workbook's language, run `py -P tools/project.py setup`. For another one, follow
-section 3. If a tool is missing, say what you'd install, from where and roughly how big, and get
-a yes first.
+section 3. If a tool is missing, say what you'd install, from where and about how big, and get a
+yes first.
 
 ## 2. What a project looks like in each language
 
@@ -46,8 +46,8 @@ project.
 Module names keep the post's terms. File names follow each language's habit: C++ keeps the
 author's (`FontParser.cpp`), Python, Rust, Lua, C and Go use snake_case (`font_parser.py`), and
 JavaScript and TypeScript use camelCase (`fontParser.js`). Third-party code the workbook gives the
-project (`project.copy`) needs an equivalent in the new language, or a note that the learner
-writes that part too (for example a PNG writer, or a binary PPM, which the checker also reads).
+project (`project.copy`) needs an equivalent in the new language, or a line telling the learner
+to write that part too (for example a PNG writer, or a binary PPM, which the checker also reads).
 
 ## 3. Setting up a project in another language
 
@@ -66,11 +66,10 @@ writes that part too (for example a PNG writer, or a binary PPM, which the check
    creates its files as usual.
 5. **Tell the learner what changes:** the Boilerplate button and the Editorial's solution stay in
    the workbook's language (still useful to read), and `-Ref` proves the workbook's own reference.
-   Everything else works the same: Run, Submit, Re-check solved, the Files panel and the finish
-   card.
+   The rest works the same: Run, Submit, Re-check solved, the Files panel and the finish card.
 6. **Check it:** run `.\check 01` on the blank starter ("Not started yet"), then build one
-   assignment end to end with a quick throwaway solution in a copy of the workbook, so the
-   commands are known to work before the learner starts.
+   assignment end to end with a quick throwaway solution in a copy of the workbook, so you know
+   the commands work before the learner starts.
 
 ## 4. Switching later
 

@@ -65,7 +65,7 @@ def main():
     ap.add_argument("--lang", choices=sorted(PROJECTS), default="cpp")
     ap.add_argument("--headline", default="", help="one line for the book's overview, e.g. 'Build a log-based store yourself'")
     ap.add_argument("--lede", default="")
-    ap.add_argument("--credits", default="Expected outputs come from independent sources. Progress is saved in this browser only.")
+    ap.add_argument("--credits", default="Expected outputs come from independent sources. The book keeps your progress in this browser only.")
     ap.add_argument("--force", action="store_true", help="write into a folder that isn't empty")
     args = ap.parse_args()
 
@@ -105,9 +105,9 @@ def main():
         "book": {
             "title": args.title, "sourceUrl": args.source_url, "sourceTitle": args.source_title, "author": args.author,
             "headline": args.headline or f"Build it yourself: {args.source_title}",
-            "lede": args.lede or ("Each assignment asks you to write what one part of the post builds, as a file of a "
-                                  "project of your own. A checker feeds your program inputs and compares what it writes "
-                                  "with answers worked out independently."),
+            "lede": args.lede or ("Each assignment has you write what one part of the post builds, as files in a "
+                                  "project of your own. The checker feeds your program test inputs and compares what it "
+                                  "writes with answers from independent sources."),
             "credits": args.credits,
             # What the book tells the learner to run, and where.
             "checkCommand": r".\check {id}" if os.name == "nt" else "./check.sh {id}",

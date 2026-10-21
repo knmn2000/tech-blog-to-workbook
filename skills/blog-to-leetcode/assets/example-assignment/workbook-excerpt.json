@@ -11,10 +11,10 @@
     "build": "cmake --build build/solutions --target tiny_ttf",
     "run": "build/solutions/tiny_ttf.exe fonts/JetBrainsMonoNerdFont-Bold.ttf \"Hello, TrueType!\" hello.png",
     "purposes": {
-      "src/GlyphComponent.h": "The form every outline takes in the project: its points (x and y in font units, on or off the curve) and the index where each contour ends. Assignments 08 and 11 draw outlines in this form, 09 produces one per part of a compound glyph, and 14, 16 and 17 fill them.",
-      "src/Glyph.h": "A glyph as the glyf table stores it: whether it is empty, simple or compound, its contour count, its bounding box and, for a simple glyph, its outline. Your `GlyphParser` returns it, and assignment 09 uses its kind to tell simple glyphs from compound ones.",
-      "src/font/GlyphParser.h": "Decoding one glyph record from the glyf table into the types in `Glyph.h`: the header of every glyph, and the contours and points of a simple one. Assignment 09 calls it for every simple glyph a compound glyph is made of.",
-      "src/font/GlyphParser.cpp": "Decoding one glyph record from the glyf table into the types in `Glyph.h`: the header of every glyph, and the contours and points of a simple one. Assignment 09 calls it for every simple glyph a compound glyph is made of."
+      "src/GlyphComponent.h": "Every outline in the project takes this form: its points (x and y in font units, on or off the curve) and the index where each contour ends. Assignments 08 and 11 draw outlines in this form, 09 produces one per part of a compound glyph, and 14, 16 and 17 fill them.",
+      "src/Glyph.h": "This type holds a glyph as the glyf table stores it: whether it is empty, simple or compound, its contour count, its bounding box and, for a simple glyph, its outline. Your `GlyphParser` returns it, and in assignment 09 you use its kind to tell simple glyphs from compound ones.",
+      "src/font/GlyphParser.h": "The parser decodes one glyph record from the glyf table into the types in `Glyph.h`: the header of any glyph, and the contours and points of a simple one. In assignment 09 you call it for every simple glyph inside a compound glyph.",
+      "src/font/GlyphParser.cpp": "The parser decodes one glyph record from the glyf table into the types in `Glyph.h`: the header of any glyph, and the contours and points of a simple one. In assignment 09 you call it for every simple glyph inside a compound glyph."
     },
     "author": {
       "label": "Yohei Yamasaki's tiny-truetype-renderer",
@@ -56,7 +56,7 @@
         "src/GlyphComponent.h": "Declare a point type (x, y and whether it is on the curve) and an outline type that holds the contour end indices and the list of points. Give x and y a type that can hold fractions, such as `double`: assignment 08 reads coordinates like `120.75` and assignment 09 scales points.",
         "src/Glyph.h": "Declare a glyph type that records which of the three kinds it is (empty, simple or compound) and holds `numberOfContours`, the bounding box (`xMin`, `yMin`, `xMax`, `yMax`) and, for a simple glyph, its outline in the form from `GlyphComponent.h`.",
         "src/font/GlyphParser.h": "Declare one function that decodes the glyph record at a given offset and length, reading through your `ByteReader` from assignment 01, and returns a glyph from `Glyph.h`.",
-        "src/font/GlyphParser.cpp": "Implement it as \"The glyph record you are decoding\" lays out: length 0 gives an empty glyph, a negative `numberOfContours` gives a compound glyph with nothing read past the header, and a simple glyph gets its contour ends and every point, with absolute coordinates and its own on/off flag."
+        "src/font/GlyphParser.cpp": "Implement the glyph decoder as \"The glyph record you are decoding\" lays out. Length 0 gives an empty glyph. A negative `numberOfContours` gives a compound glyph, and you stop reading after the header. For a simple glyph, read the contour ends and every point, with absolute coordinates and the point's own on/off flag."
       },
       "problem": "problems/07-simple-glyph.md",
       "cases": "tests/07/cases.txt",
@@ -69,8 +69,8 @@
         "src/utils/Geometry.h"
       ],
       "jobs": {
-        "assignments/assignment_10_bezier.cpp": "Read the input file line by line: a `lerp` line gives two points and t, a `bezier` line gives the start, the control point, the end and t. Call your lerp or curve function from `utils/Geometry.h` and write one `x y` line per input line, with numbers as the Output section describes.",
-        "src/utils/Geometry.h": "Declare a 2D point type with `double` x and y, and the arithmetic you want on it: adding, subtracting and scaling by a number. Write two functions on it: lerp, the point a fraction t of the way from a to b, and the point at t on a quadratic Bezier curve given its start, control point and end. There is no `Geometry.cpp`, so define the functions right here in the header and mark them `inline`."
+        "assignments/assignment_10_bezier.cpp": "Read the input file line by line. A `lerp` line gives two points and t; a `bezier` line gives the start, the control point, the end and t. Call your lerp or curve function from `utils/Geometry.h` and write one `x y` line per input line, formatting the numbers as the Output section describes.",
+        "src/utils/Geometry.h": "Declare a 2D point type with `double` x and y, and the arithmetic you want on it: adding, subtracting and scaling by a number. Then write two functions: lerp, which returns the point a fraction t of the way from a to b, and one that returns the point at t on a quadratic Bezier curve from its start, control point and end. The project has no `Geometry.cpp`, so define the functions in this header and mark them `inline`."
       },
       "problem": "problems/10-bezier.md",
       "cases": "tests/10/cases.txt",
@@ -84,7 +84,7 @@
       ],
       "jobs": {
         "assignments/assignment_12_segment_intersection.cpp": "Read each `segments` line as four points: a1 and a2 for segment A, then b1 and b2 for segment B. Call your intersection function from `utils/Geometry.h` and write the meeting point as `x y`, or `none`, one line per input line.",
-        "src/utils/Geometry.h": "Add a function that takes two segments, each given by its two end points, and returns the one point where they meet, or nothing when they don't meet or are parallel or collinear (`std::optional` suits this). Small helpers for the 2D cross product and the side value belong here too, `inline` like the rest of the header. The Boilerplate's `Geometry.h` from assignment 10 already declares the function as `segmentsIntersect`."
+        "src/utils/Geometry.h": "Add a function that takes two segments, each given by its two end points, and returns the one point where they meet. If they don't meet, or are parallel or collinear, it returns nothing; `std::optional` suits this. Put small helpers for the 2D cross product and the side value here too, `inline` like the rest of the header. The Boilerplate's `Geometry.h` from assignment 10 already declares the function as `segmentsIntersect`."
       },
       "problem": "problems/12-segment-intersection.md",
       "cases": "tests/12/cases.txt",

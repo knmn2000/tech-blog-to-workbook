@@ -1,9 +1,9 @@
 # {{TITLE}}
 
-LeetCode-style assignments for [{{SOURCE_TITLE}}]({{SOURCE_URL}}) by {{AUTHOR}}. Each assignment asks
-you to build what one part of the post builds, and each one adds properly named files to a project
-of your own. When you finish, `solutions/` is a working {{PROJECT_LABEL}} implementation of the post that
-you can put on GitHub as it is.
+LeetCode-style assignments for [{{SOURCE_TITLE}}]({{SOURCE_URL}}) by {{AUTHOR}}. In each assignment
+you build what one part of the post builds, and add its files, named after what they hold, to a
+project of your own. After the last one, `solutions/` holds a working {{PROJECT_LABEL}}
+implementation of the post that you can put on GitHub as it is.
 
 The problems are in `problems/` and, nicer to read, in the web problem book
 (`book/problem-book.html`). The book has a problem list with your progress, and for each
@@ -27,27 +27,26 @@ book's **Exit** button when you're done.
 <!-- The project's layout: its folders and which assignment adds each file, filled in when the
 workbook is built. -->
 
-Do the assignments in order. Opening an assignment (in the book, or `.\check NN`) creates its
-files, each with a comment saying why it exists and your job in it; nothing you've written is
-ever replaced. A
-assignment's real work goes in `src/`, where later assignments use it. Its program in
-`assignments/` reads a test input, calls your code and writes the answer; that's what the checker
-runs.
+Do the assignments in order. Opening an assignment (in the book, or with `.\check NN`) creates
+its files, each with a comment saying why the file exists and what your job in it is. It doesn't
+overwrite anything you've written. You write an assignment's real work in `src/`, where later
+assignments use it. The assignment's program in `assignments/` reads a test input, calls your code
+and writes the answer, and the checker runs that program.
 
-Test inputs still carry what earlier assignments would produce, so an assignment's tests only
-depend on the earlier files it uses. The whole project is built together, though: if a file of
-another assignment doesn't build, the checker says which one. **Re-check solved** in the book runs
-every solved assignment again, so a change that breaks an earlier one shows up at once (marked with
-a red `!`). The **Files** panel shows the project as it grows, and when everything passes, the
-problem list shows your project next to the author's.
+Each test input carries what earlier assignments would produce, so an assignment's tests depend
+only on the earlier files it uses. The checker builds the whole project at once, though, and if a
+file from another assignment doesn't build, it tells you which one. **Re-check solved** in the book
+runs every solved assignment again, so you see at once when a change breaks an earlier one (the
+book marks it with a red `!`). The **Files** panel shows the project as it grows, and once every
+assignment passes, the problem list shows your project next to the author's.
 
 ## Doing an assignment
 
 1. Read the problem (book or `problems/NN-*.md`). In the book, its **Start here** card lists the
    files to write, your job in each, the earlier files you can use, and the two ways to start.
-2. Write them. They start as the Boilerplate: the input/output and the declarations are
-   written, and you fill in what's marked `TODO`. To write everything yourself, choose **From
-   scratch** on the Start here card: each file is then empty apart from its comment.
+2. Write the files. Each one starts as the Boilerplate, which gives you the input/output code and
+   the declarations, and you fill in the parts marked `TODO`. To write all of it yourself, choose
+   **From scratch** on the Start here card: each file then starts empty apart from its comment.
 3. Check it from this folder (`./check.sh` instead of `.\check` on macOS or Linux), or with Run
    and Submit in the book:
 
@@ -59,36 +58,37 @@ problem list shows your project next to the author's.
 ```
 
 The verdict is `Accepted`, `Wrong Answer`, `Compile Error`, `Runtime Error` or
-`Time Limit Exceeded`. Text output is compared word by word, so line endings and extra spaces
-don't matter, except inside quoted strings. Every failure shows the requirement it most likely
-comes from, where the expected value came from, and the command to reproduce it. Picture
-assignments also write a diff image (red: extra pixels, blue: missing, yellow: forgiven), and edges
-may move by one pixel.
+`Time Limit Exceeded`. The checker compares text output word by word, so line endings and extra
+spaces don't matter, except inside quoted strings. For each failure it shows its best guess at the
+requirement behind it, where the expected value came from, and the command that reproduces it. For
+picture assignments it also writes a diff image (red: extra pixels, blue: missing, yellow:
+forgiven), and it lets edges move by one pixel.
 
 ## If you think a test is wrong
 
 Run `.\check 01 -Dispute <test-id> "your reason"`. That test stops counting and you can carry on;
 the verdict reads `Accepted (1 disputed)`. Then ask Claude to "review my disputes". Claude
 rechecks the expected value against its independent source and either fixes the test or shows
-you why it's right. Disputes are kept in `disputes.json`.
+you why it's right. The checker keeps disputes in `disputes.json`.
 
 ## Another language
 
-Only the output is checked, so the project can be in any language. This workbook's project, its
-starters and its reference are {{PROJECT_LABEL}}. To work in another language, ask Claude: it shows
-which languages are installed (`py -P tools/langs.py` lists them) and how to install the others,
-keeps your current project in a folder of its own, and sets up a project in the new language, with
-its own build file and the same layout in that language's style. Nothing is created for languages
-you don't choose.
+The checker reads only your program's output, so you can write the project in any language. This
+workbook's project, its starters and its reference are {{PROJECT_LABEL}}.
 
-To check a one-off program without changing anything:
+To work in another language, ask Claude. It shows which languages you have installed
+(`py -P tools/langs.py` lists them) and how to install the others, keeps your current project in a
+folder of its own, and sets up a project in the new language, with its own build file and the same
+layout in that language's style. It creates nothing for languages you don't choose.
+
+To check a one-off program without changing anything, run
 `.\check 01 -Run "path/to/program {input} {output}"`.
 
 ## What's in here
 
 | Path | What it is |
 |---|---|
-| `problems/` | Problem statements (the book is built from these) |
+| `problems/` | Problem statements (`tools/build_book.py` makes the book from these) |
 | `solutions/` | Your project, created when you set the workbook up |
 | `starters/project/` | What your project starts with: its build file, README and `.gitignore` |
 | `starters/blank/`, `starters/boilerplate/` | Each assignment's files, blank and with the input/output done |
@@ -100,5 +100,5 @@ To check a one-off program without changing anything:
 | `tools/langs.py` | The languages a project can be in, and how to install them |
 | `tools/gen_pNN.py` | Each assignment's test generator (used by `-Fresh`) |
 | `tools/build_book.py` | Builds `book/problem-book.html` (the page design is `tools/book_template.html`) |
-| `docs/authoring-guide.md` | How the assignments and their tests are made |
+| `docs/authoring-guide.md` | How to write the assignments and their tests |
 | `_spoilers/` | The reference project. Don't open it until you've passed. |
