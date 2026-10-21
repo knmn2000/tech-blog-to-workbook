@@ -35,7 +35,8 @@
         "utils/Geometry.h",
         "utils/Unicode.h"
       ]
-    }
+    },
+    "starter": "boilerplate"
   },
   "checkpoints": {
     "07": {

@@ -45,10 +45,9 @@ problem list shows your project next to the author's.
 
 1. Read the problem (book or `problems/NN-*.md`). In the book, its **Start here** card lists the
    files to write, your job in each, the earlier files you can use, and the two ways to start.
-2. Write them. They start blank apart from that comment: the imports, reading the input and
-   writing the output are yours.
-   If you'd rather start from ready-made input/output code, pick Boilerplate in the book's editor
-   (or copy the assignment's files from `starters/boilerplate/`) and fill in what's marked `TODO`.
+2. Write them. They start as the Boilerplate: the input/output and the declarations are
+   written, and you fill in what's marked `TODO`. To write everything yourself, choose **From
+   scratch** on the Start here card: each file is then empty apart from its comment.
 3. Check it from this folder (`./check.sh` instead of `.\check` on macOS or Linux), or with Run
    and Submit in the book:
 

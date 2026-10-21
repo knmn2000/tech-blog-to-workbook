@@ -94,6 +94,7 @@ def main():
         "project": {
             "dir": "solutions", "language": args.lang, "languageLabel": spec["label"], "aliases": spec["aliases"],
             "name": name, "reference": "_spoilers/project",
+            "starter": "boilerplate",  # what opening an assignment starts from: "boilerplate" or "blank"
             "copy": {},  # e.g. {"third_party/stb_image_write.h": "third_party/stb/stb_image_write.h"}
             "build": finish["build"], "run": finish["run"],
             # Filled in with the map: the author's own files to compare with, and each project file's purpose.
