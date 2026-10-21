@@ -20,4 +20,4 @@ cmake --build build
 | Where | What |
 |---|---|
 <!-- One row per folder of src/, in the post's terms. -->
-| `checkpoints/` | One small program per step, each checking that step against test cases |
+| `assignments/` | One small program per step, each checking that step against test cases |

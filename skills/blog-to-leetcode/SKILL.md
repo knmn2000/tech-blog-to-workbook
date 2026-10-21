@@ -1,12 +1,12 @@
 ---
 name: blog-to-leetcode
-description: Turns a technical blog post, tutorial or article (given as a URL) into a LeetCode-style learn-by-doing workbook - a series of implementation checkpoints where the learner writes a program whose output is checked against independently computed answers, with full problem pages, tiered hints, starter code, reference solutions, a checker that supports disputes and fresh test sets, and a web problem book. Use this whenever someone wants to learn from a blog or article by building it themselves, turn a post's code snippets or ideas into exercises, problems, challenges or "leetcode questions", practise implementing what a write-up describes, or make a hands-on course or workbook from an article - even if they never say "leetcode" or "workbook", and even if the post has little or no code. Also use it to open, set up or continue an existing workbook (one made earlier, or cloned from a shared collection), e.g. "open my workbook", "set up this workbook", "I cloned the TrueType workbook", and for "review my disputes".
+description: Turns a technical blog post, tutorial or article (given as a URL) into a LeetCode-style learn-by-doing workbook - a series of implementation assignments where the learner writes a program whose output is checked against independently computed answers, with full problem pages, tiered hints, starter code, reference solutions, a checker that supports disputes and fresh test sets, and a web problem book. Use this whenever someone wants to learn from a blog or article by building it themselves, turn a post's code snippets or ideas into exercises, problems, challenges or "leetcode questions", practise implementing what a write-up describes, or make a hands-on course or workbook from an article - even if they never say "leetcode" or "workbook", and even if the post has little or no code. Also use it to open, set up or continue an existing workbook (one made earlier, or cloned from a shared collection), e.g. "open my workbook", "set up this workbook", "I cloned the TrueType workbook", and for "review my disputes".
 compatibility: Claude Code. Needs a shell, Python 3.11+ (plus whatever independent libraries the chosen test oracles need), a compiler or runtime for the learner's language, and a way to read the blog (the desktop app's browser pane or WebFetch).
 ---
 
 # Blog to LeetCode-style workbook
 
-You turn one blog post into a workbook of **checkpoints**. Each checkpoint is a small program the
+You turn one blog post into a workbook of **assignments**. Each assignment is a small program the
 learner writes: it reads an input file, writes an output file, and a checker compares that output
 with answers computed independently of any reference solution. The learner gets a problem page
 (description, requirements, tags, examples, sources, four hints that open in order), a blank
@@ -25,21 +25,21 @@ copied snippets from the post. Everything below serves that.
    that forces the author's design on the learner. The learner picks the project's language when
    the workbook is set up, and only that language is set up (`references/languages.md`); the
    starters, the boilerplate and the reference are in the workbook's own language.
-3. **Same task as the snippet.** A checkpoint built from a code snippet asks for what the snippet
+3. **Same task as the snippet.** An assignment built from a code snippet asks for what the snippet
    accomplishes, with its scope and simplifications. The author's structure appears only in a hint
    and in "After you pass". Where the snippet is wrong, the tests follow the spec, and the page
    says so neutrally.
-4. **The learner builds a real project, one checkpoint at a time.** Checkpoints are done in
+4. **The learner builds a real project, one assignment at a time.** Assignments are done in
    order, and each one's work is saved as a properly named file at its place in a project layout
    planned with the map: the author's module and folder names where they published code,
-   otherwise the language's usual layout. Later checkpoints import earlier files instead of
+   otherwise the language's usual layout. Later assignments import earlier files instead of
    copying them, and the capstone is the project's real `main`. The finished `solutions/` should
    read like an implementation of the post, and someone who knows the author's code should
-   recognise its shape. Each checkpoint also has a small entry program, the one the checker runs:
+   recognise its shape. Each assignment also has a small entry program, the one the checker runs:
    it reads a test input, calls the project's code and writes the output. Inputs still carry what
-   earlier checkpoints would produce (an offset, a parsed record), so a checkpoint's tests only
+   earlier assignments would produce (an offset, a parsed record), so an assignment's tests only
    depend on the earlier files it chooses to import.
-5. **The learner writes everything by default.** Each checkpoint starts with blank files at their
+5. **The learner writes everything by default.** Each assignment starts with blank files at their
    places in the project (a comment saying what belongs there, and an empty `main` in the entry
    program): imports, the module's API, input parsing and output are part of the exercise. A
    boilerplate version (the entry program done, the module's declarations named as the author
@@ -74,9 +74,9 @@ stays local: it's for you to map from, never to republish.
 Read every code block in full. Note what each one does in your own words, its bugs, and which
 parts are demos, data structures or glue rather than logic.
 
-### 3. Map the blog to checkpoints (ask)
+### 3. Map the blog to assignments (ask)
 
-Follow `references/mapping.md` to turn the post into a checkpoint map: for each checkpoint its
+Follow `references/mapping.md` to turn the post into an assignment map: for each assignment its
 title, what it's built from (snippet, pseudocode or idea), the project file(s) it creates or
 extends, the input/output contract in one line, the independent oracle, and a difficulty. With it,
 show the project layout the learner will end up with as a file tree, beside the author's layout
@@ -91,42 +91,44 @@ Run `scripts/new_workbook.py --dest <folder> --title ... --name <program> --sour
 project tool, image comparison, case-file library, book builder, study server, check scripts,
 README, authoring guide) and the language's project skeleton into `starters/project/`, makes an
 empty reference project in `_spoilers/project/`, and writes `workbook.json`. Then, before anyone
-writes checkpoint files (so parallel authors never edit shared files), put the approved layout in
-`workbook.json`: every checkpoint from the map (title, entry program, the project files it
+writes assignment files (so parallel authors never edit shared files), put the approved layout in
+`workbook.json`: every assignment from the map (title, entry program, the project files it
 creates and adds to, the earlier files it builds on, problem, cases, generator), each project
-file's one-line purpose, and the author's own file names for the finish card. Fill in the
-project skeleton's README (what the program does, how it's organised).
+file's purpose (why it exists), each assignment's job in every file it touches (`jobs`), and the
+author's own file names for the finish card. The purposes and jobs are what keep the learner
+oriented: they become the header of every starter file and the "Start here" card at the top of
+each assignment. Fill in the project skeleton's README (what the program does, how it's organised).
 
-### 5. Author the checkpoints
+### 5. Author the assignments
 
 Follow `references/authoring-guide.md` (also copied into the workbook as
-`docs/authoring-guide.md`); `assets/example-checkpoint/` is a complete worked checkpoint, laid out
-as in a workbook, to copy the shape of. Build **one checkpoint completely first**, the most
+`docs/authoring-guide.md`); `assets/example-assignment/` is a complete worked assignment, laid out
+as in a workbook, to copy the shape of. Build **one assignment completely first**, the most
 representative one, and show it to the user; the template is cheapest to fix then. Then do the
-rest, in order: each checkpoint's reference files go in the reference project, where later ones
-include them, and a file that later checkpoints add to gets a `// ---- Checkpoint NN ----` marker
+rest, in order: each assignment's reference files go in the reference project, where later ones
+include them, and a file that later assignments add to gets a `// ---- Assignment NN ----` marker
 before each addition. Write the boilerplate from the reference (TODO bodies); the blank starters
 come from `py -P tools/blank_starters.py`.
 
-Picture checkpoints: `tools/imageio.py` reads and compares images, `tools/inkcheck.py` validates a
+Picture assignments: `tools/imageio.py` reads and compares images, `tools/inkcheck.py` validates a
 reference picture against ideal geometry, and when drawing isn't one of the post's steps,
 `assets/lang/cpp/optional/Canvas.h` gives the project a small framebuffer with PNG output (needs
 stb_image_write; ask before downloading it).
 
-For more than a handful of checkpoints, split them into independent groups and give each group to
+For more than a handful of assignments, split them into independent groups and give each group to
 a subagent, in parallel. Each brief must contain: the authoring guide's path, the finished model
-checkpoint's files, the exact contracts for its checkpoints, and a description in your own words
+assignment's files, the exact contracts for its assignments, and a description in your own words
 of what each relevant snippet does (subagents must not copy the blog either). Tell them not to
 edit shared files and not to use the shared build directory: they compile into their own folder
 and check with `-Run`. Keep shared infrastructure (checker, comparison, libraries) to yourself.
 
 ### 6. Check the checks
 
-Before any checkpoint counts as done, everything in `references/test-trust.md` must hold:
-the reference is Accepted (`-Ref` builds the reference project as it stands after the checkpoint,
+Before any assignment counts as done, everything in `references/test-trust.md` must hold:
+the reference is Accepted (`-Ref` builds the reference project as it stands after the assignment,
 which also proves the project builds at that point in the series); the boilerplate says "Not
 implemented yet" and the blank starter "Not started yet"; at least three planted bugs
-(including the blog's own) fail with useful messages; for picture or numeric checkpoints, at least
+(including the blog's own) fail with useful messages; for picture or numeric assignments, at least
 one *different but correct* variant passes; fresh seeds pass; and an independent solver, a separate
 subagent given only the hint-stripped page (`scripts/strip_hints.py`), passes the full suite.
 Fold the solver's feedback into the page.
@@ -139,9 +141,10 @@ reference.
 
 ### 7. Publish
 
-First run `py -P tools/blank_starters.py --force` so every blank starter matches the final
-titles, files and purposes. Then, in a copy of the workbook, run `py -P tools/project.py setup` and
-check that `.\check 01` creates checkpoint 01's files and then says "Not started yet". The
+First run `py -P tools/blank_starters.py --force`: it writes every blank starter and refreshes the
+header of every boilerplate file (assignment, why the file exists, your job, how to start), so they
+match the final titles, files, purposes and jobs. Then, in a copy of the workbook, run `py -P tools/project.py setup` and
+check that `.\check 01` creates assignment 01's files and then says "Not started yet". The
 workbook itself ships without `solutions/`: the learner's project is made when they choose a
 language.
 
@@ -150,19 +153,20 @@ exits with warnings if any reference is unchecked or has changed since it passed
 `check NN -Ref`) before going on, because the Editorial would otherwise show a solution nobody has
 proven. Look at the book once in the browser pane (desktop and phone width), and publish it with the
 Artifact tool as a private page. The book looks and works like a coding-practice site: a problem
-list with progress and topic filters, then per checkpoint a split view with the statement (and
-an "In your project" box: the files it creates, adds to and builds on), hints that open in order,
-an Editorial tab (the reference's files as they stand after the checkpoint, proven to pass, then
+list with progress and topic filters, then per assignment a split view with the statement (and
+a "Start here" card: the files to write, the job in each, the earlier files it can use, and the
+two ways to start), hints that open in order,
+an Editorial tab (the reference's files as they stand after the assignment, proven to pass, then
 the comparison with the author's code; it opens by itself on Accepted and is one click away before
-that), an editor with the checkpoint's files as tabs and a Blank / Boilerplate switch (drafts stay
+that), an editor with the assignment's files as tabs and a Blank / Boilerplate switch (drafts stay
 in the browser), and the examples as test cases. Submit copies the open file and shows the command
 to run; pasting the checker's output back shows the verdict and records Accepted. The template is
 generic: everything comes from the problem pages' sections, `starters/` and `workbook.json`, so
-keep the section headings exact. Fill in the README's checkpoint list and project layout.
+keep the section headings exact. Fill in the README's assignment list and project layout.
 
 The published page can't run code (it uses copy mode: Submit copies the code and shows the
 command). The learner's real workspace is the **study server**, so finish by opening the workbook
-for them as in the next section. Report: what was built, per checkpoint the verification results,
+for them as in the next section. Report: what was built, per assignment the verification results,
 any judgement calls, the link, and how to come back later (double-click `study.cmd`, or ask you to
 "open my workbook").
 
@@ -196,8 +200,8 @@ failing tests (their output and the expected output with the differing words hig
 the way the checker judges them) and, for pictures, expected/theirs/difference side by side. Their
 code is saved to `solutions/` as they type (Ctrl+S, or `:w` with the editor's Vim toggle on), and
 edits made in another editor show up in the book. The Files panel shows their project growing
-file by file, and **Re-check solved** reruns every solved checkpoint, so a change to an earlier file
-that breaks an earlier checkpoint shows at once. When they finish, the book shows their project
+file by file, and **Re-check solved** reruns every solved assignment, so a change to an earlier file
+that breaks an earlier assignment shows at once. When they finish, the book shows their project
 tree next to the author's. **Exit** saves everything, stops the study server and closes the page.
 You stay available for hints, explanations and disputes.
 
@@ -214,13 +218,13 @@ the oracle's own output, a hand calculation). Close the dispute with a note (`"s
 
 These came from building the first workbook; they apply broadly.
 
-- Plan the project layout with the map, not afterwards. Checkpoints written as separate one-file
+- Plan the project layout with the map, not afterwards. Assignments written as separate one-file
   programs leave the learner with a pile of exercises instead of a project, and retrofitting a
   layout means rewriting every starter, reference and page.
-- Prove the reference as it stands after each checkpoint, not only the finished one. In the first
-  workbook, the finished outline renderer included the geometry file from a later checkpoint, so
+- Prove the reference as it stands after each assignment, not only the finished one. In the first
+  workbook, the finished outline renderer included the geometry file from a later assignment, so
   the series couldn't build at that step, and the finished geometry file would have shown the
-  answers to three later checkpoints in an earlier Editorial. Section markers and per-checkpoint
+  answers to three later assignments in an earlier Editorial. Section markers and per-assignment
   snapshots catch both.
 
 - Tolerances need two kinds of evidence: planted bugs that must fail **and** correct alternatives

@@ -7,8 +7,8 @@ Copies assets/workbook-template (checker, project tool, image comparison, case-f
 book builder, study server, check scripts, README, authoring guide) and the language's project
 skeleton from assets/lang/<lang>/starters, makes an empty reference project in
 _spoilers/project/, and writes workbook.json: the book's metadata, the project's settings and an
-empty checkpoint list. Then design the layout (references/mapping.md, section 6) and register
-every checkpoint with its files before writing any of them.
+empty assignment list. Then design the layout (references/mapping.md, section 6) and register
+every assignment with its files before writing any of them.
 
 The learner's project (solutions/) isn't created here: tools/project.py setup makes it when the
 learner chooses a language.
@@ -34,14 +34,14 @@ PROJECTS = {
         "label": "C++", "aliases": ["c++", "cxx"],
         "setup": {"command": "cmake -S solutions -B build/solutions -G Ninja -DCMAKE_CXX_COMPILER=g++",
                   "creates": "build/solutions/build.ninja"},
-        "build": "cmake --build build/solutions --target p{id}",
-        "run": "build/solutions/p{id}" + EXE + " {input} {output}",
+        "build": "cmake --build build/solutions --target assignment_{id}",
+        "run": "build/solutions/assignment_{id}" + EXE + " {input} {output}",
         "reference": {
             "snapshot": "build/ref-src",
             "setup": {"command": "cmake -S build/ref-src -B build/ref -G Ninja -DCMAKE_CXX_COMPILER=g++",
                       "creates": "build/ref/build.ninja"},
-            "build": "cmake --build build/ref --target p{id}",
-            "run": "build/ref/p{id}" + EXE + " {input} {output}"},
+            "build": "cmake --build build/ref --target assignment_{id}",
+            "run": "build/ref/assignment_{id}" + EXE + " {input} {output}"},
         "finish": {"build": "cmake --build build/solutions --target {name}", "run": "build/solutions/{name}" + EXE},
     },
 }
@@ -78,7 +78,7 @@ def main():
     shutil.copytree(TEMPLATE, dest, dirs_exist_ok=True)
     shutil.copytree(LANGS / args.lang / "starters", dest / "starters", dirs_exist_ok=True)
     for folder in ("problems", "starters/blank", "starters/boilerplate", "tests", "_spoilers/project/src",
-                   "_spoilers/project/checkpoints", "_source", "book", "third_party"):
+                   "_spoilers/project/assignments", "_source", "book", "third_party"):
         (dest / folder).mkdir(parents=True, exist_ok=True)
     values = {"NAME": name, "TITLE": args.title, "SOURCE_URL": args.source_url, "SOURCE_TITLE": args.source_title,
               "AUTHOR": args.author, "PROJECT_LABEL": spec["label"]}
@@ -104,7 +104,7 @@ def main():
         "book": {
             "title": args.title, "sourceUrl": args.source_url, "sourceTitle": args.source_title, "author": args.author,
             "headline": args.headline or f"Build it yourself: {args.source_title}",
-            "lede": args.lede or ("Each checkpoint asks you to write what one part of the post builds, as a file of a "
+            "lede": args.lede or ("Each assignment asks you to write what one part of the post builds, as a file of a "
                                   "project of your own. A checker feeds your program inputs and compares what it writes "
                                   "with answers worked out independently."),
             "credits": args.credits,
@@ -123,7 +123,7 @@ def main():
     (dest / ".claude").mkdir(exist_ok=True)
     (dest / ".claude" / "launch.json").write_text(json.dumps(launch, indent=2) + "\n", encoding="utf-8")
     print(f"created {dest} ({spec['label']}, program `{name}`). Next: design the project layout, then register "
-          "every checkpoint in workbook.json with its solution, files, extends and buildsOn.")
+          "every assignment in workbook.json with its solution, files, extends and buildsOn.")
 
 
 if __name__ == "__main__":

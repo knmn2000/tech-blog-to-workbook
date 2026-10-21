@@ -29,19 +29,19 @@ a yes first.
 ## 2. What a project looks like in each language
 
 The layout is the same in every language: the same folders and module names, in the language's
-own file naming. Checkpoint programs stay in `checkpoints/` so they're easy to tell from the
+own file naming. Assignment programs stay in `assignments/` so they're easy to tell from the
 project.
 
-| Language | Build file | Project code (example) | The finished program | Checkpoint programs | Build and run one checkpoint |
+| Language | Build file | Project code (example) | The finished program | Assignment programs | Build and run one assignment |
 |---|---|---|---|---|---|
-| C++ | `CMakeLists.txt` | `src/font/Cmap.h`, `src/font/Cmap.cpp` | `src/main.cpp` | `checkpoints/p03_cmap.cpp` | `cmake --build build/solutions --target p03`, then `build/solutions/p03` |
-| C | `CMakeLists.txt` | `src/font/cmap.h`, `src/font/cmap.c` | `src/main.c` | `checkpoints/p03_cmap.c` | as C++ |
-| Python | `pyproject.toml` | `<package>/font/cmap.py` | `<package>/__main__.py` (`python -m <package>`) | `checkpoints/p03_cmap.py` | none; run with the project folder on `PYTHONPATH` |
-| JavaScript | `package.json` (`"type": "module"`) | `src/font/cmap.js` | `src/main.js` | `checkpoints/p03_cmap.js` (imports `../src/...`) | `node solutions/checkpoints/p03_cmap.js` |
-| TypeScript | `package.json` | `src/font/cmap.ts` | `src/main.ts` | `checkpoints/p03_cmap.ts` | `node --experimental-strip-types ...` (Node 22.6+) |
-| Go | `go.mod` | `font/cmap.go` (package `font`) | `cmd/<name>/main.go` | `checkpoints/p03/main.go` | `go build -o build/solutions/p03 ./checkpoints/p03` |
-| Rust | `Cargo.toml` | `src/font/cmap.rs` (with `mod` lines in `src/lib.rs` and `src/font/mod.rs`) | `src/main.rs` | `src/bin/p03_cmap.rs` | `cargo build --bin p03_cmap`, then `target/debug/p03_cmap` |
-| Lua | none | `<package>/font/cmap.lua` | `main.lua` | `checkpoints/p03_cmap.lua` | `lua` with `LUA_PATH` including `solutions/?.lua` |
+| C++ | `CMakeLists.txt` | `src/font/Cmap.h`, `src/font/Cmap.cpp` | `src/main.cpp` | `assignments/assignment_03_cmap.cpp` | `cmake --build build/solutions --target assignment_03`, then `build/solutions/assignment_03` |
+| C | `CMakeLists.txt` | `src/font/cmap.h`, `src/font/cmap.c` | `src/main.c` | `assignments/assignment_03_cmap.c` | as C++ |
+| Python | `pyproject.toml` | `<package>/font/cmap.py` | `<package>/__main__.py` (`python -m <package>`) | `assignments/assignment_03_cmap.py` | none; run with the project folder on `PYTHONPATH` |
+| JavaScript | `package.json` (`"type": "module"`) | `src/font/cmap.js` | `src/main.js` | `assignments/assignment_03_cmap.js` (imports `../src/...`) | `node solutions/assignments/assignment_03_cmap.js` |
+| TypeScript | `package.json` | `src/font/cmap.ts` | `src/main.ts` | `assignments/assignment_03_cmap.ts` | `node --experimental-strip-types ...` (Node 22.6+) |
+| Go | `go.mod` | `font/cmap.go` (package `font`) | `cmd/<name>/main.go` | `assignments/assignment_03/main.go` | `go build -o build/solutions/assignment_03 ./assignments/assignment_03` |
+| Rust | `Cargo.toml` | `src/font/cmap.rs` (with `mod` lines in `src/lib.rs` and `src/font/mod.rs`) | `src/main.rs` | `src/bin/assignment_03_cmap.rs` | `cargo build --bin assignment_03_cmap`, then `target/debug/assignment_03_cmap` |
+| Lua | none | `<package>/font/cmap.lua` | `main.lua` | `assignments/assignment_03_cmap.lua` | `lua` with `LUA_PATH` including `solutions/?.lua` |
 
 Module names keep the post's terms. File names follow each language's habit: C++ keeps the
 author's (`FontParser.cpp`), Python, Rust, Lua, C and Go use snake_case (`font_parser.py`), and
@@ -57,19 +57,19 @@ writes that part too (for example a PNG writer, or a binary PPM, which the check
    organised, the post it follows), a `.gitignore` for its build output, and the folders.
 3. **Point the workbook at it.** The tools read `workbook.json`, so keep the authored version as
    `workbook.<language>.json` (for example `workbook.cpp.json`) and change the copy the tools
-   read: `project.language` and `languageLabel`; `setup`, `build` and `run` (one checkpoint, from
-   the table; `{id}` is the checkpoint number); `project.build` and `project.run` (the finished
-   program); and each checkpoint's `solution`, `files`, `extends` and `buildsOn` in the new
+   read: `project.language` and `languageLabel`; `setup`, `build` and `run` (one assignment, from
+   the table; `{id}` is the assignment number); `project.build` and `project.run` (the finished
+   program); and each assignment's `solution`, `files`, `extends` and `buildsOn` in the new
    language's names. Leave `project.reference` and `reference` alone.
 4. **Write the blank starters** for the new paths with `py -P tools/blank_starters.py` (the
-   purposes in `project.purposes` need the new paths as keys too). Opening a checkpoint then
+   purposes in `project.purposes` need the new paths as keys too). Opening an assignment then
    creates its files as usual.
 5. **Tell the learner what changes:** the Boilerplate button and the Editorial's solution stay in
    the workbook's language (still useful to read), and `-Ref` proves the workbook's own reference.
    Everything else works the same: Run, Submit, Re-check solved, the Files panel and the finish
    card.
 6. **Check it:** run `.\check 01` on the blank starter ("Not started yet"), then build one
-   checkpoint end to end with a quick throwaway solution in a copy of the workbook, so the
+   assignment end to end with a quick throwaway solution in a copy of the workbook, so the
    commands are known to work before the learner starts.
 
 ## 4. Switching later

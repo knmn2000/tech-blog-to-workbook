@@ -1,12 +1,12 @@
-# Mapping a blog to checkpoints
+# Mapping a blog to assignments
 
-A checkpoint is one step of a real project: a properly named file the learner writes, plus a
+An assignment is one step of a real project: a properly named file the learner writes, plus a
 small entry program with one input/output contract that the checker runs. This file covers how to
-find the checkpoints in a post, how to lay out the project they add up to, how to design each
+find the assignments in a post, how to lay out the project they add up to, how to design each
 contract, and how to present the map to the user.
 
 ## Contents
-1. What makes a good checkpoint
+1. What makes a good assignment
 2. Posts with code
 3. Posts with pseudocode
 4. Posts with no code
@@ -15,7 +15,7 @@ contract, and how to present the map to the user.
 7. The map you show the user
 8. Sketches: three kinds of post
 
-## 1. What makes a good checkpoint
+## 1. What makes a good assignment
 
 - **One idea.** It teaches one thing the post explains: a format, an algorithm, a rule, a
   mechanism. The learner writes roughly 20-150 lines.
@@ -24,13 +24,13 @@ contract, and how to present the map to the user.
 - **Independent oracle exists.** Something other than your own reference can produce the expected
   output: an established library, exact arithmetic, a brute-force method, a simulation written
   differently, a hand calculation for small cases. If nothing does, see section 4.
-- **Standalone tests.** Its input includes whatever earlier checkpoints would have produced, so
+- **Standalone tests.** Its input includes whatever earlier assignments would have produced, so
   its tests only depend on the earlier files the learner chooses to import.
 - **A home in the project.** Its logic lives in a named file of the project layout (section 6),
-  where later checkpoints can import it.
+  where later assignments can import it.
 
-Aim for one checkpoint per substantive section of the post, plus a capstone that runs the whole
-pipeline. 6-20 checkpoints is typical.
+Aim for one assignment per substantive section of the post, plus a capstone that runs the whole
+pipeline. 6-20 assignments is typical.
 
 ## 2. Posts with code
 
@@ -38,20 +38,20 @@ Go through every code block and label it:
 
 | Label | Meaning | What happens to it |
 |---|---|---|
-| logic | Does real work: parsing, an algorithm, a transform | Becomes a checkpoint (or part of one) |
+| logic | Does real work: parsing, an algorithm, a transform | Becomes an assignment (or part of one) |
 | data | Struct/class declarations, constants | Becomes types in the starter, or the output format |
 | demo | A `main` that calls things | Becomes example input; nothing to implement |
-| fix | Changes an earlier block | Merge with the block it fixes **if the output is the same**; a separate "Part II" checkpoint only if the observable result differs (e.g. lines-only vs curves) |
+| fix | Changes an earlier block | Merge with the block it fixes **if the output is the same**; a separate "Part II" assignment only if the observable result differs (e.g. lines-only vs curves) |
 | glue | Build files, imports, I/O helpers | Provided in the starter |
 
-Then for each checkpoint:
+Then for each assignment:
 - **Scope = the snippet's scope.** If the snippet supports one format, one platform or one case,
-  so does the checkpoint. Say what's out of scope in Constraints.
+  so does the assignment. Say what's out of scope in Constraints.
 - **Bugs: follow the spec.** Note every place the snippet is wrong (read it carefully: off-by-one,
   sign handling, lost state across recursion, typos comparing x with y). The tests require correct
   behaviour, and "After you pass" mentions the difference neutrally ("something to look for").
   Check how often the bug would matter on real data; that's a good fact for the page.
-- **Two blocks with the same output become one checkpoint.** Output-only tests can't tell a first
+- **Two blocks with the same output become one assignment.** Output-only tests can't tell a first
   version from its fix if both produce the right answer. Make the fix's subject (the trap it
   handles) a requirement and a hint instead.
 
@@ -94,8 +94,8 @@ For each kernel:
   <length>`, `get user:42`); output lines too. One output record per input request, in order.
   Canonical formatting (integers plainly, words not symbols), and the checker normalises
   whitespace.
-- **Include what earlier checkpoints produce.** E.g. "decode the record at this offset" rather than
-  "find the record for this key", when finding it is an earlier checkpoint's job.
+- **Include what earlier assignments produce.** E.g. "decode the record at this offset" rather than
+  "find the record for this key", when finding it is an earlier assignment's job.
 - **Make each output detailed enough to localise mistakes.** Separate lines for separate concerns
   (header, list, items), named tuple fields (`items=key,value,flag`) so the checker can say exactly
   which field differs, and an `explain` mapping from output location to likely requirement.
@@ -112,23 +112,23 @@ For each kernel:
 ## 6. The project layout
 
 The learner should finish with a project, not a folder of exercises. Before writing the map,
-sketch the file tree a real implementation of the post would have, and give every checkpoint a
+sketch the file tree a real implementation of the post would have, and give every assignment a
 place in it.
 
 - **Mirror the author.** If the post or the author's repository shows file and folder names, use
   them. Looking at a repository's list of files is fine; never read or copy its code. Where the
   author keeps several steps in one big file, either give each step its own file in a folder named
   after it (a `font/` folder for a `FontParser`, holding `cmap`, `loca`, ...), or let later
-  checkpoints extend the earlier file when that's how the code really grows (another method on the
+  assignments extend the earlier file when that's how the code really grows (another method on the
   same type, a fix).
 - **No layout to mirror?** Use the language's usual conventions, and name files after the post's
   own terms, so the tree reads as a summary of the post.
-- **One home per checkpoint.** Each checkpoint names the file(s) it creates or extends. A
-  checkpoint that fixes an earlier one extends that file.
+- **One home per assignment.** Each assignment names the file(s) it creates or extends. A
+  assignment that fixes an earlier one extends that file.
 - **Imports run one way.** Later files import earlier ones, never the reverse, so the project
   builds at every point in the series. Small helpers that several steps use (byte reading, a
   canvas, geometry) get their own early files.
-- **Entry programs stay thin.** Each checkpoint's entry program (`solutions/pNN_slug.<ext>`) reads
+- **Entry programs stay thin.** Each assignment's entry program (`solutions/pNN_slug.<ext>`) reads
   the test input, calls the project and writes the output. It's test scaffolding, like a real
   project's tests or examples, so nothing later should need to import it.
 - **The capstone is the real program**: the project's `main`, doing what the post's finished
@@ -139,9 +139,9 @@ place in it.
 
 ## 7. The map you show the user
 
-A table, one row per checkpoint:
+A table, one row per assignment:
 
-| # | Checkpoint | Built from | File(s) | Contract (one line) | Oracle | Difficulty |
+| # | Assignment | Built from | File(s) | Contract (one line) | Oracle | Difficulty |
 |---|---|---|---|---|---|---|
 
 Beside it, the project tree the learner ends up with, and the author's tree when there is one
@@ -150,12 +150,12 @@ how the tests treat them, and anything you need to download. Get approval before
 
 ## 8. Sketches: three kinds of post
 
-These show the shape of a map, not a finished one. A real map has every checkpoint, the bugs
+These show the shape of a map, not a finished one. A real map has every assignment, the bugs
 found in the snippets, and the downloads needed.
 
 **A post with code** (e.g. building a log-structured key-value store, Go):
 
-| # | Checkpoint | Built from | File(s) | Contract | Oracle |
+| # | Assignment | Built from | File(s) | Contract | Oracle |
 |---|---|---|---|---|---|
 | 01 | Encode a record | record struct + `encode` | `record.go` | key, value -> bytes (hex) | Python `struct` |
 | 02 | Replay the log | `Open` + read loop | `log.go` | log file -> final key/value pairs | a dict replaying the same writes |
@@ -165,9 +165,9 @@ found in the snippets, and the downloads needed.
 | 06 | The store end to end (capstone) | the post's goal | `cmd/kv/main.go` | operations -> results | a dict |
 
 The learner's tree at the end: `record.go`, `log.go`, `index.go`, `compact.go` and `cmd/kv/main.go`,
-plus one thin entry program per checkpoint.
+plus one thin entry program per assignment.
 
-**A post with pseudocode** (e.g. a consensus algorithm's leader election): one checkpoint per
+**A post with pseudocode** (e.g. a consensus algorithm's leader election): one assignment per
 procedure (handle a vote request, handle a vote reply, the election timer), each in its own file
 of a `raft/` package and each as events in -> state after each event out, with a brute-force or
 library simulation as the oracle, and a capstone that runs a small cluster from a scripted event
@@ -178,5 +178,5 @@ sliding log, token bucket), each a file in a `limiter/` folder sharing one inter
 capacity + request times in -> allowed/denied per request out, with a direct simulation of the
 post's definition as the oracle; the capstone compares all three on the same traffic.
 
-`assets/example-checkpoint/` has one finished checkpoint from a past run, for the shape of the
+`assets/example-assignment/` has one finished assignment from a past run, for the shape of the
 files (page, starters, reference, generator, cases); its subject doesn't matter.

@@ -36,12 +36,13 @@ if(EXISTS ${CMAKE_SOURCE_DIR}/src/main.cpp)
   target_link_libraries({{NAME}} PRIVATE {{NAME}}_core)
 endif()
 
-# One small program per checkpoint (checkpoints/p03_parse_header.cpp -> p03). Each reads
-# a test input, calls the project and writes what it found; the workbook's checker runs them.
-file(GLOB CHECKPOINT_SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/checkpoints/p*.cpp)
-foreach(source ${CHECKPOINT_SOURCES})
+# One small program per assignment (assignments/assignment_03_parse_header.cpp -> assignment_03).
+# Each reads a test input, calls the project and writes what it found; the workbook's checker
+# runs them.
+file(GLOB ASSIGNMENT_SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/assignments/assignment_*.cpp)
+foreach(source ${ASSIGNMENT_SOURCES})
   get_filename_component(name ${source} NAME_WE)
-  string(REGEX MATCH "^p[0-9]+" target ${name})
+  string(REGEX MATCH "^assignment_[0-9]+" target ${name})
   add_executable(${target} ${source})
   target_link_libraries(${target} PRIVATE {{NAME}}_core)
 endforeach()

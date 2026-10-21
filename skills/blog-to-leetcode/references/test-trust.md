@@ -7,7 +7,7 @@ a test.
 
 ## Contents
 1. Where expected values come from
-2. Checking the checks (the gate before a checkpoint is done)
+2. Checking the checks (the gate before an assignment is done)
 3. Tolerances: pictures and numbers
 4. The independent solver
 5. Messages that help
@@ -34,10 +34,10 @@ cases carry the seed in their id, so `-Fresh` produces new ones the learner hasn
 
 ## 2. Checking the checks
 
-All of these hold before a checkpoint is done:
+All of these hold before an assignment is done:
 
 1. **Reference Accepted** on the committed cases and on at least two fresh seeds. `-Ref` checks
-   the reference project as it stands after this checkpoint, so this also proves the project
+   the reference project as it stands after this assignment, so this also proves the project
    builds at this point in the series, with no file depending on a later one.
 2. **The boilerplate says "Not implemented yet"** (exit code 99), not a crash, and the blank
    starter says "Not started yet".
@@ -79,7 +79,7 @@ exact integer data).
 
 ## 4. The independent solver
 
-A separate subagent solves the checkpoint using **only what the learner gets**:
+A separate subagent solves the assignment using **only what the learner gets**:
 - the problem page with hints and "After you pass" removed (`scripts/strip_hints.py`),
 - the starter file and provided headers,
 - the data files the examples reference, and the input data files;
