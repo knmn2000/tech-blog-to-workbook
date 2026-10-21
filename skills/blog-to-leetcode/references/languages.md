@@ -1,7 +1,7 @@
 # Languages: choosing one, and switching
 
 You author a workbook in one language: its starters, boilerplate and reference project are in
-that language, and `assets/lang/<lang>/` has its project skeleton (only C++ so far). The learner
+that language, and `assets/lang/<lang>/` has its project skeleton (C++ and Python so far). The learner
 can still build the project in any language, because the checker reads only the output. Set up
 only the language the learner picks, and create nothing for the others.
 
@@ -36,7 +36,7 @@ project.
 |---|---|---|---|---|---|
 | C++ | `CMakeLists.txt` | `src/font/Cmap.h`, `src/font/Cmap.cpp` | `src/main.cpp` | `assignments/assignment_03_cmap.cpp` | `cmake --build build/solutions --target assignment_03`, then `build/solutions/assignment_03` |
 | C | `CMakeLists.txt` | `src/font/cmap.h`, `src/font/cmap.c` | `src/main.c` | `assignments/assignment_03_cmap.c` | as C++ |
-| Python | `pyproject.toml` | `<package>/font/cmap.py` | `<package>/__main__.py` (`python -m <package>`) | `assignments/assignment_03_cmap.py` | none; run with the project folder on `PYTHONPATH` |
+| Python | `pyproject.toml` | `src/<package>/font/cmap.py` (each package folder has an `__init__.py`) | `src/<package>/__main__.py` (`python -m <package>`) | `assignments/assignment_03_cmap.py` (imports `from <package>.font import cmap`) | `python -P tools/run_py.py solutions 03 <input> <output>`: it puts `src/` on the import path and turns `NotImplementedError` into "Not implemented yet"; `run_py.py --compile solutions` is the build, a syntax check |
 | JavaScript | `package.json` (`"type": "module"`) | `src/font/cmap.js` | `src/main.js` | `assignments/assignment_03_cmap.js` (imports `../src/...`) | `node solutions/assignments/assignment_03_cmap.js` |
 | TypeScript | `package.json` | `src/font/cmap.ts` | `src/main.ts` | `assignments/assignment_03_cmap.ts` | `node --experimental-strip-types ...` (Node 22.6+) |
 | Go | `go.mod` | `font/cmap.go` (package `font`) | `cmd/<name>/main.go` | `assignments/assignment_03/main.go` | `go build -o build/solutions/assignment_03 ./assignments/assignment_03` |

@@ -27,9 +27,21 @@ TEMPLATE = SKILL / "assets" / "workbook-template"
 LANGS = SKILL / "assets" / "lang"
 EXE = ".exe" if sys.platform == "win32" else ""
 
-# How each language's project is built and run. Only C++ has a template so far; for another
-# language, follow references/languages.md and add its skeleton under assets/lang/<lang>.
+# How each language's project is built and run. C++ and Python have templates so far; for
+# another language, follow references/languages.md and add its skeleton under assets/lang/<lang>.
+# "python" in a command runs the Python that runs the checker (tools/check.py, to_args).
 PROJECTS = {
+    "python": {
+        "label": "Python", "aliases": ["py", "python3"],
+        "setup": None,  # nothing to configure
+        "build": "python -P tools/run_py.py --compile solutions",  # a syntax check of every file
+        "run": "python -P tools/run_py.py solutions {id} {input} {output}",
+        "reference": {
+            "snapshot": "build/ref-src",
+            "build": "python -P tools/run_py.py --compile build/ref-src",
+            "run": "python -P tools/run_py.py build/ref-src {id} {input} {output}"},
+        "finish": {"build": "", "run": "python -P tools/run_py.py solutions -m {name}"},
+    },
     "cpp": {
         "label": "C++", "aliases": ["c++", "cxx"],
         "setup": {"command": "cmake -S solutions -B build/solutions -G Ninja -DCMAKE_CXX_COMPILER=g++",
@@ -82,12 +94,21 @@ def main():
         (dest / folder).mkdir(parents=True, exist_ok=True)
     values = {"NAME": name, "TITLE": args.title, "SOURCE_URL": args.source_url, "SOURCE_TITLE": args.source_title,
               "AUTHOR": args.author, "PROJECT_LABEL": spec["label"]}
-    for p in (dest / "starters" / "project").rglob("*"):
+    skeleton = dest / "starters" / "project"
+    # Folders named after the program (a Python package: src/{{NAME}}/) take its name.
+    for p in sorted(skeleton.rglob("*{{NAME}}*"), key=lambda p: len(p.parts), reverse=True):
+        p.rename(p.with_name(p.name.replace("{{NAME}}", name)))
+    for p in skeleton.rglob("*"):
         if p.is_file():
             fill(p, values)
     fill(dest / "README.md", values)
-    # The reference project is built with the same build file as the learner's.
-    shutil.copyfile(dest / "starters" / "project" / "CMakeLists.txt", dest / "_spoilers" / "project" / "CMakeLists.txt")
+    # The reference project starts as the same skeleton (build file, package __init__.py files),
+    # without the README the learner's copy explains itself with.
+    for p in skeleton.rglob("*"):
+        if p.is_file() and p.name != "README.md":
+            target = dest / "_spoilers" / "project" / p.relative_to(skeleton)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(p, target)
 
     finish = {k: v.replace("{name}", name) for k, v in spec["finish"].items()}
     config = {
@@ -115,6 +136,8 @@ def main():
         },
         "checkpoints": {},
     }
+    if not config["setup"]:
+        del config["setup"]
     (dest / "workbook.json").write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
 
     # Lets the Claude desktop app open the book (with Run and Submit working) in its browser pane.

@@ -58,9 +58,9 @@ Work in stages and keep the user in the loop at the two decision points marked *
 
 ### 1. Set up (ask)
 
-Ask which language to write the workbook in (default: the blog's own language; the template has a
-project skeleton for C++, and `references/languages.md` says what a project looks like in the
-others) and where the workbook should go (default: a new folder next to the current one, named
+Ask which language to write the workbook in (default: the blog's own language; the template has
+project skeletons for C++ and Python, and `references/languages.md` says what a project looks like
+in the others) and where the workbook should go (default: a new folder next to the current one, named
 after the post). Check that the toolchain exists (`g++`/`cmake`, `python`, `node`, ...).
 Mention anything you'll need to download (an oracle library, a sample data file, a header) with
 its source and size, and get a yes before downloading.
@@ -88,7 +88,7 @@ change the layout: every starter, reference and page depends on it.
 ### 4. Scaffold the workbook
 
 Run `scripts/new_workbook.py --dest <folder> --title ... --name <program> --source-url ...
---source-title ... --author ... --lang cpp`. It copies `assets/workbook-template/` (checker,
+--source-title ... --author ... --lang cpp` (or `--lang python`). It copies `assets/workbook-template/` (checker,
 project tool, image comparison, case-file library, book builder, study server, check scripts,
 README, authoring guide) and the language's project skeleton into `starters/project/`, makes an
 empty reference project in `_spoilers/project/`, and writes `workbook.json`. Then, before anyone
@@ -205,6 +205,47 @@ growing file by file, and **Re-check solved** reruns every solved assignment, so
 earlier file that breaks an earlier assignment shows at once. Once every assignment passes, the
 book shows their project tree next to the author's. **Exit** saves their work, stops the study
 server and closes the page. You stay available for hints, explanations and disputes.
+
+## When a workbook was made with an older version of this skill
+
+Signs of an older workbook:
+- `workbook.json` has no `project` block;
+- each "checkpoint" is a single file `solutions/pNN_*`;
+- a `common/` folder holds shared code that the learner never builds.
+
+Bring it up to the current standard in this order, showing the user the layout (step 2) before you
+build anything.
+
+1. **Tools.** Copy `assets/workbook-template/tools/` over the workbook's `tools/`, keeping its own
+   generators and data files, and update `docs/authoring-guide.md` and `.gitignore` (the
+   learner's `solutions/` is never committed). If `solutions/` is tracked, untrack it with
+   `git rm --cached`: the files stay on disk.
+2. **Layout (ask).** Map each checkpoint to the project files it creates or adds to, as in
+   workflow step 3. Code that the old reference repeats across checkpoints becomes one module that
+   later assignments import.
+3. **Reference.** Rebuild `_spoilers/project/` as one project:
+   - section markers for later additions;
+   - one program per assignment under `assignments/`;
+   - each assignment's `files`, `extends` and `buildsOn` registered in `workbook.json`.
+
+   Have one author write the whole reference, so the module interfaces agree. The tests don't
+   change, and every assignment must pass `-Ref` again.
+4. **Starters.** Write the Boilerplate from the reference: declarations, constants and the
+   assignment program stay, and logic becomes a TODO that raises (`NotImplementedError`, or
+   `throw std::logic_error("not implemented: ...")`). Test each one on a copy of the reference
+   (`-Run`): it must say "Not implemented yet". Then write the `jobs` and `purposes`, and run
+   `tools/blank_starters.py`.
+5. **Pages.** Switch to assignment wording, remove the paragraphs about starter files, and point
+   file references at the project's modules. Rewrite "Where this fits" and the Requirements
+   opening, then do the readability and section 8 pass with `scripts/slop_scan.py`.
+6. **Retire the old files.** Move the old per-checkpoint starters, reference and `solutions/`
+   files to the Recycle Bin, after confirming that the learner's copies still match the blank
+   starters. Never discard a learner's own code. Rewrite the workbook's README for the project.
+7. **Verify** as in workflow step 6:
+   - every `-Ref` passes;
+   - a fresh set-up project opens, and Submit gives "Not implemented yet";
+   - the book looks right in the browser pane;
+   - the scanner is clean.
 
 ## When the learner says "review my disputes"
 
