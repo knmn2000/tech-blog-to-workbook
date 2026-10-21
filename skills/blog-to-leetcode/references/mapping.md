@@ -1,7 +1,9 @@
 # Mapping a blog to checkpoints
 
-A checkpoint is one program with one input/output contract. This file covers how to find the
-checkpoints in a post, how to design each contract, and how to present the map to the user.
+A checkpoint is one step of a real project: a properly named file the learner writes, plus a
+small entry program with one input/output contract that the checker runs. This file covers how to
+find the checkpoints in a post, how to lay out the project they add up to, how to design each
+contract, and how to present the map to the user.
 
 ## Contents
 1. What makes a good checkpoint
@@ -9,8 +11,9 @@ checkpoints in a post, how to design each contract, and how to present the map t
 3. Posts with pseudocode
 4. Posts with no code
 5. Designing the contract
-6. The map you show the user
-7. Sketches: three kinds of post
+6. The project layout
+7. The map you show the user
+8. Sketches: three kinds of post
 
 ## 1. What makes a good checkpoint
 
@@ -21,7 +24,10 @@ checkpoints in a post, how to design each contract, and how to present the map t
 - **Independent oracle exists.** Something other than your own reference can produce the expected
   output: an established library, exact arithmetic, a brute-force method, a simulation written
   differently, a hand calculation for small cases. If nothing does, see section 4.
-- **Standalone.** Its input includes whatever earlier checkpoints would have produced.
+- **Standalone tests.** Its input includes whatever earlier checkpoints would have produced, so
+  its tests only depend on the earlier files the learner chooses to import.
+- **A home in the project.** Its logic lives in a named file of the project layout (section 6),
+  where later checkpoints can import it.
 
 Aim for one checkpoint per substantive section of the post, plus a capstone that runs the whole
 pipeline. 6-20 checkpoints is typical.
@@ -103,41 +109,74 @@ For each kernel:
 - **Errors:** if a case can't be done (unsupported format, end of data), the output is a defined
   line (`unsupported`, `eof`), not a crash.
 
-## 6. The map you show the user
+## 6. The project layout
+
+The learner should finish with a project, not a folder of exercises. Before writing the map,
+sketch the file tree a real implementation of the post would have, and give every checkpoint a
+place in it.
+
+- **Mirror the author.** If the post or the author's repository shows file and folder names, use
+  them. Looking at a repository's list of files is fine; never read or copy its code. Where the
+  author keeps several steps in one big file, either give each step its own file in a folder named
+  after it (a `font/` folder for a `FontParser`, holding `cmap`, `loca`, ...), or let later
+  checkpoints extend the earlier file when that's how the code really grows (another method on the
+  same type, a fix).
+- **No layout to mirror?** Use the language's usual conventions, and name files after the post's
+  own terms, so the tree reads as a summary of the post.
+- **One home per checkpoint.** Each checkpoint names the file(s) it creates or extends. A
+  checkpoint that fixes an earlier one extends that file.
+- **Imports run one way.** Later files import earlier ones, never the reverse, so the project
+  builds at every point in the series. Small helpers that several steps use (byte reading, a
+  canvas, geometry) get their own early files.
+- **Entry programs stay thin.** Each checkpoint's entry program (`solutions/pNN_slug.<ext>`) reads
+  the test input, calls the project and writes the output. It's test scaffolding, like a real
+  project's tests or examples, so nothing later should need to import it.
+- **The capstone is the real program**: the project's `main`, doing what the post's finished
+  program does.
+- **Aim for recognisable.** Someone who knows the author's repository should see its shape in the
+  learner's: the main modules and folders, if not every file. Other languages keep the same
+  module names in their own naming conventions.
+
+## 7. The map you show the user
 
 A table, one row per checkpoint:
 
-| # | Checkpoint | Built from | Contract (one line) | Oracle | Difficulty |
-|---|---|---|---|---|---|
+| # | Checkpoint | Built from | File(s) | Contract (one line) | Oracle | Difficulty |
+|---|---|---|---|---|---|---|
 
-Below it: what you merged or dropped and why, the blog's bugs you found and how the tests treat
-them, and anything you need to download. Get approval before authoring.
+Beside it, the project tree the learner ends up with, and the author's tree when there is one
+(file names only). Below them: what you merged or dropped and why, the blog's bugs you found and
+how the tests treat them, and anything you need to download. Get approval before authoring.
 
-## 7. Sketches: three kinds of post
+## 8. Sketches: three kinds of post
 
 These show the shape of a map, not a finished one. A real map has every checkpoint, the bugs
 found in the snippets, and the downloads needed.
 
 **A post with code** (e.g. building a log-structured key-value store, Go):
 
-| # | Checkpoint | Built from | Contract | Oracle |
-|---|---|---|---|---|
-| 01 | Encode a record | record struct + `encode` | key, value -> bytes (hex) | Python `struct` |
-| 02 | Replay the log | `Open` + read loop | log file -> final key/value pairs | a dict replaying the same writes |
-| 03 | Build the hash index | index snippet | log file -> key -> offset | offsets computed while writing the test log |
-| 04 | Compact | compaction snippet + its fix (merged) | log -> compacted log contents | the dict from 02 |
-| 05 | Recover from a torn write | recovery snippet | log with a truncated tail -> pairs kept | hand-made cases, checked by 02's oracle |
-| 06 | The store end to end (capstone) | the post's goal | operations -> results | a dict |
+| # | Checkpoint | Built from | File(s) | Contract | Oracle |
+|---|---|---|---|---|---|
+| 01 | Encode a record | record struct + `encode` | `record.go` | key, value -> bytes (hex) | Python `struct` |
+| 02 | Replay the log | `Open` + read loop | `log.go` | log file -> final key/value pairs | a dict replaying the same writes |
+| 03 | Build the hash index | index snippet | `index.go` | log file -> key -> offset | offsets computed while writing the test log |
+| 04 | Compact | compaction snippet + its fix (merged) | `compact.go` | log -> compacted log contents | the dict from 02 |
+| 05 | Recover from a torn write | recovery snippet | extends `log.go` | log with a truncated tail -> pairs kept | hand-made cases, checked by 02's oracle |
+| 06 | The store end to end (capstone) | the post's goal | `cmd/kv/main.go` | operations -> results | a dict |
+
+The learner's tree at the end: `record.go`, `log.go`, `index.go`, `compact.go` and `cmd/kv/main.go`,
+plus one thin entry program per checkpoint.
 
 **A post with pseudocode** (e.g. a consensus algorithm's leader election): one checkpoint per
-procedure (handle a vote request, handle a vote reply, the election timer), each as events in ->
-state after each event out, with a brute-force or library simulation as the oracle, and a capstone
-that runs a small cluster from a scripted event list.
+procedure (handle a vote request, handle a vote reply, the election timer), each in its own file
+of a `raft/` package and each as events in -> state after each event out, with a brute-force or
+library simulation as the oracle, and a capstone that runs a small cluster from a scripted event
+list.
 
 **A post with no code** (e.g. how rate limiters work): one kernel per mechanism (fixed window,
-sliding log, token bucket), each as capacity + request times in -> allowed/denied per request out,
-with a direct simulation of the post's definition as the oracle; the capstone compares all three on
-the same traffic.
+sliding log, token bucket), each a file in a `limiter/` folder sharing one interface, and each as
+capacity + request times in -> allowed/denied per request out, with a direct simulation of the
+post's definition as the oracle; the capstone compares all three on the same traffic.
 
 `assets/example-checkpoint/` has one finished checkpoint from a past run, for the shape of the
 files (page, starters, reference, generator, cases); its subject doesn't matter.

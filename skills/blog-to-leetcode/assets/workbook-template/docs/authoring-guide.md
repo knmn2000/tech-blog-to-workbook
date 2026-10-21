@@ -88,9 +88,9 @@ picture, also becomes a test case in the book's bottom panel.
 ## 3. The starter
 
 Each checkpoint has two starters. The learner gets the **blank** one: a header comment (the
-checkpoint, the problem page, how the program is run, `solutions/common/`, where the
-boilerplate is) and an empty `main`, so the imports, the input parsing and the output are theirs
-to write. The **boilerplate**, described below, does the input and output and leaves functions
+checkpoint, the problem page, how the program is run, the project file this checkpoint fills in,
+where the boilerplate is) and an empty `main`, so the imports, the input parsing and the output
+are theirs to write. The **boilerplate**, described below, does the input and output and leaves functions
 marked TODO; it's the optional easier start.
 
 Write the boilerplate as `solutions/pNN_slug.<ext>`, since the stub checks run on it. When every
@@ -103,9 +103,13 @@ copy in `starters/boilerplate/` too.
 Because the blank starter does nothing for the learner, the problem page must state every
 formatting rule the boilerplate handles (how numbers are rounded, how bytes are printed), and its
 paragraph about the starter says the file starts empty, then what the boilerplate does and what it
-leaves to fill in. Code the learner reuses across checkpoints goes in `solutions/common/`: for
-C++ every `.cpp` there is compiled into every learner program (the `common` object library in
-CMakeLists.txt); Python and JavaScript import from it. That lets the capstone call earlier work.
+leaves to fill in.
+
+The starter is the checkpoint's entry program; the checkpoint's real work goes in its file in the
+project layout (`references/mapping.md`, section 6), which later checkpoints import. That file
+starts as a header comment saying what belongs in it and which earlier files it may build on. The
+page's paragraph about the starter names both files, and the boilerplate's entry program calls the
+project file through declarations named as the author names them.
 
 The boilerplate:
 
@@ -133,8 +137,9 @@ Language patterns:
 
 Same input/output code as the starter, function(s) filled in, written from the specification and
 your own understanding, never copied from the blog. Header comment:
-`Reference solution - checkpoint NN (...). SPOILERS: try it yourself first.` Shared reference code
-(for a capstone, or several picture checkpoints) can live in `_spoilers/reference/common/`.
+`Reference solution - checkpoint NN (...). SPOILERS: try it yourself first.` The reference
+project mirrors the learner's layout under `_spoilers/`, so the Editorial shows each file at the
+path the learner uses, and later references import earlier ones exactly as the learner's do.
 
 Learners read it: the Editorial shows the reference in full, with every file it includes from
 `_spoilers/`, as "a solution that passes". Write it as a model answer: clear names, a short comment

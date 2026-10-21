@@ -29,13 +29,21 @@ copied snippets from the post. Everything below serves that.
    accomplishes, with its scope and simplifications. The author's structure appears only in a hint
    and in "After you pass". Where the snippet is wrong, the tests follow the spec, and the page
    says so neutrally.
-4. **Checkpoints stand alone, and can still build on each other.** Each input carries what
-   earlier checkpoints would produce (an offset, a parsed record, an intermediate result), so any checkpoint
-   can be done first. Code the learner keeps in `solutions/common/` is shared by every
-   checkpoint, so a final capstone can call their own earlier work.
-5. **The learner writes everything by default.** The starter they get is blank (a comment and an
-   empty `main`): imports, input parsing and output are part of the exercise. A boilerplate
-   starter with the input/output done is there for anyone who wants it, never forced.
+4. **The learner builds a real project, one checkpoint at a time.** Checkpoints are done in
+   order, and each one's work is saved as a properly named file at its place in a project layout
+   planned with the map: the author's module and folder names where they published code,
+   otherwise the language's usual layout. Later checkpoints import earlier files instead of
+   copying them, and the capstone is the project's real `main`. The finished `solutions/` should
+   read like an implementation of the post, and someone who knows the author's code should
+   recognise its shape. Each checkpoint also has a small entry program, the one the checker runs:
+   it reads a test input, calls the project's code and writes the output. Inputs still carry what
+   earlier checkpoints would produce (an offset, a parsed record), so a checkpoint's tests only
+   depend on the earlier files it chooses to import.
+5. **The learner writes everything by default.** Each checkpoint starts with blank files at their
+   places in the project (a comment saying what belongs there, and an empty `main` in the entry
+   program): imports, the module's API, input parsing and output are part of the exercise. A
+   boilerplate version (the entry program done, the module's declarations named as the author
+   names them) is there for anyone who wants it, never forced.
 6. **A wrong test must never block a correct solution.** Expected outputs come from an independent
    source, every test traces to a requirement, the checks themselves are checked, and the learner
    can dispute a test and keep going (see `references/test-trust.md`).
@@ -67,9 +75,12 @@ parts are demos, data structures or glue rather than logic.
 ### 3. Map the blog to checkpoints (ask)
 
 Follow `references/mapping.md` to turn the post into a checkpoint map: for each checkpoint its
-title, what it's built from (snippet, pseudocode or idea), the input/output contract in one line,
-the independent oracle, and a difficulty. Present the map as a table and get the user's approval
-before writing anything. This is the cheapest moment to change scope.
+title, what it's built from (snippet, pseudocode or idea), the project file(s) it creates or
+extends, the input/output contract in one line, the independent oracle, and a difficulty. With it,
+show the project layout the learner will end up with as a file tree, beside the author's layout
+when they published one (file names only). Present both and get the user's approval before
+writing anything. This is the cheapest moment to change scope, and the only cheap moment to
+change the layout: every starter, reference and page depends on it.
 
 ### 4. Scaffold the workbook
 
@@ -161,11 +172,11 @@ In the book they write code, Run (one example) and Submit (all tests), and see t
 failing tests (their output and the expected output with the differing words highlighted, judged
 the way the checker judges them) and, for pictures, expected/theirs/difference side by side. Their
 code is saved to `solutions/` as they type (Ctrl+S, or `:w` with the editor's Vim toggle on), and
-edits made in another editor show up in the book. The Files panel shows their project as it grows
-(`solutions/common/` plus each checkpoint's file); after each Accepted the book suggests moving
-reusable code into `common/`, and **Re-check solved** reruns every solved checkpoint so a change to
-shared code that breaks an earlier one shows at once. Inputs stay independent, so nothing blocks
-unless they choose to share code. You stay available for hints, explanations and disputes.
+edits made in another editor show up in the book. The Files panel shows their project growing
+file by file, and **Re-check solved** reruns every solved checkpoint, so a change to an earlier file
+that breaks an earlier checkpoint shows at once. When they finish, the book shows their project
+tree next to the author's. **Exit** saves everything, stops the study server and closes the page.
+You stay available for hints, explanations and disputes.
 
 ## When the learner says "review my disputes"
 
@@ -179,6 +190,10 @@ the oracle's own output, a hand calculation). Close the dispute with a note (`"s
 ## Hard-won lessons
 
 These came from building the first workbook; they apply broadly.
+
+- Plan the project layout with the map, not afterwards. Checkpoints written as separate one-file
+  programs leave the learner with a pile of exercises instead of a project, and retrofitting a
+  layout means rewriting every starter, reference and page.
 
 - Tolerances need two kinds of evidence: planted bugs that must fail **and** correct alternatives
   that must pass. Tuning against only one makes the checker either useless or unfair.

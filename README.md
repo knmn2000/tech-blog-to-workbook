@@ -29,9 +29,12 @@ renderer, built on Yohei Yamasaki's post
 - **Blank starters.** Each starter is a comment and an empty `main`, so working out the imports
   and parsing the input is part of the exercise. A boilerplate starter with the input and output
   done is one click away if you want it.
-- **Checkpoints that stand alone and build on each other.** Every input carries what the earlier
-  checkpoints would produce, so you can start anywhere. Code you put in `solutions/common/` is
-  shared by all your checkpoints, so the last one can call your earlier work.
+- **You build a real project, not a pile of exercises.** You go through the checkpoints in order,
+  and each one's work is saved as a properly named file in a project layout modelled on the
+  author's own. Later checkpoints import your earlier files, and the last one is the project's
+  real `main`, so when you finish, your code reads like an implementation of the post. Each test
+  input still carries what the earlier checkpoints would produce, so a checkpoint's tests only
+  depend on the earlier files you choose to use.
 - **Full problem pages.** A description, numbered requirements, worked examples, constraints,
   sources and tags (language features, libraries, concepts), four hints that open in order, and
   an Editorial with a complete solution that's proven to pass every test, then a comparison with
@@ -86,8 +89,9 @@ downloading anything.
 1. **Read the post.** Claude extracts the headings, text and code blocks. That copy stays on your
    machine and is never put in the workbook.
 2. **Map it to checkpoints.** Each snippet or idea becomes a checkpoint with an input/output
-   contract, an independent source of expected answers and a difficulty. You approve the map
-   before anything is written.
+   contract, an independent source of expected answers, a difficulty, and its file in the
+   project layout (modelled on the author's, when they published code). You approve the map and
+   the layout before anything is written.
 3. **Scaffold the workbook:** checker, image comparison, problem book builder, check scripts and
    README.
 4. **Write the checkpoints.** One complete model checkpoint first, then the rest (in parallel,
