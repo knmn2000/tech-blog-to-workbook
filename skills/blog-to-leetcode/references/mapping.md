@@ -17,17 +17,17 @@ present the map to the user.
 
 ## 1. What makes a good assignment
 
-- **One idea.** It teaches one thing the post explains: a format, an algorithm, a rule, a
-  mechanism. The learner writes about 20-150 lines.
-- **Observable.** The program can write its result as text (or a picture), and the checker
-  compares that for equality or within a stated tolerance.
-- **Independent oracle exists.** Something other than your own reference can produce the expected
+- It teaches one idea the post explains: a format, an algorithm, a rule, a mechanism. The learner
+  writes about 20-150 lines.
+- The program can write its result as text (or a picture), and the checker compares that for
+  equality or within a stated tolerance.
+- An independent oracle exists. Something other than your own reference can produce the expected
   output: an established library, exact arithmetic, a brute-force method, a simulation written
   another way, a hand calculation for small cases. If nothing does, see section 4.
-- **Standalone tests.** Its input includes whatever earlier assignments would have produced, so
-  its tests depend only on the earlier files the learner chooses to import.
-- **A home in the project.** Its logic lives in a named file of the project layout (section 6),
-  where later assignments can import it.
+- The tests stand alone: each input includes whatever earlier assignments would have produced, so
+  the tests depend only on the earlier files the learner chooses to import.
+- Its logic lives in a named file of the project layout (section 6), where later assignments can
+  import it.
 
 Aim for one assignment per substantive section of the post, plus a capstone that runs the whole
 pipeline. A typical map has 6-20 assignments.
@@ -41,18 +41,18 @@ Go through every code block and label it:
 | logic | Does real work: parsing, an algorithm, a transform | Becomes an assignment (or part of one) |
 | data | Struct/class declarations, constants | Becomes types in the starter, or the output format |
 | demo | A `main` that calls things | Becomes example input; nothing to implement |
-| fix | Changes an earlier block | Merge with the block it fixes **if the output is the same**; a separate "Part II" assignment only if the observable result differs (e.g. lines-only vs curves) |
+| fix | Changes an earlier block | Merge with the block it fixes if the output is the same; a separate "Part II" assignment only if the observable result differs (e.g. lines-only vs curves) |
 | glue | Build files, imports, I/O helpers | Provided in the starter |
 
 Then for each assignment:
-- **Scope = the snippet's scope.** If the snippet supports one format, one platform or one case,
-  so does the assignment. Say what's out of scope in Constraints.
-- **Bugs: follow the spec.** Note every place the snippet is wrong (read it line by line, looking
-  for off-by-one errors, sign handling, lost state across recursion, typos comparing x with y). The
-  tests require correct behaviour, and "After you pass" mentions the difference in a neutral tone
-  ("something to look for").
-  Check how often the bug would matter on real data; that's a good fact for the page.
-- **Two blocks with the same output become one assignment.** Output-only tests can't tell a first
+- Keep the snippet's scope. If the snippet supports one format, one platform or one case, so does
+  the assignment. Say what's out of scope in Constraints.
+- Follow the spec when the snippet has bugs. Note every place the snippet is wrong (read it line
+  by line, looking for off-by-one errors, sign handling, lost state across recursion, typos
+  comparing x with y). The tests require correct behaviour, and "After you pass" mentions the
+  difference in a neutral tone. Check how often the bug would matter on real data; that's a good
+  fact for the page.
+- Two blocks with the same output become one assignment. Output-only tests can't tell a first
   version from its fix if both produce the right answer. Make the fix's subject (the trap it
   handles) a requirement and a hint instead.
 
@@ -66,7 +66,7 @@ library implementation of the same mathematical task, or small cases worked by h
 ## 4. Posts with no code
 
 The post explains how something works (a protocol, a storage engine, a scheduler, a cache
-policy) without code. Every such idea still has a **testable kernel**: a function that captures
+policy) without code. Every such idea still has a testable kernel: a function that captures
 the mechanism with clear inputs and outputs. Check for these kernels, in about this order:
 
 | Kernel | Example post content | Contract |
@@ -80,37 +80,36 @@ the mechanism with clear inputs and outputs. Check for these kernels, in about t
 | A simulation | "requests are routed to the node owning the hash range" | input: nodes + keys; output: owner of each key |
 
 For each kernel:
-- **Cite the passage.** Every requirement says which part of the post it comes from, since there is
-  no snippet to stay true to. If the post is vague, choose the simplest reading that agrees with
+- Cite the passage. Every requirement says which part of the post it comes from, since there is no
+  snippet to stay true to. If the post is vague, choose the simplest reading that agrees with
   every sentence, state it as a requirement, and say so on the page.
-- **Oracle.** Prefer an established library that implements the same thing. Otherwise write the
-  oracle in a different style from your reference (e.g. brute force or a direct simulation of the
-  definition) and require both to agree on every case, plus property checks (invariants the post
-  states).
-- **The capstone** is, in most posts, a small end-to-end simulation of the system the post
-  describes.
+- For the oracle, prefer an established library that implements the same thing. Otherwise write
+  the oracle in a different style from your reference (e.g. brute force or a direct simulation of
+  the definition) and require both to agree on every case, plus property checks (invariants the
+  post states).
+- The capstone is, in most posts, a small end-to-end simulation of the system the post describes.
 
 ## 5. Designing the contract
 
-- **Text, line based.** Input lines start with a keyword (`file <path>`, `record <offset>
+- Make the contract text and line based. Input lines start with a keyword (`file <path>`, `record <offset>
   <length>`, `get user:42`), and so do output lines. Write one output record per input request,
   in order, in canonical formatting (plain integers, words instead of symbols); the checker
   normalises whitespace.
-- **Include what earlier assignments produce.** E.g. "decode the record at this offset" rather than
-  "find the record for this key", when finding it is an earlier assignment's job.
-- **Make each output detailed enough to localise mistakes.** Use separate lines for separate
-  concerns (header, list, items), named tuple fields (`items=key,value,flag`) so the checker can
-  name the field that differs, and an `explain` mapping from each output location to the
-  requirement behind it.
-- **Pick the comparison:** `records` (line by line, named tuples, optional numeric tolerance),
+- Include what earlier assignments produce: "decode the record at this offset" rather than "find
+  the record for this key", when finding it is an earlier assignment's job.
+- Make each output detailed enough to localise mistakes. Use separate lines for separate concerns
+  (header, list, items), named tuple fields (`items=key,value,flag`) so the checker can name the
+  field that differs, and an `explain` mapping from each output location to the requirement
+  behind it.
+- Pick the comparison: `records` (line by line, named tuples, optional numeric tolerance),
   `unordered` (same lines, any order: map/set outputs), `image band=1 allow=...` (pictures, edges
   may move one pixel).
-- **Pictures:** PNG (or binary PPM) at an output path ending in `.png`. Define the rule in full
+- A picture is a PNG (or binary PPM) at an output path ending in `.png`. Define the rule in full
   (e.g. "fill a pixel when its centre is inside"), allow 1-pixel edge movement, and keep canvases
   under about 600 x 600 pixels.
-- **Floating point:** state the tolerance in the requirement and print enough digits.
-- **Errors:** if the program can't handle a case (unsupported format, end of data), it writes a
-  defined line (`unsupported`, `eof`) instead of crashing.
+- For floating point, state the tolerance in the requirement and print enough digits.
+- If the program can't handle a case (unsupported format, end of data), it writes a defined line
+  (`unsupported`, `eof`) instead of crashing.
 
 ## 6. The project layout
 
@@ -118,27 +117,27 @@ The learner should finish with a project instead of a folder of exercises. Befor
 map, sketch the file tree a real implementation of the post would have, and give every assignment
 a place in it.
 
-- **Mirror the author.** If the post or the author's repository shows file and folder names, use
+- Mirror the author. If the post or the author's repository shows file and folder names, use
   them. You may look at a repository's list of files; never read or copy its code. If the author
   keeps several steps in one big file, either give each step its own file in a folder named after
   it (a `font/` folder for a `FontParser`, holding `cmap`, `loca`, ...), or let later assignments
   extend the earlier file when that's how the code grows (another method on the same type, a fix).
-- **No layout to mirror.** If the author published none, use the language's usual conventions,
-  and name files after the post's own terms, so the tree reads as a summary of the post.
-- **One home per assignment.** Each assignment names the file(s) it creates or extends. An
-  assignment that fixes an earlier one extends that file.
-- **Imports run one way.** Later files import earlier ones, never the reverse, so the project
-  builds at every point in the series. Small helpers that several steps use (byte reading, a
-  canvas, geometry) get their own early files.
-- **Entry programs stay thin.** Each assignment's entry program
+- If the author published no layout, use the language's usual conventions, and name files after
+  the post's own terms, so the tree reads as a summary of the post.
+- Give each assignment one home: it names the file(s) it creates or extends. An assignment that
+  fixes an earlier one extends that file.
+- Imports run one way. Later files import earlier ones, never the reverse, so the project builds
+  at every point in the series. Small helpers that several steps use (byte reading, a canvas,
+  geometry) get their own early files.
+- Keep entry programs thin. Each assignment's entry program
   (`assignments/assignment_NN_slug.<ext>` in the project) reads the test input, calls the project
   and writes the output. It's test scaffolding, like a real project's tests or examples, so no
   later file should import it.
-- **The capstone is the real program**: the project's `main`, doing what the post's finished
-  program does.
-- **Aim for a recognisable shape.** Someone who knows the author's repository should see its
-  shape in the learner's: the main modules and folders, if not every file. Other languages keep
-  the same module names in their own naming conventions (`references/languages.md`).
+- The capstone is the real program: the project's `main`, doing what the post's finished program
+  does.
+- Aim for a recognisable shape. Someone who knows the author's repository should see its shape in
+  the learner's: the main modules and folders, if not every file. Other languages keep the same
+  module names in their own naming conventions (`references/languages.md`).
 
 ## 7. The map you show the user
 
@@ -156,7 +155,8 @@ and how the tests treat them, and anything you need to download. Get approval be
 These sketches show the shape of a map and leave parts out. A real map has every assignment, the
 bugs you found in the snippets, and the downloads you need.
 
-**A post with code** (e.g. building a log-structured key-value store, Go):
+A post with code, such as one on building a log-structured key-value store in Go, could map like
+this:
 
 | # | Assignment | Built from | File(s) | Contract | Oracle |
 |---|---|---|---|---|---|
@@ -167,19 +167,20 @@ bugs you found in the snippets, and the downloads you need.
 | 05 | Recover from a torn write | recovery snippet | extends `log.go` | log with a truncated tail -> pairs kept | hand-made cases, checked by 02's oracle |
 | 06 | The store end to end (capstone) | the post's goal | `cmd/kv/main.go` | operations -> results | a dict |
 
-The learner's tree at the end: `record.go`, `log.go`, `index.go`, `compact.go` and `cmd/kv/main.go`,
-plus one thin entry program per assignment.
+At the end, the learner's tree holds `record.go`, `log.go`, `index.go`, `compact.go` and
+`cmd/kv/main.go`, plus one thin entry program per assignment.
 
-**A post with pseudocode** (e.g. a consensus algorithm's leader election): one assignment per
-procedure (handle a vote request, handle a vote reply, the election timer), each in its own file
-of a `raft/` package and each as events in -> state after each event out, with a brute-force or
-library simulation as the oracle, and a capstone that runs a small cluster from a scripted event
-list.
+A post with pseudocode, such as one on a consensus algorithm's leader election, gets one
+assignment per procedure (handle a vote request, handle a vote reply, the election timer). Each
+goes in its own file of a `raft/` package, with the contract events in -> state after each event
+out and a brute-force or library simulation as the oracle. The capstone runs a small cluster from
+a scripted event list.
 
-**A post with no code** (e.g. how rate limiters work): one kernel per mechanism (fixed window,
-sliding log, token bucket), each a file in a `limiter/` folder sharing one interface, and each as
-capacity + request times in -> allowed/denied per request out, with a direct simulation of the
-post's definition as the oracle; the capstone compares all three on the same traffic.
+A post with no code, such as one on how rate limiters work, gets one kernel per mechanism (fixed
+window, sliding log, token bucket). Each is a file in a `limiter/` folder, all sharing one
+interface, with the contract capacity + request times in -> allowed/denied per request out and a
+direct simulation of the post's definition as the oracle. The capstone compares all three on the
+same traffic.
 
 `assets/example-assignment/` has one finished assignment from a past run, for the shape of the
 files (page, starters, reference, generator, cases); its subject doesn't matter.

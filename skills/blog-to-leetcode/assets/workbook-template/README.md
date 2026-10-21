@@ -18,9 +18,9 @@ test cases.
 Ask Claude to "set up my workbook": it checks the tools, asks which language you'd like (this
 workbook's project is {{PROJECT_LABEL}}), creates the project and opens the book. Or open the book
 yourself: double-click `study.cmd` on Windows or `study.command` on macOS, or run `.\study`
-(PowerShell) or `./study.sh` from this folder. Run and Submit work there, and it offers to create
-the {{PROJECT_LABEL}} project if there isn't one yet. Leave its window open while you work, or use the
-book's **Exit** button when you're done.
+(PowerShell) or `./study.sh` from this folder. Run and Submit work in the book opened this way, and
+it offers to create the {{PROJECT_LABEL}} project if there isn't one yet. The study script runs in
+a window: leave it open while you work, and use the book's Exit button when you're done.
 
 ## Your project
 
@@ -35,18 +35,18 @@ and writes the answer, and the checker runs that program.
 
 Each test input carries what earlier assignments would produce, so an assignment's tests depend
 only on the earlier files it uses. The checker builds the whole project at once, though, and if a
-file from another assignment doesn't build, it tells you which one. **Re-check solved** in the book
-runs every solved assignment again, so you see at once when a change breaks an earlier one (the
-book marks it with a red `!`). The **Files** panel shows the project as it grows, and once every
+file from another assignment doesn't build, it tells you which one. The book's Re-check solved
+button runs every solved assignment again, so you see at once when a change breaks an earlier one
+(the book marks it with a red `!`). The Files panel shows the project as it grows, and once every
 assignment passes, the problem list shows your project next to the author's.
 
 ## Doing an assignment
 
-1. Read the problem (book or `problems/NN-*.md`). In the book, its **Start here** card lists the
-   files to write, your job in each, the earlier files you can use, and the two ways to start.
+1. Read the problem (book or `problems/NN-*.md`). In the book, its Start here card lists the files
+   to write, your job in each, the earlier files you can use, and the two ways to start.
 2. Write the files. Each one starts as the Boilerplate, which gives you the input/output code and
    the declarations, and you fill in the parts marked `TODO`. To write all of it yourself, choose
-   **From scratch** on the Start here card: each file then starts empty apart from its comment.
+   From scratch on the Start here card: each file then starts empty apart from its comment.
 3. Check it from this folder (`./check.sh` instead of `.\check` on macOS or Linux), or with Run
    and Submit in the book:
 

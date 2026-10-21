@@ -2,7 +2,7 @@
 
 <!-- One or two sentences: what the program does, in the learner's terms. -->
 
-Built step by step with the {{TITLE}}, following {{AUTHOR}}'s post
+Built step by step with the workbook "{{TITLE}}", following {{AUTHOR}}'s post
 [{{SOURCE_TITLE}}]({{SOURCE_URL}}).
 
 ## Install and run
@@ -28,4 +28,4 @@ In PowerShell, set the path with `$env:PYTHONPATH = "src"` first.
 | Where | What |
 |---|---|
 <!-- One row per subpackage of src/{{NAME}}/, in the post's terms. -->
-| `assignments/` | One small program per step, each checking that step against test cases |
+| `assignments/` | One small program per step, which the workbook's checker runs on that step's test cases |

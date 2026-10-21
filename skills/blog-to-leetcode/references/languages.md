@@ -1,9 +1,9 @@
 # Languages: choosing one, and switching
 
 You author a workbook in one language: its starters, boilerplate and reference project are in
-that language, and `assets/lang/<lang>/` has its project skeleton (C++ and Python so far). The learner
-can still build the project in any language, because the checker reads only the output. Set up
-only the language the learner picks, and create nothing for the others.
+that language, and `assets/lang/<lang>/` has its project skeleton (C++ and Python so far). The
+learner can still build the project in any language, because the checker reads only the output.
+Set up only the language the learner picks, and create nothing for the others.
 
 ## Contents
 1. Asking which language
@@ -51,32 +51,35 @@ to write that part too (for example a PNG writer, or a binary PPM, which the che
 
 ## 3. Setting up a project in another language
 
-1. **Install what's missing**, with consent (section 1).
-2. **Make the skeleton** in `solutions/` from the table: the build file, a README like the
-   workbook's own project README (what the program does, how to build and run it, how it's
-   organised, the post it follows), a `.gitignore` for its build output, and the folders.
-3. **Point the workbook at it.** The tools read `workbook.json`, so keep the authored version as
+1. Install what's missing, with consent (section 1).
+2. Make the skeleton in `solutions/` from the table: the build file, a README like the workbook's
+   own project README (what the program does, how to build and run it, how it's organised, the
+   post it follows), a `.gitignore` for its build output, and the folders.
+3. Point the workbook at it. The tools read `workbook.json`, so keep the authored version as
    `workbook.<language>.json` (for example `workbook.cpp.json`) and change the copy the tools
-   read: `project.language` and `languageLabel`; `setup`, `build` and `run` (one assignment, from
-   the table; `{id}` is the assignment number); `project.build` and `project.run` (the finished
-   program); and each assignment's `solution`, `files`, `extends` and `buildsOn` in the new
-   language's names. Leave `project.reference` and `reference` alone.
-4. **Write the blank starters** for the new paths with `py -P tools/blank_starters.py` (the
-   purposes in `project.purposes` need the new paths as keys too). Opening an assignment then
-   creates its files as usual.
-5. **Tell the learner what changes:** the Boilerplate button and the Editorial's solution stay in
-   the workbook's language (still useful to read), and `-Ref` proves the workbook's own reference.
-   The rest works the same: Run, Submit, Re-check solved, the Files panel and the finish card.
-6. **Check it:** run `.\check 01` on the blank starter ("Not started yet"), then build one
-   assignment end to end with a quick throwaway solution in a copy of the workbook, so you know
-   the commands work before the learner starts.
+   read:
+   - `project.language` and `languageLabel`;
+   - `setup`, `build` and `run` (one assignment, from the table; `{id}` is the assignment number);
+   - `project.build` and `project.run` (the finished program);
+   - each assignment's `solution`, `files`, `extends` and `buildsOn`, in the new language's names.
+
+   Leave `project.reference` and `reference` alone.
+4. Write the blank starters for the new paths with `py -P tools/blank_starters.py` (the purposes
+   in `project.purposes` need the new paths as keys too). Opening an assignment then creates its
+   files as usual.
+5. Tell the learner what changes. The Boilerplate button and the Editorial's solution stay in the
+   workbook's language (still useful to read), and `-Ref` proves the workbook's own reference. The
+   rest works the same: Run, Submit, Re-check solved, the Files panel and the finish card.
+6. Check it: run `.\check 01` on the blank starter ("Not started yet"), then build one assignment
+   end to end with a quick throwaway solution in a copy of the workbook, so you know the commands
+   work before the learner starts.
 
 ## 4. Switching later
 
 The learner asks you; the book has no language menu, so nothing switches by accident.
 
 1. Ask which language (section 1), and say what happens to the current project.
-2. **Never delete the current project.** With the learner's yes, rename `solutions/` to
+2. Never delete the current project. With the learner's yes, rename `solutions/` to
    `solutions-<language>/` (for example `solutions-cpp/`). It stays a complete repository they can
    keep, push or come back to, and the book's "Solved" marks stay in the browser.
 3. Set up the new language as in section 3. If they switch back, restore the matching
