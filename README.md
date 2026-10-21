@@ -21,14 +21,15 @@ renderer, built on Yohei Yamasaki's post
 
 - **One kind of exercise: write the program, match the output.** No quizzes and no
   find-the-bug. Even a post with no code has an idea you can implement and test.
-- **Your structure, your language.** Only the output is checked: your program runs as
+- **Your code, your language.** Only the output is checked: each checkpoint's program runs as
   `<program> <input-file> <output-file>`. Where the post has code, each checkpoint asks for what
-  that snippet accomplishes, not for the author's design. Eight languages work out of the box
-  (C, C++, Go, Rust, Python, JavaScript, TypeScript, Lua): pick one in the book's editor or pass
-  `-Lang` to the checker, and it builds and runs your file with no build setup.
-- **Blank starters.** Each starter is a comment and an empty `main`, so working out the imports
-  and parsing the input is part of the exercise. A boilerplate starter with the input and output
-  done is one click away if you want it.
+  that snippet accomplishes, not for the author's design. When you set a workbook up, Claude asks
+  which language you want (C, C++, Go, Rust, Python, JavaScript, TypeScript or Lua), shows which
+  are installed and how to install the rest, and sets up only that one.
+- **Blank starters.** Each file starts as a comment saying what belongs in it (and an empty
+  `main` in the checkpoint's program), so working out the imports, the API and the input parsing
+  is part of the exercise. A boilerplate with the input and output done, and declarations named as
+  the author names them, is one click away if you want it.
 - **You build a real project, not a pile of exercises.** You go through the checkpoints in order,
   and each one's work is saved as a properly named file in a project layout modelled on the
   author's own. Later checkpoints import your earlier files, and the last one is the project's
@@ -55,8 +56,9 @@ renderer, built on Yohei Yamasaki's post
   right there: the verdict, the failing tests, and for pictures the expected, yours and the
   difference side by side. Your code is saved to the workbook as you type, and edits from your own
   editor show up too.
-- **One-step setup.** Claude checks the tools the workbook needs, offers to install anything
-  missing, and opens the book. Coming back later is a double-click.
+- **One-step setup.** Claude checks the tools the workbook needs, asks which language you want,
+  offers to install anything missing, creates your project and opens the book. Coming back later is
+  a double-click, and the book's Exit button stops it when you're done.
 
 | Problem list | Test result |
 |---|---|
@@ -118,11 +120,11 @@ posts that broke it. To share a workbook you made, open a pull request on
 .claude-plugin/              plugin and marketplace manifests
 skills/blog-to-leetcode/
   SKILL.md                   the workflow Claude follows
-  references/                mapping a post to checkpoints, test trust, authoring guide
+  references/                mapping a post to checkpoints, test trust, authoring guide, languages
   scripts/                   reading the post, scaffolding a workbook, stripping hints
   assets/workbook-template/  checker, image comparison, book builder and template, check scripts
-  assets/lang/cpp/           CMake setup, shared-code folder, provided headers
-  assets/example-checkpoint/ a complete worked checkpoint to copy the shape of
+  assets/lang/cpp/           the learner's project skeleton (CMake, README), an optional canvas
+  assets/example-checkpoint/ a complete worked checkpoint, laid out as in a workbook
 docs/screenshots/
 ```
 

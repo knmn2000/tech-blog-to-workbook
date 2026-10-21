@@ -135,7 +135,7 @@ place in it.
   program does.
 - **Aim for recognisable.** Someone who knows the author's repository should see its shape in the
   learner's: the main modules and folders, if not every file. Other languages keep the same
-  module names in their own naming conventions.
+  module names in their own naming conventions (`references/languages.md`).
 
 ## 7. The map you show the user
 

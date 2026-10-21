@@ -1,9 +1,11 @@
 #pragma once
-// Provided, optional: an RGB framebuffer with point, rectangle, line and span drawing
-// and PNG output (needs third_party/stb/stb_image_write.h on the include path).
+// Optional: an RGB framebuffer with point, rectangle, line and span drawing, and PNG output.
+// For a workbook whose checkpoints write pictures but don't build the drawing themselves:
+// give the learner's project this file and stb_image_write.h through "copy" in workbook.json,
+// e.g. "src/Canvas.h" and "third_party/stb_image_write.h".
 //
-// One source file per program must `#define CANVAS_PNG_IMPLEMENTATION` before
-// including this header (the starters do), so the PNG writer is compiled once.
+// One .cpp file of the project must `#define CANVAS_PNG_IMPLEMENTATION` before including
+// this header, so the PNG writer is compiled once.
 
 #include <algorithm>
 #include <cmath>

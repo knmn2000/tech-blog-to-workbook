@@ -36,8 +36,11 @@ cases carry the seed in their id, so `-Fresh` produces new ones the learner hasn
 
 All of these hold before a checkpoint is done:
 
-1. **Reference Accepted** on the committed cases and on at least two fresh seeds.
-2. **Stub says "Not implemented yet"** (exit code 99), not a crash.
+1. **Reference Accepted** on the committed cases and on at least two fresh seeds. `-Ref` checks
+   the reference project as it stands after this checkpoint, so this also proves the project
+   builds at this point in the series, with no file depending on a later one.
+2. **The boilerplate says "Not implemented yet"** (exit code 99), not a crash, and the blank
+   starter says "Not started yet".
 3. **At least three planted bugs fail**, each with a message that points at the right place. Plant
    realistic mistakes: the blog's own bugs first, then off-by-one, sign, endianness, wrong rule,
    missing case. A planted bug that passes means a missing test: add a case, don't just tighten a

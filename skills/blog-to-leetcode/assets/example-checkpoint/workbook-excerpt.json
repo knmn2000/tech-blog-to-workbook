@@ -1,0 +1,78 @@
+{
+  "project": {
+    "dir": "solutions",
+    "language": "cpp",
+    "languageLabel": "C++",
+    "name": "tiny_ttf",
+    "reference": "_spoilers/project",
+    "copy": {
+      "third_party/stb_image_write.h": "third_party/stb/stb_image_write.h"
+    },
+    "build": "cmake --build build/solutions --target tiny_ttf",
+    "run": "build/solutions/tiny_ttf.exe fonts/JetBrainsMonoNerdFont-Bold.ttf \"Hello, TrueType!\" hello.png",
+    "purposes": {
+      "src/GlyphComponent.h": "The types for a glyph's outline: its points (x, y, on or off the curve) and where each contour ends.",
+      "src/Glyph.h": "The type for a glyph: what kind it is, its bounding box, and its outline.",
+      "src/font/GlyphParser.h": "Decoding a glyph's record from the glyf table into the types in Glyph.h.",
+      "src/font/GlyphParser.cpp": "Decoding a glyph's record from the glyf table into the types in Glyph.h."
+    },
+    "author": {
+      "label": "Yohei Yamasaki's tiny-truetype-renderer",
+      "url": "https://github.com/YohYamasaki/tiny-truetype-renderer",
+      "files": [
+        "CMakeLists.txt",
+        "main.cpp",
+        "FontParser.h",
+        "FontParser.cpp",
+        "FrameBufferCanvas.h",
+        "FrameBufferCanvas.cpp",
+        "Glyph.h",
+        "Glyph.cpp",
+        "GlyphComponent.h",
+        "GlyphComponent.cpp",
+        "utils/Bit.h",
+        "utils/Debug.h",
+        "utils/Geometry.h",
+        "utils/Unicode.h"
+      ]
+    }
+  },
+  "checkpoints": {
+    "07": {
+      "title": "Decode simple glyphs",
+      "solution": "solutions/checkpoints/p07_simple_glyph.cpp",
+      "files": [
+        "src/GlyphComponent.h",
+        "src/Glyph.h",
+        "src/font/GlyphParser.h",
+        "src/font/GlyphParser.cpp"
+      ],
+      "buildsOn": [
+        "src/font/ByteReader.h"
+      ],
+      "problem": "problems/07-simple-glyph.md",
+      "cases": "tests/07/cases.txt",
+      "generator": "py -P tools/gen_p07.py --seed {seed} --out {out}"
+    },
+    "10": {
+      "title": "Lerp and quadratic Bezier curves",
+      "solution": "solutions/checkpoints/p10_bezier.cpp",
+      "files": [
+        "src/utils/Geometry.h"
+      ],
+      "problem": "problems/10-bezier.md",
+      "cases": "tests/10/cases.txt",
+      "generator": "py -P tools/gen_p10.py --seed {seed} --out {out}"
+    },
+    "12": {
+      "title": "Intersect two segments",
+      "solution": "solutions/checkpoints/p12_segment_intersection.cpp",
+      "extends": [
+        "src/utils/Geometry.h"
+      ],
+      "problem": "problems/12-segment-intersection.md",
+      "cases": "tests/12/cases.txt",
+      "generator": "py -P tools/gen_p12.py --seed {seed} --out {out}"
+    }
+  }
+}

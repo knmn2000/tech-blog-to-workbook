@@ -22,9 +22,9 @@ copied snippets from the post. Everything below serves that.
    blog with no code has a testable kernel for each idea (see `references/mapping.md`).
 2. **Tests see output only.** The program runs as `<program> <input-file> <output-file>`. Any
    structure, language or library passes if the output is right. Never test internal functions;
-   that forces the author's design on the learner. `tools/langs.py` lets the checker (`-Lang`) and
-   the book build and run eight languages without build files; the boilerplate and the reference
-   stay in the workbook's own language.
+   that forces the author's design on the learner. The learner picks the project's language when
+   the workbook is set up, and only that language is set up (`references/languages.md`); the
+   starters, the boilerplate and the reference are in the workbook's own language.
 3. **Same task as the snippet.** A checkpoint built from a code snippet asks for what the snippet
    accomplishes, with its scope and simplifications. The author's structure appears only in a hint
    and in "After you pass". Where the snippet is wrong, the tests follow the spec, and the page
@@ -57,10 +57,12 @@ Work in stages and keep the user in the loop at the two decision points marked *
 
 ### 1. Set up (ask)
 
-Ask which language the learner wants (default: the blog's own language) and where the workbook
-should go (default: a new folder next to the current one, named after the post). Check the
-toolchain exists (`g++`/`cmake`, `python`, `node`, ...). Mention anything you'll need to download
-(an oracle library, a sample data file, a header) with its source and size, and get a yes before downloading.
+Ask which language the workbook should be written in (default: the blog's own language; the
+template has a project skeleton for C++, and `references/languages.md` says what a project looks
+like in the others) and where the workbook should go (default: a new folder next to the current
+one, named after the post). Check the toolchain exists (`g++`/`cmake`, `python`, `node`, ...).
+Mention anything you'll need to download (an oracle library, a sample data file, a header) with
+its source and size, and get a yes before downloading.
 
 ### 2. Read the blog
 
@@ -84,23 +86,32 @@ change the layout: every starter, reference and page depends on it.
 
 ### 4. Scaffold the workbook
 
-Run `scripts/new_workbook.py --dest <folder> --title ... --source-url ... --source-title ...
---author ... --lang <cpp|python|...>`. It copies `assets/workbook-template/` (checker, image
-comparison, case-file library, book builder, check scripts, README, authoring guide) and writes
-`workbook.json` with the book's metadata. Then register every checkpoint from the map in
-`workbook.json` (title, solution, problem, cases, generator) before anyone writes checkpoint files,
-so parallel authors never edit shared files.
+Run `scripts/new_workbook.py --dest <folder> --title ... --name <program> --source-url ...
+--source-title ... --author ... --lang cpp`. It copies `assets/workbook-template/` (checker,
+project tool, image comparison, case-file library, book builder, study server, check scripts,
+README, authoring guide) and the language's project skeleton into `starters/project/`, makes an
+empty reference project in `_spoilers/project/`, and writes `workbook.json`. Then, before anyone
+writes checkpoint files (so parallel authors never edit shared files), put the approved layout in
+`workbook.json`: every checkpoint from the map (title, entry program, the project files it
+creates and adds to, the earlier files it builds on, problem, cases, generator), each project
+file's one-line purpose, and the author's own file names for the finish card. Fill in the
+project skeleton's README (what the program does, how it's organised).
 
 ### 5. Author the checkpoints
 
 Follow `references/authoring-guide.md` (also copied into the workbook as
-`docs/authoring-guide.md`); `assets/example-checkpoint/` is a complete worked checkpoint to copy
-the shape of. Build **one checkpoint completely first**, the most representative one, and show it
-to the user; the template is cheapest to fix then. Then do the rest.
+`docs/authoring-guide.md`); `assets/example-checkpoint/` is a complete worked checkpoint, laid out
+as in a workbook, to copy the shape of. Build **one checkpoint completely first**, the most
+representative one, and show it to the user; the template is cheapest to fix then. Then do the
+rest, in order: each checkpoint's reference files go in the reference project, where later ones
+include them, and a file that later checkpoints add to gets a `// ---- Checkpoint NN ----` marker
+before each addition. Write the boilerplate from the reference (TODO bodies); the blank starters
+come from `py -P tools/blank_starters.py`.
 
 Picture checkpoints: `tools/imageio.py` reads and compares images, `tools/inkcheck.py` validates a
-reference picture against ideal geometry, and for C++ `include/provided/Canvas.h` is a small
-framebuffer with PNG output (needs stb_image_write; ask before downloading it).
+reference picture against ideal geometry, and when drawing isn't one of the post's steps,
+`assets/lang/cpp/optional/Canvas.h` gives the project a small framebuffer with PNG output (needs
+stb_image_write; ask before downloading it).
 
 For more than a handful of checkpoints, split them into independent groups and give each group to
 a subagent, in parallel. Each brief must contain: the authoring guide's path, the finished model
@@ -112,7 +123,9 @@ and check with `-Run`. Keep shared infrastructure (checker, comparison, librarie
 ### 6. Check the checks
 
 Before any checkpoint counts as done, everything in `references/test-trust.md` must hold:
-the reference is Accepted; the boilerplate stub says "Not implemented yet"; at least three planted bugs
+the reference is Accepted (`-Ref` builds the reference project as it stands after the checkpoint,
+which also proves the project builds at that point in the series); the boilerplate says "Not
+implemented yet" and the blank starter "Not started yet"; at least three planted bugs
 (including the blog's own) fail with useful messages; for picture or numeric checkpoints, at least
 one *different but correct* variant passes; fresh seeds pass; and an independent solver, a separate
 subagent given only the hint-stripped page (`scripts/strip_hints.py`), passes the full suite.
@@ -126,22 +139,26 @@ reference.
 
 ### 7. Publish
 
-First run `py -P tools/blank_starters.py`: it moves each boilerplate into `starters/boilerplate/`,
-writes the blank starters into `starters/blank/` and installs them in `solutions/`. Check that
-`.\check NN` on a blank starter says "Not started yet".
+First run `py -P tools/blank_starters.py --force` so every blank starter matches the final
+titles, files and purposes. Then, in a copy of the workbook, run `py -P tools/project.py setup` and
+check that `.\check 01` creates checkpoint 01's files and then says "Not started yet". The
+workbook itself ships without `solutions/`: the learner's project is made when they choose a
+language.
 
 Then run `py -P tools/build_book.py` to build `book/problem-book.html` from the problem pages. It
 exits with warnings if any reference is unchecked or has changed since it passed; fix those (rerun
 `check NN -Ref`) before going on, because the Editorial would otherwise show a solution nobody has
 proven. Look at the book once in the browser pane (desktop and phone width), and publish it with the
 Artifact tool as a private page. The book looks and works like a coding-practice site: a problem
-list with progress and topic filters, then per checkpoint a split view with the statement, hints
-that open in order, an Editorial tab (a solution proven to pass, then the comparison with the
-author's code; it opens by itself on Accepted and is one click away before that), an editor that opens on the blank starter with a
-Blank / Boilerplate switch (drafts stay in the browser), and the examples as test cases. Submit
-copies the code and shows the command to run; pasting the checker's output back shows the verdict
-and records Accepted. The template is generic: everything comes from the problem pages' sections,
-`starters/` and `workbook.json`, so keep the section headings exact. Update the README.
+list with progress and topic filters, then per checkpoint a split view with the statement (and
+an "In your project" box: the files it creates, adds to and builds on), hints that open in order,
+an Editorial tab (the reference's files as they stand after the checkpoint, proven to pass, then
+the comparison with the author's code; it opens by itself on Accepted and is one click away before
+that), an editor with the checkpoint's files as tabs and a Blank / Boilerplate switch (drafts stay
+in the browser), and the examples as test cases. Submit copies the open file and shows the command
+to run; pasting the checker's output back shows the verdict and records Accepted. The template is
+generic: everything comes from the problem pages' sections, `starters/` and `workbook.json`, so
+keep the section headings exact. Fill in the README's checkpoint list and project layout.
 
 The published page can't run code (it uses copy mode: Submit copies the code and shows the
 command). The learner's real workspace is the **study server**, so finish by opening the workbook
@@ -162,7 +179,13 @@ run more than one thing, so you do the setup.
 3. **Install what's missing, with consent.** Say what you'd install, from where and roughly how
    big (e.g. `winget install BrechtSanders.WinLibs.POSIX.UCRT`, `winget install Kitware.CMake`,
    `brew install cmake ninja`), and get a yes first. Then run the check again.
-4. **Open the book.** In the Claude desktop app, start the workbook's `study` entry from
+4. **Set up their project**, if `solutions/` doesn't exist yet. Ask which language they want, as
+   options showing which are installed (`py -P tools/langs.py`), with the workbook's own language
+   first (it has the boilerplate and the Editorial's solutions). For that language run
+   `py -P tools/project.py setup`; for another, follow `references/languages.md`. Only the chosen
+   language is set up. Later, if they want to switch, they ask you: keep the old project in a
+   folder of its own (`solutions-cpp/`) and set up the new one (same reference, section 4).
+5. **Open the book.** In the Claude desktop app, start the workbook's `study` entry from
    `.claude/launch.json` with the browser pane's preview tool, so the book sits next to the chat.
    Elsewhere, run the study server in the background and give the learner its address
    (`http://127.0.0.1:8787/`). Tell them they can come back by double-clicking `study.cmd`
@@ -194,6 +217,11 @@ These came from building the first workbook; they apply broadly.
 - Plan the project layout with the map, not afterwards. Checkpoints written as separate one-file
   programs leave the learner with a pile of exercises instead of a project, and retrofitting a
   layout means rewriting every starter, reference and page.
+- Prove the reference as it stands after each checkpoint, not only the finished one. In the first
+  workbook, the finished outline renderer included the geometry file from a later checkpoint, so
+  the series couldn't build at that step, and the finished geometry file would have shown the
+  answers to three later checkpoints in an earlier Editorial. Section markers and per-checkpoint
+  snapshots catch both.
 
 - Tolerances need two kinds of evidence: planted bugs that must fail **and** correct alternatives
   that must pass. Tuning against only one makes the checker either useless or unfair.
