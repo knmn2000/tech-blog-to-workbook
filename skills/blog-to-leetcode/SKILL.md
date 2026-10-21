@@ -22,7 +22,9 @@ copied snippets from the post. Everything below serves that.
    blog with no code has a testable kernel for each idea (see `references/mapping.md`).
 2. **Tests see output only.** The program runs as `<program> <input-file> <output-file>`. Any
    structure, language or library passes if the output is right. Never test internal functions;
-   that forces the author's design on the learner.
+   that forces the author's design on the learner. `tools/langs.py` lets the checker (`-Lang`) and
+   the book build and run eight languages without build files; the boilerplate and the reference
+   stay in the workbook's own language.
 3. **Same task as the snippet.** A checkpoint built from a code snippet asks for what the snippet
    accomplishes, with its scope and simplifications. The author's structure appears only in a hint
    and in "After you pass". Where the snippet is wrong, the tests follow the spec, and the page

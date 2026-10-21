@@ -23,7 +23,9 @@ renderer, built on Yohei Yamasaki's post
   find-the-bug. Even a post with no code has an idea you can implement and test.
 - **Your structure, your language.** Only the output is checked: your program runs as
   `<program> <input-file> <output-file>`. Where the post has code, each checkpoint asks for what
-  that snippet accomplishes, not for the author's design.
+  that snippet accomplishes, not for the author's design. Eight languages work out of the box
+  (C, C++, Go, Rust, Python, JavaScript, TypeScript, Lua): pick one in the book's editor or pass
+  `-Lang` to the checker, and it builds and runs your file with no build setup.
 - **Blank starters.** Each starter is a comment and an empty `main`, so working out the imports
   and parsing the input is part of the exercise. A boilerplate starter with the input and output
   done is one click away if you want it.
@@ -74,7 +76,8 @@ Turn https://example.com/some-post into a workbook I can learn from, in C++.
 
 **Needs:** Claude Code, ideally the desktop app (its browser pane reads posts best; WebFetch is
 the fallback), Python 3, and a compiler or runtime for your language. C++ (g++, CMake and Ninja)
-has the most complete templates; Python and JavaScript starters work too. Some workbooks need a
+has the most complete templates; learners can still solve any workbook in any of the eight
+built-in languages, and the checker tells them how to install a missing one. Some workbooks need a
 library to compute expected answers (the TrueType one uses fontTools); Claude asks before
 downloading anything.
 

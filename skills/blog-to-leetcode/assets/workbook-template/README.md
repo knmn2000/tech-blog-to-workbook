@@ -64,8 +64,22 @@ you why it's right. Disputes are kept in `disputes.json`.
 
 ## Using another language or library
 
-The checker runs `<run> <input-file> <output-file>` from this folder and compares the output file.
-Change `build` and `run` in `workbook.json`; `{id}` becomes the checkpoint number. To check a
+The checker runs your program as `<program> <input-file> <output-file>` and compares the output
+file, so any language works. Eight are built in: C, C++, Go, Rust, Python, JavaScript, TypeScript
+and Lua. Pick one in the book's editor, or add `-Lang` on the command line:
+
+```
+.\check 01 -Lang python      checks solutions/p01_<name>.py
+.\check 01 -Lang go          checks solutions/p01_<name>.go
+```
+
+The file sits next to the one in the workbook's own language, with its own extension, and the first run creates a blank
+starter for it. If the language's tools aren't installed, the checker says how to install them.
+Shared code works the same way in every language: it goes in `solutions/common/`, and each blank
+starter says how its language picks it up. The boilerplate starters and the reference solutions
+are only in the workbook's own language.
+
+For any other language or setup, change `build` and `run` in `workbook.json`; `{id}` becomes the checkpoint number. To check a
 one-off program without changing the config: `.\check 01 -Run "path/to/program {input} {output}"`.
 
 ## What's in here
