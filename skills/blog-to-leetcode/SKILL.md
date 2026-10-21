@@ -169,7 +169,9 @@ so keep the section headings exact. Fill in the README's assignment list and pro
 every push): give `workbook.json` a `site` block with what the site shows and the tools don't need
 (`language`, `requires`, `launch` per system, and optionally `caveat` and `promptNote`;
 `new_workbook.py` writes a first version). The site serves the workbook's own book in hosted mode
-(`window.WORKBOOK_HOST`): read-only editor, Run and Submit open the setup dialog. Commit the
+(`window.WORKBOOK_HOST`): the editor is read-only, and typing in it, Run and Submit all open the
+"Run this workbook on your computer" dialog, so a learner who tries to start coding there learns
+where to do it. Commit the
 workbook into `workbooks/<slug>/`, push, and check its page and book on the site once the
 workflow has run.
 
