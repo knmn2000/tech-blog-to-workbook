@@ -33,6 +33,7 @@ EXE = ".exe" if sys.platform == "win32" else ""
 PROJECTS = {
     "python": {
         "label": "Python", "aliases": ["py", "python3"],
+        "requires": ["Python 3.11 or newer"],
         "setup": None,  # nothing to configure
         "build": "python -P tools/run_py.py --compile solutions",  # a syntax check of every file
         "run": "python -P tools/run_py.py solutions {id} {input} {output}",
@@ -44,6 +45,7 @@ PROJECTS = {
     },
     "cpp": {
         "label": "C++", "aliases": ["c++", "cxx"],
+        "requires": ["g++ (GCC or MinGW)", "CMake and Ninja", "Python 3.11 or newer"],
         "setup": {"command": "cmake -S solutions -B build/solutions -G Ninja -DCMAKE_CXX_COMPILER=g++",
                   "creates": "build/solutions/build.ninja"},
         "build": "cmake --build build/solutions --target assignment_{id}",
@@ -135,6 +137,13 @@ def main():
             "shell": "PowerShell" if os.name == "nt" else "a terminal",
         },
         "checkpoints": {},
+        # What a collection's site shows about the workbook (the tools don't read it). Edit it to
+        # match the README's "Needs" line once the workbook is built.
+        "site": {
+            "language": spec["label"],
+            "requires": spec.get("requires", []),
+            "launch": {"windows": "study.cmd", "mac": "study.command", "other": "./study.sh"},
+        },
     }
     if not config["setup"]:
         del config["setup"]

@@ -146,7 +146,7 @@ First run `py -P tools/blank_starters.py --force`: it writes every blank starter
 header of every boilerplate file (assignment, why the file exists, your job, how to start), so they
 match the final titles, files, purposes and jobs. Then, in a copy of the workbook, run
 `py -P tools/project.py setup` and check that `.\check 01` creates assignment 01's files and then
-says "Not started yet". The workbook itself ships without `solutions/`: `tools/project.py` creates
+says "Not implemented yet" (the Boilerplate leaves the work as TODOs). The workbook itself ships without `solutions/`: `tools/project.py` creates
 the learner's project when they choose a language.
 
 Then run `py -P tools/build_book.py` to build `book/problem-book.html` from the problem pages. It
@@ -159,11 +159,19 @@ a "Start here" card: the files to write, the job in each, the earlier files it c
 two ways to start), hints that open in order,
 an Editorial tab (the reference's files as they stand after the assignment, proven to pass, then
 the comparison with the author's code; it opens by itself on Accepted and is one click away before
-that), an editor with the assignment's files as tabs and a Blank / Boilerplate switch (drafts stay
-in the browser), and the examples as test cases. Submit copies the open file and shows the command
+that), an editor with the assignment's files as tabs and a Boilerplate / From scratch switch (drafts stay
+in the browser), a Files panel with the planned project, and the examples as test cases. Submit copies the open file and shows the command
 to run; pasting the checker's output back shows the verdict and records Accepted. The template is
 generic: it builds every page from the problem pages' sections, `starters/` and `workbook.json`,
 so keep the section headings exact. Fill in the README's assignment list and project layout.
+
+**A collection with a site** (like `techblog-workbooks`, whose `site/` publishes to GitHub Pages on
+every push): give `workbook.json` a `site` block with what the site shows and the tools don't need
+(`language`, `requires`, `launch` per system, and optionally `caveat` and `promptNote`;
+`new_workbook.py` writes a first version). The site serves the workbook's own book in hosted mode
+(`window.WORKBOOK_HOST`): read-only editor, Run and Submit open the setup dialog. Commit the
+workbook into `workbooks/<slug>/`, push, and check its page and book on the site once the
+workflow has run.
 
 The published page can't run code (it uses copy mode: Submit copies the code and shows the
 command). The learner's real workspace is the **study server**, so finish by opening the workbook
