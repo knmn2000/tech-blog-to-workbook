@@ -13,6 +13,7 @@ output. Starting an assignment copies its starters: the boilerplate by default
 """
 
 import json
+import os
 import re
 import shutil
 import sys
@@ -20,6 +21,23 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 STARTERS = ROOT / "starters"
+
+# This computer's names for the commands the tools tell you to type, and what a built program's
+# file name ends in. workbook.json writes program names as e.g. build/solutions/assignment_{id}{exe}.
+WINDOWS = os.name == "nt"
+EXE = ".exe" if WINDOWS else ""
+CHECK = ".\\check" if WINDOWS else "./check.sh"
+STUDY = ".\\study" if WINDOWS else "./study.sh"
+PY = "py" if WINDOWS else "python3"
+OLD_EXE = re.compile(r'^("?[^\s"]+?)\.exe(?="?(?:\s|$))', re.I)  # a command's program, named with .exe
+
+
+def native(command: str) -> str:
+    """A command from workbook.json as this computer runs it: {exe} becomes .exe on Windows and
+    nothing on macOS or Linux, so one workbook.json serves all three. Workbooks made before {exe}
+    wrote .exe after the program's name itself; on macOS and Linux that is left out too."""
+    command = command.replace("{exe}", EXE)
+    return command if WINDOWS else OLD_EXE.sub(r"\1", command)
 
 
 class NoProject(Exception):
@@ -297,7 +315,7 @@ def main(argv: list) -> int:
             return 2
         folder = config["project"]["dir"]
         print(f"Your project is in {folder}/." + (f" Created: {', '.join(created)}." if created else " (Nothing new to create.)"))
-        print("Each assignment's files appear when you start it, in the book or with .\\check NN.")
+        print(f"Each assignment's files appear when you start it, in the book or with {CHECK} NN.")
         return 0
     if command == "start" and len(argv) > 1:
         cid = f"{int(argv[1]):02d}"
@@ -307,13 +325,13 @@ def main(argv: list) -> int:
         try:
             created = start(config, cid)
         except NoProject:
-            print("Set up the project first:  py -P tools/project.py setup")
+            print(f"Set up the project first:  {PY} -P tools/project.py setup")
             return 2
         print("Created: " + ", ".join(created) if created else f"Assignment {cid}'s files are already there.")
         return 0
     if command == "status":
         if not exists(config):
-            print("No project yet. Set it up with:  py -P tools/project.py setup")
+            print(f"No project yet. Set it up with:  {PY} -P tools/project.py setup")
             return 0
         for path, cid, state in status(config):
             if state != "missing":

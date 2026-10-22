@@ -34,14 +34,19 @@ project.
 
 | Language | Build file | Project code (example) | The finished program | Assignment programs | Build and run one assignment |
 |---|---|---|---|---|---|
-| C++ | `CMakeLists.txt` | `src/font/Cmap.h`, `src/font/Cmap.cpp` | `src/main.cpp` | `assignments/assignment_03_cmap.cpp` | `cmake --build build/solutions --target assignment_03`, then `build/solutions/assignment_03` |
+| C++ | `CMakeLists.txt` | `src/font/Cmap.h`, `src/font/Cmap.cpp` | `src/main.cpp` | `assignments/assignment_03_cmap.cpp` | `cmake --build build/solutions --target assignment_03`, then `build/solutions/assignment_03{exe}` |
 | C | `CMakeLists.txt` | `src/font/cmap.h`, `src/font/cmap.c` | `src/main.c` | `assignments/assignment_03_cmap.c` | as C++ |
 | Python | `pyproject.toml` | `src/<package>/font/cmap.py` (each package folder has an `__init__.py`) | `src/<package>/__main__.py` (`python -m <package>`) | `assignments/assignment_03_cmap.py` (imports `from <package>.font import cmap`) | `python -P tools/run_py.py solutions 03 <input> <output>`: it puts `src/` on the import path and turns `NotImplementedError` into "Not implemented yet"; `run_py.py --compile solutions` is the build, a syntax check |
 | JavaScript | `package.json` (`"type": "module"`) | `src/font/cmap.js` | `src/main.js` | `assignments/assignment_03_cmap.js` (imports `../src/...`) | `node solutions/assignments/assignment_03_cmap.js` |
 | TypeScript | `package.json` | `src/font/cmap.ts` | `src/main.ts` | `assignments/assignment_03_cmap.ts` | `node --experimental-strip-types ...` (Node 22.6+) |
-| Go | `go.mod` | `font/cmap.go` (package `font`) | `cmd/<name>/main.go` | `assignments/assignment_03/main.go` | `go build -o build/solutions/assignment_03 ./assignments/assignment_03` |
-| Rust | `Cargo.toml` | `src/font/cmap.rs` (with `mod` lines in `src/lib.rs` and `src/font/mod.rs`) | `src/main.rs` | `src/bin/assignment_03_cmap.rs` | `cargo build --bin assignment_03_cmap`, then `target/debug/assignment_03_cmap` |
+| Go | `go.mod` | `font/cmap.go` (package `font`) | `cmd/<name>/main.go` | `assignments/assignment_03/main.go` | `go build -o build/solutions/assignment_03{exe} ./assignments/assignment_03`, then `build/solutions/assignment_03{exe}` |
+| Rust | `Cargo.toml` | `src/font/cmap.rs` (with `mod` lines in `src/lib.rs` and `src/font/mod.rs`) | `src/main.rs` | `src/bin/assignment_03_cmap.rs` | `cargo build --bin assignment_03_cmap`, then `target/debug/assignment_03_cmap{exe}` |
 | Lua | none | `<package>/font/cmap.lua` | `main.lua` | `assignments/assignment_03_cmap.lua` | `lua` with `LUA_PATH` including `solutions/?.lua` |
+
+A compiled program's name ends in `{exe}` in `workbook.json`: the tools turn it into `.exe` on
+Windows and leave it out on macOS and Linux, so one `workbook.json` works on all three. Write it
+in every command that names a program the build makes (`run`, `project.run`, and a build command
+such as Go's that names its output), never `.exe` itself.
 
 Module names keep the post's terms. File names follow each language's habit: C++ keeps the
 author's (`FontParser.cpp`), Python, Rust, Lua, C and Go use snake_case (`font_parser.py`), and
@@ -59,7 +64,8 @@ to write that part too (for example a PNG writer, or a binary PPM, which the che
    `workbook.<language>.json` (for example `workbook.cpp.json`) and change the copy the tools
    read:
    - `project.language` and `languageLabel`;
-   - `setup`, `build` and `run` (one assignment, from the table; `{id}` is the assignment number);
+   - `setup`, `build` and `run` (one assignment, from the table; `{id}` is the assignment number,
+     and `{exe}` ends a compiled program's name);
    - `project.build` and `project.run` (the finished program);
    - each assignment's `solution`, `files`, `extends` and `buildsOn`, in the new language's names.
 
@@ -70,9 +76,9 @@ to write that part too (for example a PNG writer, or a binary PPM, which the che
 5. Tell the learner what changes. The Boilerplate button and the Editorial's solution stay in the
    workbook's language (still useful to read), and `-Ref` proves the workbook's own reference. The
    rest works the same: Run, Submit, Re-check solved, the Files panel and the finish card.
-6. Check it: run `.\check 01` on the blank starter ("Not started yet"), then build one assignment
-   end to end with a quick throwaway solution in a copy of the workbook, so you know the commands
-   work before the learner starts.
+6. Check it: run `.\check 01` (`./check.sh 01` on macOS or Linux) on the blank starter ("Not
+   started yet"), then build one assignment end to end with a quick throwaway solution in a copy
+   of the workbook, so you know the commands work before the learner starts.
 
 ## 4. Switching later
 
