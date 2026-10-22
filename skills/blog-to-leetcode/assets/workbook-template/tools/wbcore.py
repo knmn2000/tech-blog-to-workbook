@@ -25,7 +25,7 @@ def parse_args(checkpoint: str, extra=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--out", type=Path, default=Path("tests") / checkpoint)
-    exe = ".exe" if sys.platform == "win32" else ""
+    exe = ".exe" if os.name == "nt" else ""
     ap.add_argument("--ref", type=Path, default=Path("build") / "ref" / f"assignment_{checkpoint}{exe}",
                     help="reference program, for checkpoints whose expected output is a picture")
     if extra:
@@ -33,6 +33,10 @@ def parse_args(checkpoint: str, extra=None):
     args = ap.parse_args()
     args.out = args.out if args.out.is_absolute() else ROOT / args.out
     args.ref = args.ref if args.ref.is_absolute() else ROOT / args.ref
+    # --ref may name the program with or without .exe; use whichever this computer built.
+    for other in (args.ref.with_name(args.ref.name + ".exe"), args.ref.with_suffix("")):
+        if not args.ref.exists() and other.exists():
+            args.ref = other
     return args
 
 

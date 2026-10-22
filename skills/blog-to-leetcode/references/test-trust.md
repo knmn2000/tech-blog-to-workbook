@@ -54,7 +54,7 @@ An assignment counts as done only when all of these hold:
    data (every entry in a file, every row of a dataset), beyond the sample in the tests.
 
 Build planted bugs and variants as text substitutions on copies of the reference, compiled into
-your own build folder, and run them with `.\check NN -Run "<exe> {input} {output}"`.
+your own build folder, and run them with `.\check NN -Run "<program> {input} {output}"`.
 
 ## 3. Tolerances: pictures and numbers
 

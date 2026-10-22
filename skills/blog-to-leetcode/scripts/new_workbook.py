@@ -25,11 +25,14 @@ from pathlib import Path
 SKILL = Path(__file__).resolve().parent.parent
 TEMPLATE = SKILL / "assets" / "workbook-template"
 LANGS = SKILL / "assets" / "lang"
-EXE = ".exe" if sys.platform == "win32" else ""
+# Launchers a learner runs on macOS or Linux: they need the executable bit.
+EXECUTABLES = ("check.sh", "study.sh", "study.command")
 
 # How each language's project is built and run. C++ and Python have templates so far; for
 # another language, follow references/languages.md and add its skeleton under assets/lang/<lang>.
-# "python" in a command runs the Python that runs the checker (tools/check.py, to_args).
+# "python" in a command runs the Python that runs the checker (tools/check.py, to_args). {exe}
+# ends a program's name: the tools make it .exe on Windows and nothing on macOS and Linux
+# (tools/project.py, native), so one workbook.json works on all three.
 PROJECTS = {
     "python": {
         "label": "Python", "aliases": ["py", "python3"],
@@ -49,14 +52,14 @@ PROJECTS = {
         "setup": {"command": "cmake -S solutions -B build/solutions -G Ninja -DCMAKE_CXX_COMPILER=g++",
                   "creates": "build/solutions/build.ninja"},
         "build": "cmake --build build/solutions --target assignment_{id}",
-        "run": "build/solutions/assignment_{id}" + EXE + " {input} {output}",
+        "run": "build/solutions/assignment_{id}{exe} {input} {output}",
         "reference": {
             "snapshot": "build/ref-src",
             "setup": {"command": "cmake -S build/ref-src -B build/ref -G Ninja -DCMAKE_CXX_COMPILER=g++",
                       "creates": "build/ref/build.ninja"},
             "build": "cmake --build build/ref --target assignment_{id}",
-            "run": "build/ref/assignment_{id}" + EXE + " {input} {output}"},
-        "finish": {"build": "cmake --build build/solutions --target {name}", "run": "build/solutions/{name}" + EXE},
+            "run": "build/ref/assignment_{id}{exe} {input} {output}"},
+        "finish": {"build": "cmake --build build/solutions --target {name}", "run": "build/solutions/{name}{exe}"},
     },
 }
 
@@ -90,6 +93,10 @@ def main():
     name = args.name or re.sub(r"[^a-z0-9]+", "_", args.title.lower().removesuffix(" workbook")).strip("_") or "project"
 
     shutil.copytree(TEMPLATE, dest, dirs_exist_ok=True)
+    for script in EXECUTABLES:  # in case the skill's copy lost the bit (e.g. unpacked from a zip)
+        path = dest / script
+        if path.exists():
+            path.chmod(path.stat().st_mode | 0o111)
     shutil.copytree(LANGS / args.lang / "starters", dest / "starters", dirs_exist_ok=True)
     for folder in ("problems", "starters/blank", "starters/boilerplate", "tests", "_spoilers/project/src",
                    "_spoilers/project/assignments", "_source", "book", "third_party"):
@@ -132,9 +139,10 @@ def main():
                                   "project of your own. The checker feeds your program test inputs and compares what it "
                                   "writes with answers from independent sources."),
             "credits": args.credits,
-            # What the book tells the learner to run, and where.
-            "checkCommand": r".\check {id}" if os.name == "nt" else "./check.sh {id}",
-            "shell": "PowerShell" if os.name == "nt" else "a terminal",
+            # What the book tells the learner to run, and where. The book shows ./check.sh and
+            # "a terminal" instead on macOS and Linux.
+            "checkCommand": r".\check {id}",
+            "shell": "PowerShell",
         },
         "checkpoints": {},
         # What a collection's site shows about the workbook (the tools don't read it). Edit it to

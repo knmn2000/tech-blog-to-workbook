@@ -320,7 +320,7 @@ A failing test looks like this:
           points[26]: expected (x=199, y=626, curve=on), got (x=199, y=626, curve=off) - differs in curve
           likely cause: R7 - REPEAT expanded; on/off for every point, repeats included
           expected values from: fontTools 4.67.0
-          reproduce: build/solutions/assignment_07.exe build/cases/07/07-R4-B.in build/cases/07/07-R4-B.out
+          reproduce: build/solutions/assignment_07 build/cases/07/07-R4-B.in build/cases/07/07-R4-B.out
 ```
 
 ## After you pass: compare with the author's code

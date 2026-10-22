@@ -27,9 +27,9 @@ a window: leave it open while you work, and use the book's Exit button when you'
 <!-- The project's layout: its folders and which assignment adds each file, filled in when the
 workbook is built. -->
 
-Do the assignments in order. Opening an assignment (in the book, or with `.\check NN`) creates
-its files, each with a comment saying why the file exists and what your job in it is. It doesn't
-overwrite anything you've written. You write an assignment's real work in `src/`, where later
+Do the assignments in order. Opening an assignment (in the book, or with `.\check NN` or
+`./check.sh NN`) creates its files, each with a comment saying why the file exists and what your
+job in it is. It doesn't overwrite anything you've written. You write an assignment's real work in `src/`, where later
 assignments use it. The assignment's program in `assignments/` reads a test input, calls your code
 and writes the answer, and the checker runs that program.
 
@@ -77,9 +77,10 @@ The checker reads only your program's output, so you can write the project in an
 workbook's project, its starters and its reference are {{PROJECT_LABEL}}.
 
 To work in another language, ask Claude. It shows which languages you have installed
-(`py -P tools/langs.py` lists them) and how to install the others, keeps your current project in a
-folder of its own, and sets up a project in the new language, with its own build file and the same
-layout in that language's style. It creates nothing for languages you don't choose.
+(`py -P tools/langs.py` lists them; `python3` in place of `py` on macOS or Linux) and how to
+install the others, keeps your current project in a folder of its own, and sets up a project in
+the new language, with its own build file and the same layout in that language's style. It
+creates nothing for languages you don't choose.
 
 To check a one-off program without changing anything, run
 `.\check 01 -Run "path/to/program {input} {output}"`.
@@ -102,3 +103,7 @@ To check a one-off program without changing anything, run
 | `tools/build_book.py` | Builds `book/problem-book.html` (the page design is `tools/book_template.html`) |
 | `docs/authoring-guide.md` | How to write the assignments and their tests |
 | `_spoilers/` | The reference project. Don't open it until you've passed. |
+
+The tools work on Windows, macOS and Linux. Program names in `workbook.json` end in `{exe}`,
+which the tools turn into `.exe` on Windows and leave out on macOS and Linux, so the same file
+works on all three.

@@ -92,7 +92,8 @@ Run `scripts/new_workbook.py --dest <folder> --title ... --name <program> --sour
 `assets/workbook-template/` (checker, project tool, image comparison, case-file library, book
 builder, study server, check scripts, README, authoring guide) and the language's project skeleton
 into `starters/project/`, makes an empty reference project in `_spoilers/project/`, and writes
-`workbook.json`.
+`workbook.json`. Its commands end program names in `{exe}`, which the tools turn into `.exe` on
+Windows only, so the workbook runs on Windows, macOS and Linux; keep that form when you edit them.
 
 Then, before anyone writes assignment files (so parallel authors never edit shared files), put the
 approved layout in `workbook.json`:
@@ -193,8 +194,8 @@ page and book on the site once the workflow has run.
 The published page can't run code (it uses copy mode: Submit copies the code and shows the
 command). The learner's real workspace is the study server, so finish by opening the workbook for
 them as in the next section. Report what you built, the verification results per assignment,
-any judgement calls, the link, and how to come back later (double-click `study.cmd`, or ask you to
-"open my workbook").
+any judgement calls, the link, and how to come back later (double-click `study.cmd`, or
+`study.command` on macOS, or ask you to "open my workbook").
 
 ## When the learner wants to open, set up or continue a workbook
 
@@ -245,7 +246,8 @@ build anything.
 1. Update the tools. Copy `assets/workbook-template/tools/` over the workbook's `tools/`, keeping
    its own generators and data files, and update `docs/authoring-guide.md` and `.gitignore` (the
    learner's `solutions/` is never committed). If `solutions/` is tracked, untrack it with
-   `git rm --cached`: the files stay on disk.
+   `git rm --cached`: the files stay on disk. Where `workbook.json` names a program with `.exe`,
+   write `{exe}` instead, so it runs on macOS and Linux as well as Windows.
 2. Plan the layout (ask). Map each checkpoint to the project files it creates or adds to, as in
    workflow step 3. Code that the old reference repeats across checkpoints becomes one module that
    later assignments import.
