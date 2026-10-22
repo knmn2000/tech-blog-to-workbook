@@ -1,6 +1,7 @@
 """Opens the workbook in your browser, where Run and Submit really run your code.
 
-    .\\study                          (or double-click study.cmd; ./study.sh on macOS or Linux)
+    .\\study                          (or double-click study.cmd; on macOS double-click study.command;
+                                     ./study.sh on macOS or Linux)
     py -P tools/serve.py [--port 8787] [--no-browser]
 
 Starts a small web server that only this computer can reach (127.0.0.1), does the first-time
@@ -83,7 +84,7 @@ class Workbook:
 
 def missing_tools(config: dict) -> list:
     """Programs the build commands need that aren't on PATH."""
-    commands = [config.get("setup", {}).get("command", ""), config.get("build", "")]
+    commands = [project.native(c) for c in (config.get("setup", {}).get("command", ""), config.get("build", ""))]
     needed = []
     for command in filter(None, commands):
         words = to_args(command)
@@ -105,7 +106,8 @@ def first_time_setup(wb: Workbook):
     if not setup or not project.exists(wb.config) or (ROOT / setup["creates"]).exists():
         return None
     print("First run: preparing the build. This takes a few seconds...")
-    proc = subprocess.run(to_args(setup["command"]), cwd=ROOT, capture_output=True, text=True)
+    command = project.native(setup["command"].replace("{root}", ROOT.as_posix()))
+    proc = subprocess.run(to_args(command), cwd=ROOT, capture_output=True, text=True)
     if proc.returncode != 0:
         print((proc.stdout + proc.stderr).strip())
         return "The first-time build setup failed; the window that started the book shows why."
@@ -328,7 +330,7 @@ def main() -> int:
                     webbrowser.open(url)
                 return 0
     if server is None:
-        print(f"No free port between {args.port} and {args.port + 11}. Try:  .\\study --port 9000")
+        print(f"No free port between {args.port} and {args.port + 11}. Try:  {project.STUDY} --port 9000")
         return 1
     port = server.server_address[1]
     server.wb = wb

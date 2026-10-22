@@ -1,6 +1,6 @@
 {
   "name": "tech-blog-to-workbook",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "description": "Turns a technical blog post into a LeetCode-style workbook: implementation checkpoints checked by output against independently computed answers, with problem pages, tiered hints, blank and boilerplate starters, reference solutions, disputes and a web problem book.",
   "author": {
     "name": "knmn2000"

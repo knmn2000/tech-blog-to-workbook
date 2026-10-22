@@ -50,6 +50,12 @@ Register every assignment in `workbook.json`, with its place in the project, bef
 Add `"generatorNeedsReference": true` only when the generator runs the reference program, e.g. to
 draw expected pictures. `assets/example-assignment/` shows a registered assignment.
 
+Commands in `workbook.json` that name a compiled program end its name in `{exe}`, as
+`new_workbook.py` writes them (`build/solutions/assignment_{id}{exe} {input} {output}`). The tools
+turn it into `.exe` on Windows and leave it out on macOS and Linux, so never write `.exe` there
+yourself. A generator finds the reference program without it: `wbcore.parse_args` defaults
+`--ref` to `build/ref/assignment_NN`, with `.exe` on Windows.
+
 Each project file gets a purpose in `project.purposes` (why it exists: its role, and which later
 assignments use it), and each assignment gets `"jobs"`: for every file it touches, entry program
 included, one to three imperative sentences on what the learner writes there, for someone starting

@@ -9,7 +9,7 @@
       "third_party/stb_image_write.h": "third_party/stb/stb_image_write.h"
     },
     "build": "cmake --build build/solutions --target tiny_ttf",
-    "run": "build/solutions/tiny_ttf.exe fonts/JetBrainsMonoNerdFont-Bold.ttf \"Hello, TrueType!\" hello.png",
+    "run": "build/solutions/tiny_ttf{exe} fonts/JetBrainsMonoNerdFont-Bold.ttf \"Hello, TrueType!\" hello.png",
     "purposes": {
       "src/GlyphComponent.h": "Every outline in the project takes this form: its points (x and y in font units, on or off the curve) and the index where each contour ends. Assignments 08 and 11 draw outlines in this form, 09 produces one per part of a compound glyph, and 14, 16 and 17 fill them.",
       "src/Glyph.h": "This type holds a glyph as the glyf table stores it: whether it is empty, simple or compound, its contour count, its bounding box and, for a simple glyph, its outline. Your `GlyphParser` returns it, and in assignment 09 you use its kind to tell simple glyphs from compound ones.",
