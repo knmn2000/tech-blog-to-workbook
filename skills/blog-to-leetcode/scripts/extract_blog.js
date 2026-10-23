@@ -1,5 +1,5 @@
-// Reads a blog post's content in document order. Run it in the browser pane with the
-// JavaScript tool, on the post's page. It stores everything in window.__blog and returns a
+// Reads a blog post's content in document order. Run it in a browser, on the post's page
+// (through your agent's browser tool, or pasted into the developer console). It stores everything in window.__blog and returns a
 // compact outline (headings, and each code block's caption, language and size), so a long post
 // doesn't flood the conversation. Fetch details afterwards, in slices, e.g.:
 //   JSON.stringify(window.__blog.blocks.slice(0, 40))

@@ -1,17 +1,43 @@
-"""Runs the avoid-ai-writing skill's detector over a workbook's prose and prints one line per file:
-score, label and its findings. Needs that skill installed (~/.claude/skills/avoid-ai-writing) and
-Node.js. A finding is a prompt to look, as with slop_scan.py.
+"""Runs the avoid-ai-writing detector over a workbook's prose and prints one line per file:
+score, label and its findings. A finding is a prompt to look, as with slop_scan.py.
+
+It finds the detector in this order: the folder in AVOID_AI_WRITING_DIR, the avoid-ai-writing
+skill in a skills folder under your home directory (Node.js runs its bin/avoid-ai-writing.js),
+then an `avoid-ai-writing` command on your PATH (npm install -g avoid-ai-writing-detector).
 
     py -P aiw_scan.py <workbook-folder>          the problem pages and READMEs
     py -P aiw_scan.py FILE... [--quiet]          --quiet: scores only
 """
 
 import json
+import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
 
-CLI = Path.home() / ".claude" / "skills" / "avoid-ai-writing" / "bin" / "avoid-ai-writing.js"
+# Where coding agents keep user-level skills; the first that has avoid-ai-writing wins.
+SKILL_HOMES = [".agents", ".codex", ".cursor", ".gemini", ".copilot", ".claude",
+               ".config/opencode", ".config/goose"]
+INSTALL_HELP = ("The avoid-ai-writing detector wasn't found. Install the avoid-ai-writing skill "
+                "(https://github.com/conorbronsdon/avoid-ai-writing) for your agent, set "
+                "AVOID_AI_WRITING_DIR to its folder, or install the detector with "
+                "`npm install -g avoid-ai-writing-detector`.")
+
+
+def find_detector():
+    """The command that runs the detector, as a list, or None."""
+    dirs = [Path(os.environ["AVOID_AI_WRITING_DIR"])] if os.environ.get("AVOID_AI_WRITING_DIR") else []
+    dirs += [Path.home() / home / "skills" / "avoid-ai-writing" for home in SKILL_HOMES]
+    for d in dirs:
+        script = d / "bin" / "avoid-ai-writing.js"
+        if script.exists():
+            return ["node", str(script)]
+    command = shutil.which("avoid-ai-writing")
+    return [command] if command else None
+
+
+CLI = find_detector()
 
 
 def files_of(arg: str):
@@ -26,7 +52,7 @@ def files_of(arg: str):
 
 def scan(path: Path) -> dict:
     mode = "rendered-markdown" if path.suffix.lower() == ".md" else "plain"
-    out = subprocess.run(["node", str(CLI), "--source-mode", mode, "--context", "technical", str(path)],
+    out = subprocess.run(CLI + ["--source-mode", mode, "--context", "technical", str(path)],
                          capture_output=True, text=True, encoding="utf-8")
     if out.returncode != 0:
         return {"score": None, "label": out.stderr.strip()[:80], "issues": []}
@@ -35,8 +61,8 @@ def scan(path: Path) -> dict:
 
 def main(argv):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
-    if not CLI.exists():
-        sys.exit(f"The avoid-ai-writing skill isn't installed: {CLI} is missing.")
+    if not CLI:
+        sys.exit(INSTALL_HELP)
     quiet = "--quiet" in argv
     paths = [p for a in argv if a != "--quiet" for p in files_of(a)]
     if not paths:

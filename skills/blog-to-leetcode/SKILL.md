@@ -1,7 +1,7 @@
 ---
 name: blog-to-leetcode
 description: Turns a technical blog post, tutorial or article (given as a URL) into a LeetCode-style learn-by-doing workbook - a series of implementation assignments where the learner writes a program whose output is checked against independently computed answers, with full problem pages, tiered hints, starter code, reference solutions, a checker that supports disputes and fresh test sets, and a web problem book. Use this whenever someone wants to learn from a blog or article by building it themselves, turn a post's code snippets or ideas into exercises, problems, challenges or "leetcode questions", practise implementing what a write-up describes, or make a hands-on course or workbook from an article - even if they never say "leetcode" or "workbook", and even if the post has little or no code. Also use it to open, set up or continue an existing workbook (one made earlier, or cloned from a shared collection), e.g. "open my workbook", "set up this workbook", "I cloned the TrueType workbook", and for "review my disputes".
-compatibility: Claude Code. Needs a shell, Python 3.11+ (plus whatever independent libraries the chosen test oracles need), a compiler or runtime for the learner's language, and a way to read the blog (the desktop app's browser pane or WebFetch).
+compatibility: Any coding agent that loads Agent Skills (agentskills.io). Needs a shell, Python 3.11+ (plus whatever independent libraries the chosen test oracles need), a compiler or runtime for the learner's language, and a way to read the blog (a browser tool, or fetching the page's HTML).
 ---
 
 # Blog to LeetCode-style workbook
@@ -67,10 +67,11 @@ its source and size, and get a yes before downloading.
 
 ### 2. Read the blog
 
-Open the post in the browser pane and run `scripts/extract_blog.js` with the JavaScript tool; it
-returns the headings, paragraphs and code blocks in order, with captions. (WebFetch is the
-fallback, and it often drops code blocks.) Save the result as `_source/blocks.json` in the
-workbook. It stays local: you map from it, and you never republish it.
+If you can drive a browser, open the post and run `scripts/extract_blog.js` in the page; it
+returns the headings, paragraphs and code blocks in order, with captions. Without a browser, fetch
+the page's HTML and pull out the same parts yourself, then check that every code block survived:
+tools that turn a page into plain text often drop them. Save the result as `_source/blocks.json`
+in the workbook. It stays local: you map from it, and you never republish it.
 
 Read every code block in full. Note what each one does in your own words, its bugs, and which
 parts are demos, data structures or glue rather than logic.
@@ -123,12 +124,14 @@ validates a reference picture against ideal geometry. `assets/lang/cpp/optional/
 the project a small framebuffer with PNG output for posts where drawing isn't one of the steps
 (needs stb_image_write; ask before downloading it).
 
-For more than a handful of assignments, split them into independent groups and give each group to
-a subagent, in parallel. Each brief must contain: the authoring guide's path, the finished model
-assignment's files, the exact contracts for its assignments, and a description in your own words
-of what each relevant snippet does (subagents must not copy the blog either). Tell them not to
-edit shared files and not to use the shared build directory: they compile into their own folder
-and check with `-Run`. Keep shared infrastructure (checker, comparison, libraries) to yourself.
+For more than a handful of assignments, split them into independent groups. If your tool can run
+other agents in parallel (subagents, background tasks or extra sessions), give each group to one;
+otherwise write the groups one after another. Each brief must contain: the authoring guide's path,
+the finished model assignment's files, the exact contracts for its assignments, and a description
+in your own words of what each relevant snippet does (the other agents must not copy the blog
+either). Tell them not to edit shared files and not to use the shared build directory: they
+compile into their own folder and check with `-Run`. Keep shared infrastructure (checker,
+comparison, libraries) to yourself.
 
 ### 6. Check the checks
 
@@ -139,8 +142,9 @@ Before any assignment counts as done, every condition in `references/test-trust.
 - At least three planted bugs, including the blog's own, fail with useful messages.
 - For picture or numeric assignments, at least one different but correct variant passes.
 - Fresh seeds pass.
-- An independent solver, a separate subagent given only the hint-stripped page
-  (`scripts/strip_hints.py`), passes the full suite. Fold its feedback into the page.
+- An independent solver passes the full suite. It is a separate agent that sees only the
+  hint-stripped page (`scripts/strip_hints.py`) and none of your context: a subagent, or a fresh
+  session if your tool has no subagents. Fold its feedback into the page.
 
 The learner must be able to see a working solution at any point. Each Editorial shows the
 reference in full (with the files it includes from `_spoilers/`), and it may claim "Passes all N
@@ -160,9 +164,9 @@ language.
 
 Then run `py -P tools/build_book.py` to build `book/problem-book.html` from the problem pages. It
 exits with warnings if any reference hasn't passed `-Ref` or has changed since it passed. Fix those
-(rerun `check NN -Ref`) before going on, or the Editorial will show an unproven solution. View the
-book once in the browser pane (desktop and phone width), and publish it with the Artifact tool as
-a private page.
+(rerun `check NN -Ref`) before going on, or the Editorial will show an unproven solution. Open the
+book in a browser at desktop and phone width and check that it reads well. The book is one HTML
+file, so you can share it from any static host, or through a collection's site (below).
 
 The book looks and works like a coding-practice site. It opens on a problem list with progress and
 topic filters, and each assignment has a split view with:
@@ -216,11 +220,11 @@ learner runs one thing at most.
    `py -P tools/project.py setup`; for another, follow `references/languages.md`. Set up only the
    chosen language. If they later ask you to switch, keep the old project in a folder of its own
    (`solutions-cpp/`) and set up the new one (`references/languages.md`, section 4).
-5. Open the book. In the Claude desktop app, start the workbook's `study` entry from
-   `.claude/launch.json` with the browser pane's preview tool, so the book sits next to the chat.
-   Elsewhere, run the study server in the background and give the learner its address
-   (`http://127.0.0.1:8787/`). Tell them they can come back by double-clicking `study.cmd`
-   (`study.command` on macOS) or by asking you again.
+5. Open the book. Start the study server in the background with `py -P tools/serve.py`
+   (`python3 -P` on macOS and Linux). It opens the book in the learner's browser at
+   `http://127.0.0.1:8787/`; give them the address as well. If your tool can show a web page
+   beside the chat, add `--no-browser` and open the address there. Tell them they can come back
+   by double-clicking `study.cmd` (`study.command` on macOS) or by asking you again.
 
 In the book they write code, Run (one example) and Submit (all tests), and see the verdict, the
 failing tests (their output and the expected output with the differing words highlighted, judged
@@ -273,7 +277,7 @@ build anything.
 7. Verify, as in workflow step 6:
    - every `-Ref` passes;
    - a fresh set-up project opens, and Submit gives "Not implemented yet";
-   - the book looks right in the browser pane;
+   - the book looks right in a browser;
    - you have checked every hit from both scanners.
 
 ## When the learner says "review my disputes"

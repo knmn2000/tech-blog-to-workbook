@@ -15,7 +15,7 @@ test cases.
 
 ## Start here
 
-Ask Claude to "set up my workbook": it checks the tools, asks which language you'd like (this
+Ask your coding assistant to "set up my workbook": it checks the tools, asks which language you'd like (this
 workbook's project is {{PROJECT_LABEL}}), creates the project and opens the book. Or open the book
 yourself: double-click `study.cmd` on Windows or `study.command` on macOS, or run `.\study`
 (PowerShell) or `./study.sh` from this folder. Run and Submit work in the book opened this way, and
@@ -67,7 +67,7 @@ forgiven), and it lets edges move by one pixel.
 ## If you think a test is wrong
 
 Run `.\check 01 -Dispute <test-id> "your reason"`. That test stops counting and you can carry on;
-the verdict reads `Accepted (1 disputed)`. Then ask Claude to "review my disputes". Claude
+the verdict reads `Accepted (1 disputed)`. Then ask your coding assistant to "review my disputes". It
 rechecks the expected value against its independent source and either fixes the test or shows
 you why it's right. The checker keeps disputes in `disputes.json`.
 
@@ -76,7 +76,7 @@ you why it's right. The checker keeps disputes in `disputes.json`.
 The checker reads only your program's output, so you can write the project in any language. This
 workbook's project, its starters and its reference are {{PROJECT_LABEL}}.
 
-To work in another language, ask Claude. It shows which languages you have installed
+To work in another language, ask your coding assistant. It shows which languages you have installed
 (`py -P tools/langs.py` lists them; `python3` in place of `py` on macOS or Linux) and how to
 install the others, keeps your current project in a folder of its own, and sets up a project in
 the new language, with its own build file and the same layout in that language's style. It

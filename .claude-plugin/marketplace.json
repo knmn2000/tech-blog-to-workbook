@@ -1,6 +1,6 @@
 {
   "name": "tech-blog-to-workbook",
-  "description": "Learn what a technical blog post teaches by building it: LeetCode-style workbooks made by Claude.",
+  "description": "Learn what a technical blog post teaches by building it: LeetCode-style workbooks from an Agent Skill that runs in any coding agent.",
   "owner": {
     "name": "knmn2000"
   },

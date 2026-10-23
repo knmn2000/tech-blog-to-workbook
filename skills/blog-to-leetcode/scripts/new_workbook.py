@@ -16,7 +16,6 @@ learner chooses a language.
 
 import argparse
 import json
-import os
 import re
 import shutil
 import sys
@@ -156,13 +155,6 @@ def main():
     if not config["setup"]:
         del config["setup"]
     (dest / "workbook.json").write_text(json.dumps(config, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-
-    # Lets the Claude desktop app open the book (with Run and Submit working) in its browser pane.
-    launch = {"version": "0.0.1", "configurations": [{
-        "name": "study", "runtimeExecutable": "py" if os.name == "nt" else "python3",
-        "runtimeArgs": ["-P", "tools/serve.py", "--no-browser", "--port", "8787"], "port": 8787}]}
-    (dest / ".claude").mkdir(exist_ok=True)
-    (dest / ".claude" / "launch.json").write_text(json.dumps(launch, indent=2) + "\n", encoding="utf-8")
     print(f"created {dest} ({spec['label']}, program `{name}`). Next: design the project layout, then register "
           "every assignment in workbook.json with its solution, files, extends and buildsOn.")
 

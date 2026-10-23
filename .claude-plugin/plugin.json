@@ -1,12 +1,12 @@
 {
   "name": "tech-blog-to-workbook",
-  "version": "0.16.0",
-  "description": "Turns a technical blog post into a LeetCode-style workbook: implementation checkpoints checked by output against independently computed answers, with problem pages, tiered hints, blank and boilerplate starters, reference solutions, disputes and a web problem book.",
+  "version": "0.17.0",
+  "description": "Turns a technical blog post into a LeetCode-style workbook: implementation assignments checked by output against independently computed answers, with problem pages, tiered hints, blank and boilerplate starters, reference solutions, disputes and a web problem book. An Agent Skill that runs in any skills-aware coding agent.",
   "author": {
     "name": "knmn2000"
   },
   "homepage": "https://github.com/knmn2000/tech-blog-to-workbook",
   "repository": "https://github.com/knmn2000/tech-blog-to-workbook",
   "license": "Apache-2.0",
-  "keywords": ["learning", "exercises", "workbook", "leetcode", "blog", "tutorial", "education"]
+  "keywords": ["learning", "exercises", "workbook", "leetcode", "blog", "tutorial", "education", "agent-skills"]
 }

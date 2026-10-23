@@ -79,7 +79,8 @@ exact integer data).
 
 ## 4. The independent solver
 
-A separate subagent solves the assignment using only what the learner gets:
+A separate agent solves the assignment using only what the learner gets. Use a subagent if your
+tool has them, or a fresh session that has seen none of your work:
 - the problem page with hints and "After you pass" removed (`scripts/strip_hints.py`);
 - the starter file and provided headers;
 - the data files the examples reference, and the input data files;
@@ -87,8 +88,8 @@ A separate subagent solves the assignment using only what the learner gets:
 
 It may compile and run the page's examples. Then you run the full suite against its program. If it
 fails, the page is unclear or a test is wrong; fix whichever before shipping. Ask it to list every
-ambiguity and assumption, and act on them. Use a smaller model than yours for this: it's closer to
-a learner who relies on the page.
+ambiguity and assumption, and act on them. Use a smaller model than yours for this, if you can
+choose one: it's closer to a learner who relies on the page.
 
 ## 5. Messages that help
 
