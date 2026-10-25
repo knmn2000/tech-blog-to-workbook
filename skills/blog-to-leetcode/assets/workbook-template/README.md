@@ -43,10 +43,10 @@ assignment passes, the problem list shows your project next to the author's.
 ## Doing an assignment
 
 1. Read the problem (book or `problems/NN-*.md`). In the book, its Start here card lists the files
-   to write, your job in each, the earlier files you can use, and the two ways to start.
+   to complete, your job in each and the earlier files you can use.
 2. Write the files. Each one starts as the Boilerplate, which gives you the input/output code and
    the declarations, and you fill in the parts marked `TODO`. To write all of it yourself, choose
-   From scratch on the Start here card: each file then starts empty apart from its comment.
+   From scratch above the editor: each file then starts empty apart from its comment.
 3. Check it from this folder (`./check.sh` instead of `.\check` on macOS or Linux), or with Run
    and Submit in the book:
 

@@ -55,7 +55,7 @@ the post, and each principle and step below serves that goal.
    solutions. Don't run the author's code unless the user agrees.
 8. The workbook is the one place a learner needs. Whatever an assignment expects them to know (a
    language feature, a library header, a term from the field, a tool) has an entry in the
-   workbook's primer, and the assignment's What you need list links to it. Write for someone who
+   workbook's primer, and the assignment's Learning material list links to it. Write for someone who
    has never used the language or worked in the field: they should be able to reach everything
    from the book, without searching elsewhere first. Each include or import in the Boilerplate
    says in a comment why it's there.
@@ -144,7 +144,7 @@ language feature beyond the basics, every term from the field the pages use, and
 learner runs. Write one entry for each, grouped (the language, its library, one or two groups
 for the field, tools), in your own words with a small example, where the workbook uses it, and
 two or three links you have opened. Give each language or library entry a `code` pattern so the
-check finds every assignment that uses it. Then give every page a What you need list that links
+check finds every assignment that uses it. Then give every page a Learning material list that links
 the entries it introduces, with a note on how this assignment uses each, and link each tag to
 its entry. Comment every include or import in the Boilerplate with why it's there. Entries and
 notes never describe how the reference writes a TODO: the learner hasn't opened it. Groups of
@@ -215,7 +215,7 @@ file, so you can share it from any static host, or through a collection's site (
 The book looks and works like a coding-practice site. It opens on a problem list with progress and
 topic filters, and each assignment has a split view with:
 - the statement, with a "Start here" card: the files to write, the job in each, the earlier files
-  it can use, and the two ways to start;
+  it can use;
 - hints that open in order;
 - an Editorial tab: the reference's files as they stand after the assignment, proven to pass, then
   the comparison with the author's code. It opens by itself on Accepted and is one click away
@@ -315,7 +315,7 @@ build anything.
    files, and point file references at the project's modules. Rewrite "Where this fits" and the
    Requirements opening, then do the readability pass in section 8 of the authoring guide, with
    `scripts/slop_scan.py` and `scripts/aiw_scan.py`.
-   A workbook without a `primer/` folder gets one now, with the What you need lists and commented
+   A workbook without a `primer/` folder gets one now, with the Learning material lists and commented
    includes (workflow step 5); the book shows the Primer view once `primer/` exists.
 6. Retire the old files. Move the old per-checkpoint starters, reference and `solutions/` files to
    the Recycle Bin, after confirming that the learner's copies still match the blank starters.
