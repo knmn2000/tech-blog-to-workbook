@@ -53,6 +53,12 @@ the post, and each principle and step below serves that goal.
    post's sections (text fragments: `url#:~:text=Heading`), summarise in your own words, keep the
    post's prose and the author's code out of every file you commit, and write your own reference
    solutions. Don't run the author's code unless the user agrees.
+8. The workbook is the one place a learner needs. Whatever an assignment expects them to know (a
+   language feature, a library header, a term from the field, a tool) has an entry in the
+   workbook's primer, and the assignment's What you need list links to it. Write for someone who
+   has never used the language or worked in the field: they should be able to reach everything
+   from the book, without searching elsewhere first. Each include or import in the Boilerplate
+   says in a comment why it's there.
 
 ## Workflow
 
@@ -132,6 +138,19 @@ them, and a file that later assignments add to gets a `// ---- Assignment NN ---
 each addition. Write the boilerplate from the reference (TODO bodies); the blank starters come from
 `py -P tools/blank_starters.py`.
 
+Then write the primer (`primer/*.md`, the format is in `tools/primer.py`; authoring guide,
+section 9). List what the assignments use: every header or module the code imports, every
+language feature beyond the basics, every term from the field the pages use, and the tools the
+learner runs. Write one entry for each, grouped (the language, its library, one or two groups
+for the field, tools), in your own words with a small example, where the workbook uses it, and
+two or three links you have opened. Give each language or library entry a `code` pattern so the
+check finds every assignment that uses it. Then give every page a What you need list that links
+the entries it introduces, with a note on how this assignment uses each, and link each tag to
+its entry. Comment every include or import in the Boilerplate with why it's there. Entries and
+notes never describe how the reference writes a TODO: the learner hasn't opened it. Groups of
+entries can go to parallel agents like assignments; the pages come after the entries exist, and
+a final pass adds links between entries of different groups.
+
 For picture assignments, `tools/imageio.py` reads and compares images and `tools/inkcheck.py`
 validates a reference picture against ideal geometry. `assets/lang/cpp/optional/Canvas.h` gives
 the project a small framebuffer with PNG output for posts where drawing isn't one of the steps
@@ -164,6 +183,12 @@ Before any assignment counts as done, every condition in `references/test-trust.
   every bug of the snippet named in "After you pass". Note anything the workbook deliberately
   does differently, and why, in `_source/notes.md`. A workbook built before this rule gets the
   same review once.
+- The primer covers the series: `py -P tools/primer_check.py --links` reports nothing (every
+  entry the Boilerplate or tags use is listed by its first assignment, every link resolves,
+  every Boilerplate include has its comment). Then a separate agent plays a learner who knows
+  another language but not this one or the field: it reads the first three assignments using
+  only the book, without `_spoilers/`, and lists every term it still had to look up elsewhere,
+  every note that gives away an answer, and every setup step it couldn't follow. Fix those.
 
 The learner must be able to see a working solution at any point. Each Editorial shows the
 reference in full (with the files it includes from `_spoilers/`), and it may claim "Passes all N
@@ -290,6 +315,8 @@ build anything.
    files, and point file references at the project's modules. Rewrite "Where this fits" and the
    Requirements opening, then do the readability pass in section 8 of the authoring guide, with
    `scripts/slop_scan.py` and `scripts/aiw_scan.py`.
+   A workbook without a `primer/` folder gets one now, with the What you need lists and commented
+   includes (workflow step 5); the book shows the Primer view once `primer/` exists.
 6. Retire the old files. Move the old per-checkpoint starters, reference and `solutions/` files to
    the Recycle Bin, after confirming that the learner's copies still match the blank starters.
    Never discard a learner's own code. Rewrite the workbook's README for the project.

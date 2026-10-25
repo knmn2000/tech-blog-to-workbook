@@ -90,6 +90,7 @@ To check a one-off program without changing anything, run
 | Path | What it is |
 |---|---|
 | `problems/` | Problem statements (`tools/build_book.py` makes the book from these) |
+| `primer/` | The primer: every term, library and tool the assignments use, explained, with links to learn more (the book's Primer view) |
 | `solutions/` | Your project, created when you set the workbook up |
 | `starters/project/` | What your project starts with: its build file, README and `.gitignore` |
 | `starters/blank/`, `starters/boilerplate/` | Each assignment's files, blank and with the input/output done |
@@ -101,6 +102,7 @@ To check a one-off program without changing anything, run
 | `tools/langs.py` | The languages a project can be in, and how to install them |
 | `tools/gen_pNN.py` | Each assignment's test generator (used by `-Fresh`) |
 | `tools/build_book.py` | Builds `book/problem-book.html` (the page design is `tools/book_template.html`) |
+| `tools/primer_check.py` | Checks that the primer covers what each assignment uses (`--links` also tests its links) |
 | `docs/authoring-guide.md` | How to write the assignments and their tests |
 | `_spoilers/` | The reference project. Don't open it until you've passed. |
 

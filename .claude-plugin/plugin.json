@@ -1,6 +1,6 @@
 {
   "name": "tech-blog-to-workbook",
-  "version": "0.19.0",
+  "version": "0.20.0",
   "description": "Turns a technical blog post into a LeetCode-style workbook: implementation assignments checked by output against independently computed answers, with problem pages, tiered hints, blank and boilerplate starters, reference solutions, disputes and a web problem book. An Agent Skill that runs in any skills-aware coding agent.",
   "author": {
     "name": "knmn2000"
