@@ -294,7 +294,9 @@ on), and edits they make in another editor show up in the book. The book's own e
 highlighting but no completion or language server; the button above the code opens the current file
 in their own editor (VS Code, Cursor, Windsurf, VSCodium, Zed or Sublime Text, else the system's
 default app; `WORKBOOK_EDITOR` names another command), where their language server works. Point
-learners there when they ask for autocomplete. The Files panel shows their
+learners there when they ask for autocomplete. What a program prints (stdout, then stderr) is never
+compared, since the answer goes to the output file; the book shows it under the test result as
+"Printed by your program", so `cout` and `print` debugging works. The Files panel shows their
 project growing file by file, and the Re-check solved button reruns every solved assignment, so a
 change to an earlier file that breaks an earlier assignment shows at once. Once every assignment
 passes, the book shows their project tree next to the author's. The Exit button saves their work,
