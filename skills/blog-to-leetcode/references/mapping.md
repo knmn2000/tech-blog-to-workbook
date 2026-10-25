@@ -118,7 +118,8 @@ map, sketch the file tree a real implementation of the post would have, and give
 a place in it.
 
 - Mirror the author. If the post or the author's repository shows file and folder names, use
-  them. You may look at a repository's list of files; never read or copy its code. If the author
+  them. Read the repository's code (SKILL.md, step 2) to learn how the pieces fit; never copy it
+  into the workbook. If the author
   keeps several steps in one big file, either give each step its own file in a folder named after
   it (a `font/` folder for a `FontParser`, holding `cmap`, `loca`, ...), or let later assignments
   extend the earlier file when that's how the code grows (another method on the same type, a fix).

@@ -48,9 +48,12 @@ the post, and each principle and step below serves that goal.
 6. A wrong test must never block a correct solution. Expected outputs come from an independent
    source, every test traces to a requirement, you check the checks themselves, and the learner
    can dispute a test and keep going (see `references/test-trust.md`).
-7. Never reproduce the blog. Link to its sections (text fragments: `url#:~:text=Heading`),
-   summarise in your own words, and don't paste its prose or code into the workbook. Don't
-   download or run the author's repository; write your own reference solutions.
+7. Read everything; reproduce nothing. Staying true to the source takes reading all of it: the
+   whole post, and the author's code when they published it. That reading is what makes the
+   names, scope, results and bugs right. What the workbook never does is copy it: link to the
+   post's sections (text fragments: `url#:~:text=Heading`), summarise in your own words, keep the
+   post's prose and the author's code out of every file you commit, and write your own reference
+   solutions. Don't run the author's code unless the user agrees.
 
 ## Workflow
 
@@ -75,6 +78,17 @@ in the workbook. It stays local: you map from it, and you never republish it.
 
 Read every code block in full. Note what each one does in your own words, its bugs, and which
 parts are demos, data structures or glue rather than logic.
+
+If the author published their code (a repository linked from the post), read it too: say what
+you'd download, from where and about how big, get a yes, then shallow-clone it into
+`_source/repo/`. Read the files the snippets come from, and note where the repository differs from
+the post (a later fix, a helper the post skips, a different signature). Where they differ, the
+post is what the learner reads, so the workbook follows the post and the page names the
+difference. `_source/` stays local: the workbook's `.gitignore` keeps it out of every commit.
+
+Keep `_source/notes.md` as you go: per section of the post, what it builds, the names it uses,
+its results, its bugs, and the repository files behind it. The map and every page are written
+from these notes and the source, and step 6 checks the pages against them.
 
 ### 3. Map the blog to assignments (ask)
 
@@ -145,6 +159,12 @@ Before any assignment counts as done, every condition in `references/test-trust.
 - An independent solver passes the full suite. It is a separate agent that sees only the
   hint-stripped page (`scripts/strip_hints.py`) and none of your context: a subagent, or a fresh
   session if your tool has no subagents. Fold its feedback into the page.
+- The page is true to the source. Re-read the post's section (and the author's code behind it)
+  next to the page, and confirm that the page asks for the same thing: the same scope and
+  simplifications, the names the post uses, the same results on the post's own examples, and
+  every bug of the snippet named in "After you pass". Note anything the workbook deliberately
+  does differently, and why, in `_source/notes.md`. A workbook built before this rule gets the
+  same review once.
 
 The learner must be able to see a working solution at any point. Each Editorial shows the
 reference in full (with the files it includes from `_spoilers/`), and it may claim "Passes all N
