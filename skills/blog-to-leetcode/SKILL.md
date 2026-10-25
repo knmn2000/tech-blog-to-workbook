@@ -287,7 +287,11 @@ In the book they write code, Run (one example) and Submit (all tests), and see t
 failing tests (their output and the expected output with the differing words highlighted, judged
 the way the checker judges them) and, for pictures, expected/theirs/difference side by side. The
 book saves their code to `solutions/` as they type (Ctrl+S, or `:w` with the editor's Vim toggle
-on), and edits they make in another editor show up in the book. The Files panel shows their
+on), and edits they make in another editor show up in the book. The book's own editor has syntax
+highlighting but no completion or language server; the button above the code opens the current file
+in their own editor (VS Code, Cursor, Windsurf, VSCodium, Zed or Sublime Text, else the system's
+default app; `WORKBOOK_EDITOR` names another command), where their language server works. Point
+learners there when they ask for autocomplete. The Files panel shows their
 project growing file by file, and the Re-check solved button reruns every solved assignment, so a
 change to an earlier file that breaks an earlier assignment shows at once. Once every assignment
 passes, the book shows their project tree next to the author's. The Exit button saves their work,
