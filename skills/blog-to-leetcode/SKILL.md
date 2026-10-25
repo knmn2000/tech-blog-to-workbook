@@ -40,11 +40,10 @@ the post, and each principle and step below serves that goal.
    it reads a test input, calls the project's code and writes the output. Inputs still carry what
    earlier assignments would produce (an offset, a parsed record), so an assignment's tests depend
    only on the earlier files it chooses to import.
-5. By default the learner writes every line. Each assignment starts with blank files at their
-   places in the project (a comment saying what belongs there, and an empty `main` in the entry
-   program): imports, the module's API, input parsing and output are part of the exercise. A
-   boilerplate version (the entry program done, the module's declarations named as the author
-   names them) is available to anyone who wants it, and it stays optional.
+5. Each assignment's files start as the Boilerplate: the entry program done, the module's
+   declarations written, and TODO bodies for the learner. Choosing From scratch gives blank files
+   instead (a comment saying what belongs there, and an empty `main` in the entry program), so
+   imports, the module's API, input parsing and output become part of the exercise too.
 6. A wrong test must never block a correct solution. Expected outputs come from an independent
    source, every test traces to a requirement, you check the checks themselves, and the learner
    can dispute a test and keep going (see `references/test-trust.md`).

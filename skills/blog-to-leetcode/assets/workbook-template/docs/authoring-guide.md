@@ -133,7 +133,9 @@ finished project and doubles as the proof that the layout works.
 - The entry program reads the input, calls the project, and writes the output in the exact format.
   It holds no logic later assignments need.
 - Project files use the author's names where the post has them (types, functions, files), and
-  carry a short header comment saying which assignment they belong to.
+  carry a short header comment saying which assignment they belong to. Where the project layout
+  needs a different name (a `FontParser` method split into its own module, say), the problem page
+  maps the workbook's name to the post's, so a learner reading both can follow.
 - A file later assignments add to has sections: each later assignment's additions go under a
   marker line, `// ---- Assignment 12: two segments ----` (`#` or `--` in languages with those
   comments). The code before the first marker belongs to the assignment that creates the file.
