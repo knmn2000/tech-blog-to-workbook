@@ -117,7 +117,10 @@ Run `scripts/new_workbook.py --dest <folder> --title ... --name <program> --sour
 `assets/workbook-template/` (checker, project tool, image comparison, case-file library, book
 builder, study server, check scripts, README, authoring guide) and the language's project skeleton
 into `starters/project/`, makes an empty reference project in `_spoilers/project/`, and writes
-`workbook.json`. Its commands end program names in `{exe}`, which the tools turn into `.exe` on
+`workbook.json`. For C and C++ also copy `assets/lang/cpp/workbook/.clangd` to the workbook's root:
+it points clangd at `build/solutions/compile_commands.json`, which clangd's own search never
+reaches, so the learner's editor finds the include paths (keep it in step with the `-B` folder in
+`setup.command`). Its commands end program names in `{exe}`, which the tools turn into `.exe` on
 Windows only, so the workbook runs on Windows, macOS and Linux; keep that form when you edit them.
 
 Then, before anyone writes assignment files (so parallel authors never edit shared files), put the

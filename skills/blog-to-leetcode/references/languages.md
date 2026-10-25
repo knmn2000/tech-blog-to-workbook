@@ -70,6 +70,9 @@ to write that part too (for example a PNG writer, or a binary PPM, which the che
    - each assignment's `solution`, `files`, `extends` and `buildsOn`, in the new language's names.
 
    Leave `project.reference` and `reference` alone.
+   For C and C++, also put `assets/lang/cpp/workbook/.clangd` in the workbook's root, so the
+   learner's clangd finds `build/solutions/compile_commands.json` (change the folder in it if
+   `setup.command` builds elsewhere).
 4. Write the blank starters for the new paths with `py -P tools/blank_starters.py` (the purposes
    in `project.purposes` need the new paths as keys too). Opening an assignment then creates its
    files as usual.
