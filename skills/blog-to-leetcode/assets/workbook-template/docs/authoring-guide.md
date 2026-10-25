@@ -87,7 +87,7 @@ book builder parses them):
 7. `## Where this fits`: two or three sentences on what came before, what this unlocks, and which
    files of the project it adds to.
 8. `## The problem`: one or two short, plain sentences saying what the program does. The files,
-   the jobs, the earlier files it can use and the two ways to start are on the book's "Start here"
+   the jobs and the earlier files it can use are on the book's "Start here"
    card (from `workbook.json`), so the page doesn't repeat them. Then come `### Input` (a table of
    line kinds), `### Output` (exact format, with a fenced block showing it), and `###` subsections
    with every rule, table, formula and edge case needed. Write binary
@@ -273,6 +273,15 @@ technical context, keeping the page's plain technical voice. Install it once as 
 read its `SKILL.md` and `references/patterns.md` in full before the pass, as it asks. Its editing contract
 fits workbooks: code blocks, test ids, links, tables of formats and anything the tests check are
 protected, and a rewrite never adds facts.
+
+The word-level rules catch the obvious tells; the structural ones (uniform cadence, stock lines
+repeated across pages, dependencies announced in every paragraph, hedging, voiceless lists) are
+covered in `voice.md`, which also has the prose pass for a workbook that already has them. Two more
+skills help as reference there:
+[humanizer](https://github.com/blader/humanizer) (MIT; `/plugin marketplace add blader/humanizer`,
+then `/plugin install humanizer@humanizer`) and
+[humanize-writing](https://github.com/jpeggdev/humanize-writing) (MIT; `npx skills add
+jpeggdev/humanize-writing`).
 
 Before you call a page or a pass done, run both scanners (in this skill):
 `py -P scripts/slop_scan.py <workbook>` for the rules below, and

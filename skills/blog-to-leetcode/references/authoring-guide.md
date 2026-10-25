@@ -274,6 +274,15 @@ read its `SKILL.md` and `references/patterns.md` in full before the pass, as it 
 fits workbooks: code blocks, test ids, links, tables of formats and anything the tests check are
 protected, and a rewrite never adds facts.
 
+The word-level rules catch the obvious tells; the structural ones (uniform cadence, stock lines
+repeated across pages, dependencies announced in every paragraph, hedging, voiceless lists) are
+covered in `voice.md`, which also has the prose pass for a workbook that already has them. Two more
+skills help as reference there:
+[humanizer](https://github.com/blader/humanizer) (MIT; `/plugin marketplace add blader/humanizer`,
+then `/plugin install humanizer@humanizer`) and
+[humanize-writing](https://github.com/jpeggdev/humanize-writing) (MIT; `npx skills add
+jpeggdev/humanize-writing`).
+
 Before you call a page or a pass done, run both scanners (in this skill):
 `py -P scripts/slop_scan.py <workbook>` for the rules below, and
 `py -P scripts/aiw_scan.py <workbook>` for avoid-ai-writing's detector. Each hit is a prompt to

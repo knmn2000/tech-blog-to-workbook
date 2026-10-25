@@ -53,7 +53,12 @@ the post, and each principle and step below serves that goal.
    post's sections (text fragments: `url#:~:text=Heading`), summarise in your own words, keep the
    post's prose and the author's code out of every file you commit, and write your own reference
    solutions. Don't run the author's code unless the user agrees.
-8. The workbook is the one place a learner needs. Whatever an assignment expects them to know (a
+8. The prose is written like a person wrote it, from the first page. Scrubbing filler words
+   isn't enough: generated text gives itself away by its structure (uniform cadence, the same
+   stock lines on every page, a dependency announced in every paragraph, hedges, voiceless
+   lists). `references/voice.md` names the smells and the voice that replaces them, and every
+   author works from it.
+9. The workbook is the one place a learner needs. Whatever an assignment expects them to know (a
    language feature, a library header, a term from the field, a tool) has an entry in the
    workbook's primer, and the assignment's Learning material list links to it. Write for someone who
    has never used the language or worked in the field: they should be able to reach everything
@@ -163,7 +168,11 @@ the finished model assignment's files, the exact contracts for its assignments, 
 in your own words of what each relevant snippet does (the other agents must not copy the blog
 either). Tell them not to edit shared files and not to use the shared build directory: they
 compile into their own folder and check with `-Run`. Keep shared infrastructure (checker,
-comparison, libraries) to yourself.
+comparison, libraries) to yourself. Put `references/voice.md` (sections 1 and 2) and the
+authoring guide's section 8 in every brief, and list the text that is shared between pages (the
+input contract, the constraints line, picture-output bullets) so each writer words it their own
+way. Parallel writers in one checkout never run `git stash`, `git checkout -- .` or `git reset`:
+one stash sweeps everyone's edits.
 
 ### 6. Check the checks
 
@@ -183,6 +192,10 @@ Before any assignment counts as done, every condition in `references/test-trust.
   every bug of the snippet named in "After you pass". Note anything the workbook deliberately
   does differently, and why, in `_source/notes.md`. A workbook built before this rule gets the
   same review once.
+- The prose reads human. Run `scripts/smell_metrics.py` and `scripts/repeat_scan.py` over the
+  pages, READMEs and primer next to the two word scanners. If stock phrases or repeated blocks
+  show up, run the prose pass in `references/voice.md` (section 4): rewrite in batches, have a
+  second model check each rewrite against its original for changed facts, then sweep across pages.
 - The primer covers the series: `py -P tools/primer_check.py --links` reports nothing (every
   entry the Boilerplate or tags use is listed by its first assignment, every link resolves,
   every Boilerplate include has its comment). Then a separate agent plays a learner who knows
@@ -320,7 +333,9 @@ build anything.
 6. Retire the old files. Move the old per-checkpoint starters, reference and `solutions/` files to
    the Recycle Bin, after confirming that the learner's copies still match the blank starters.
    Never discard a learner's own code. Rewrite the workbook's README for the project.
-7. Verify, as in workflow step 6:
+7. Prose pass. If the pages, purposes and jobs show the smells in `references/voice.md`
+   (section 1), run its prose pass (section 4), then regenerate the starters and the book.
+8. Verify, as in workflow step 6:
    - every `-Ref` passes;
    - a fresh set-up project opens, and Submit gives "Not implemented yet";
    - the book looks right in a browser;

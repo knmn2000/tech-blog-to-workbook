@@ -154,8 +154,10 @@ posts that broke it. To share a workbook you made, open a pull request on
 .claude-plugin/              manifests for installing it as a Claude Code plugin
 skills/blog-to-leetcode/
   SKILL.md                   the workflow your agent follows
-  references/                mapping a post to assignments, test trust, authoring guide, languages
-  scripts/                   reading the post, scaffolding a workbook, stripping hints
+  references/                mapping a post to assignments, test trust, authoring guide, languages,
+                             the writing voice and the prose pass
+  scripts/                   reading the post, scaffolding a workbook, stripping hints, and the
+                             prose checks (word scanners, structure metrics, repeat finder)
   assets/workbook-template/  checker, image comparison, book builder and template, check scripts
   assets/lang/cpp/           the learner's project skeleton (CMake, README), an optional canvas
   assets/example-assignment/ a complete worked assignment, laid out as in a workbook
