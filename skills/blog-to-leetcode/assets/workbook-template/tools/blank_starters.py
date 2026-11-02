@@ -49,6 +49,19 @@ def listing(paths: list) -> str:
     return paths[0] if len(paths) == 1 else ", ".join(paths[:-1]) + " and " + paths[-1]
 
 
+def js_import(module: str, importer: str) -> str:
+    """An example import line for a project file, as written in `importer`: a named import of what the
+    boilerplate exports (createDom.js style files export several names), else the whole module."""
+    name = Path(module).stem
+    ups = "../" * importer.count("/")
+    source = project.starter("boilerplate", module)
+    text = source.read_text(encoding="utf-8") if source.exists() else ""
+    names = re.findall(r"^export\s+(?:async\s+)?(?:function|const|let|class)\s+(\w+)", text, re.M)
+    if names:
+        return f"import {{ {', '.join(names[:3])} }} from '{ups}{module}'"
+    return f"import * as {name} from '{ups}{module}'"
+
+
 def header(path: str, cid: str, meta: dict, config: dict, kind: str, todo: bool = True) -> str:
     """The comment block at the top of one of an assignment's files."""
     note = SHAPES.get(Path(path).suffix.lower(), ("//", ""))[0]
@@ -102,6 +115,10 @@ def header(path: str, cid: str, meta: dict, config: dict, kind: str, todo: bool 
             dotted = modules[0].removeprefix("src/").removesuffix(".py").replace("/", ".")
             package, _, name = dotted.rpartition(".")
             lines += wrap(f"Import them as modules of your package, e.g. `from {package} import {name}`.")
+        scripts = [p for p in others + meta.get("extends", []) if p.endswith(".js") and p.startswith("src/")]
+        if scripts and path.endswith(".js"):
+            lines += wrap("Import them as ES modules, by a relative path with the .js ending, for example:")
+            lines.append("    " + js_import(scripts[0], path))
         if lines:
             sections.append(["The other files of this assignment:", *("  " + l for l in lines)])
     how = ("This is the Boilerplate. To start from an empty file instead, choose From scratch in the "
@@ -162,7 +179,9 @@ def main():
             boiler = project.starter("boilerplate", path)
             if boiler.exists():
                 old = boiler.read_text(encoding="utf-8")
-                block = header(path, cid, meta, config, "boilerplate", todo="TODO" in old.split(RULE)[-1])
+                # A file has work left in it when it holds a TODO, or a function that throws "not implemented".
+                has_todo = bool(re.search(r"TODO|not implemented", old.split(RULE)[-1]))
+                block = header(path, cid, meta, config, "boilerplate", todo=has_todo)
                 new = restamp(old, block, path == project.entry(config, cid))
                 if new != old:
                     boiler.write_text(new, encoding="utf-8", newline="\n")

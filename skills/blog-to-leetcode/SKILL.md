@@ -64,6 +64,13 @@ the post, and each principle and step below serves that goal.
    has never used the language or worked in the field: they should be able to reach everything
    from the book, without searching elsewhere first. Each include or import in the Boilerplate
    says in a comment why it's there.
+10. The page teaches the exercise before it describes the checker. The learner has never seen the
+   contract, so the problem section opens with what the thing is and why the project needs it,
+   then the types that go in and come out (with one small example in ordinary code), and only
+   then, late and short, the text format the checker uses to call it. Every term is defined where
+   it first appears, every rule is stated once, and every odd-looking piece of the contract has
+   its reason written next to it. Harness-first pages make a learner solve the harness instead of
+   the problem (authoring guide, section 2: "Lead with the idea").
 
 ## Workflow
 
@@ -362,6 +369,18 @@ the oracle's own output, a hand calculation). Close the dispute with a note (`"s
 ## Hard-won lessons
 
 These came from building the first workbook, and they apply to other workbooks too.
+
+- A contract that is mostly harness hides the exercise. The first draft of the React workbook
+  opened with the scenario-runner's line grammar; a reader said they couldn't tell what the
+  function took, what it returned or why a helper (`createTextElement`) existed. Rewriting each
+  page to lead with the idea, the types and a plain-code example fixed it. Do that in the first
+  draft, and make the independent solver say whether it understood the contract before coding.
+- An example the book can't parse looks fine in Markdown. The book finds a worked example by one
+  fenced block holding `input:` and `output:` labels; `input:` and `output:` outside a fence make
+  it say "no worked examples". Build the book and look at the Examples tab of every page.
+- Set `<meta name="viewport" content="width=device-width, initial-scale=1">` in the book template.
+  Without it a phone lays the page out at 980px wide. (Older scaffolds lack it: add it when you
+  update the tools.)
 
 - Plan the project layout together with the map. Assignments written as separate one-file
   programs leave the learner with a pile of exercises instead of a project, and retrofitting a

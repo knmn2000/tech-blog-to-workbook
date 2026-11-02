@@ -91,6 +91,15 @@ fails, the page is unclear or a test is wrong; fix whichever before shipping. As
 ambiguity and assumption, and act on them. Use a smaller model than yours for this, if you can
 choose one: it's closer to a learner who relies on the page.
 
+Ask it for a comprehension report as well, before it writes any code and again at the end:
+- Say, in its own words, what the function or program takes (with types), what it returns, and
+  why the exercise exists. If it can't, the page leads with the wrong thing.
+- Quote each sentence it had to read twice or guess at, and each term used before it was defined.
+- Mention any failure that came from its sandbox (a missing harness file, a path) and not from
+  the page, so you don't "fix" the page for it.
+Act on these the way you act on its ambiguities. A solver that passes the suite but reports that it
+guessed at the contract has shown you a page that works by luck.
+
 ## 5. Messages that help
 
 For every failure the checker prints:

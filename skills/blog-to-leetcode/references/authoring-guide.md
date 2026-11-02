@@ -86,19 +86,24 @@ book builder parses them):
 6. `## Source material`: specification links, references the post cites, the post's section.
 7. `## Where this fits`: two or three sentences on what came before, what this unlocks, and which
    files of the project it adds to.
-8. `## The problem`: one or two short, plain sentences saying what the program does. The files,
-   the jobs and the earlier files it can use are on the book's "Start here"
-   card (from `workbook.json`), so the page doesn't repeat them. Then come `### Input` (a table of
-   line kinds), `### Output` (exact format, with a fenced block showing it), and `###` subsections
-   with every rule, table, formula and edge case needed. Write binary
-   layouts as tables of field / type / meaning, in your own words. A learner must be able to pass
-   using only this page; the independent solver proves it.
+8. `## The problem`: what the learner is building, in the learner's own terms, before any word
+   about the checker (see "Lead with the idea" below). The files, the jobs and the earlier files it
+   can use are on the book's "Start here" card (from `workbook.json`), so the page doesn't repeat
+   them. Then come the inputs and outputs as the *code* sees them (`###` subsections, with types),
+   `###` subsections with every rule, table, formula and edge case needed, and, near the end, how
+   the checker calls the code and what it prints (`### How the checker calls and tests it`: the
+   input line kinds as a table, the output format with a fenced block). Write binary layouts as
+   tables of field / type / meaning, in your own words. A learner must be able to pass using only
+   this page; the independent solver proves it.
 9. `## Requirements`: `- **R1** ...`, one testable behaviour each. Every case targets one.
-10. `## Examples`: two or three `### Example k: title (test \`id\`)` blocks, each with `input:` and
-   `output:` in fenced blocks copied from real cases (say once in the README that line endings and
-   runs of spaces don't matter; the checker compares words), and a walkthrough of the one
-   non-obvious step (a byte-by-byte table is ideal). Picture assignments embed the expected image:
-   `![expected picture for <id>](tests/NN/expected/<id>.png)`.
+10. `## Examples`: two or three `### Example k: title (test \`id\`)` blocks. Each has one fenced
+   block holding both `input:` and `output:` labels (the book finds an example by that single
+   fence; two fences, or labels outside one, show "no worked examples"), copied from a real
+   case. Say once in the README that line endings and runs of spaces don't matter; the checker
+   compares words. After each block, say in plain code what the input does (the call, or the
+   few lines of the language) and show a long, compact output spread out the way a person would
+   read it, then explain the one non-obvious step (a byte-by-byte table is ideal). Picture
+   assignments embed the expected image: `![expected picture for <id>](tests/NN/expected/<id>.png)`.
 11. `## Constraints`: input limits, the guarantees about well-formed input, the number of tests and
     what they cover, the time limit.
 12. `## Hints`: four blocks, each
@@ -114,6 +119,34 @@ book builder parses them):
     function name), linked to the snippet's caption with a text fragment. Then point out, in a
     neutral tone, any place the snippet differs from the spec, in a sentence that leads with the
     difference (no label such as "Something to look for:").
+
+### Lead with the idea, then the contract, then the checker
+
+A page that opens with the checker's input language reads as a puzzle about a test harness, and
+the learner can't tell what they are building or why. Order the problem section by what the
+reader needs, and test it by asking what a stranger could say about the exercise after the first
+screen:
+
+1. **What it is and why it exists.** One or two plain paragraphs: the concept (an element, a
+   byte, a fiber), what the function is for, where the project uses it. Define every term at its
+   first use, in a sentence, not in a glossary the reader must find.
+2. **What goes in.** A table of the arguments or fields: name, type, meaning, and a few real
+   values. Then what comes out: its type and shape, with one small example written as ordinary
+   code in the language, and the output explained piece by piece. If something is only there for
+   a reason (a wrapper that makes every case uniform, say), say what the reason is: "text is
+   wrapped in an element so a renderer has one kind of thing to loop over" teaches; "text
+   becomes a TEXT_ELEMENT" doesn't.
+3. **The rules and edge cases.** Each stated once, in the place a reader meets it. The
+   requirement list, the rules and the examples should not repeat the same rule three times.
+   Where an API choice has two plausible answers (`in` against `hasOwn`, copy against share),
+   say which one the tests expect and why, or the learner will pick one at random.
+4. **How the checker calls it.** Late, short, and tied back to the code: "the line
+   `call createElement "div"` runs `createElement("div")`". Show the line grammar as a table and
+   the output format once. If the exercise needs a custom text format, this is the part
+   most likely to bury the idea, so keep it to what the learner needs to run an example by hand.
+
+The independent solver (`test-trust.md`) checks this as well as correctness: it reports whether it
+could state the contract before it wrote any code, and which sentences it had to guess at.
 
 The web book (`tools/build_book.py`) finds these sections by their heading text, so keep it
 exact. It places them like this:
@@ -154,6 +187,16 @@ finished project and doubles as the proof that the layout works.
   (later sections left out), with the names of earlier files it uses. Write a model answer: clear
   names, a short comment wherever the reasoning isn't obvious, no dead code or debugging leftovers.
 
+When a later assignment must *replace* code an earlier one wrote (a first version that a smarter one
+supersedes), a plain marker can't say "this part goes away". Add a second marker kind:
+`// ---- Assignment 04, until 06: a fiber for every child ----` starts assignment 04's part and says
+where it stops. The reference as of 04 and 05 keeps it; as of 06 and later it is gone, and 06's own
+part takes its place (`tools/project.py`, `as_of`). Every snapshot must load and pass its own
+tests, so run `check NN -Ref` for each assignment after editing a region, and judge the result from
+the snapshot in `build/ref-src`, not from the raw reference file, which holds every version at once.
+For JavaScript the snapshot keeps only the files the assignment's entry program imports, directly
+or through other project files.
+
 `check NN -Ref` builds and checks the reference *as it stands after assignment NN*: the files of
 assignments 01 to NN, later sections left out (`tools/project.py`, `reference_as_of`). An Accepted
 run on the committed tests records the fingerprint of every file the program includes in
@@ -187,10 +230,19 @@ You write the Boilerplate starters from the reference:
   pointing at the page's section, then a "not implemented" error naming the function.
 - A file later assignments add to has stubs for their functions too (marked with the assignment),
   so the boilerplate path keeps compiling.
+- Every Boilerplate module opens with a short comment a stranger can read: what the file is for, its
+  functions with their types (JSDoc, type hints or the language's equivalent), and one worked
+  example (a call and what it returns, in plain code). The TODOs then point at page headings
+  that really exist. The learner starts from this file, often before reading the page closely.
+- The entry program says what it is: "Test wiring, nothing to change: it reads the test input,
+  calls your code and prints the result." In the job text, say that from scratch it is a few lines
+  and that the page describes them, so nobody mistakes plumbing for the exercise.
 - Every include or import line ends with a comment saying what the file uses it for:
   `#include <sstream>  // std::istringstream: splitting an input line into words`,
   `#include "font/ByteReader.h"  // ByteReader (assignment 01): reading big-endian numbers`.
   The learner meets the line before any page explains it.
+- A blank starter's import line (JavaScript: `tools/blank_starters.py` `js_import`) names what the
+  Boilerplate exports, so the file and the page agree on the names.
 - Every starter compiles without errors or warnings: build every blank and every boilerplate
   starter into a scratch project and check that each boilerplate program reports its TODO.
 
@@ -257,7 +309,8 @@ hold (details in `test-trust.md`):
 - Three or more planted bugs fail with useful messages and causes, including the blog's own bugs.
 - Correct variants pass where a tolerance exists.
 - Every requirement has cases.
-- The independent solver passes.
+- The independent solver passes, and says in its report that the contract was clear before it
+  wrote code (`test-trust.md`).
 
 ## 8. Writing style
 

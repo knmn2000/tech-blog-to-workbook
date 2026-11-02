@@ -10,6 +10,8 @@ It reports:
   - an entry that no page lists and no other entry links to (nothing leads a learner to it)
   - an entry without text, or without a "Learn more" link, or a link with ( ) in its URL
   - an include or import line in a Boilerplate starter without a comment saying why it's there
+    (in JavaScript, `import x from '...'; // why`, an `export ... from` line and the closing
+    `} from '...'` of an import list too; this part runs even before the primer is written)
   - with --links, an outside link that doesn't answer
 Exit status 1 when anything is reported.
 """
@@ -32,12 +34,42 @@ URL = re.compile(r"\]\((https?://[^)\s]+)\)")
 IMPORTS = {
     (".c", ".cc", ".cpp", ".cxx", ".h", ".hpp"): (re.compile(r"^\s*#\s*include\b"), "//"),
     (".py",): (re.compile(r"^\s*(import\s+\w|from\s+\S+\s+import\b)"), "#"),
-    (".js", ".mjs", ".ts"): (re.compile(r"^\s*import\b.*\bfrom\b|^\s*import\s+['\"]"), "//"),
+    (".js", ".mjs", ".ts"): (re.compile(r"^\s*(?:import|export)\b.*\bfrom\b|^\s*import\s+['\"]|^\s*\}\s*from\b"), "//"),
     (".rs",): (re.compile(r"^\s*use\s+\w"), "//"),
 }
 
 
+def commented(line: str, mark: str) -> bool:
+    """True when the line has a comment with words in it after its code. A `//` inside a string
+    (a URL) isn't a comment."""
+    code = re.sub(r"""'[^']*'|"[^"]*\"""", "''", line)
+    return re.search(re.escape(mark) + r"\s*\S", code) is not None
+
+
+def uncommented_imports(config: dict) -> list:
+    """Include and import lines of the Boilerplate starters that don't say why they're there."""
+    problems = []
+    for cid in sorted(config["checkpoints"]):
+        meta = config["checkpoints"][cid]
+        for path in [project.entry(config, cid), *meta.get("files", [])]:
+            starter = project.starter("boilerplate", path)
+            rule = next((r for exts, r in IMPORTS.items() if path.endswith(exts)), None)
+            if not starter.exists() or not rule:
+                continue
+            pattern, mark = rule
+            for n, line in enumerate(starter.read_text(encoding="utf-8").splitlines(), 1):
+                if pattern.match(line) and not commented(line, mark):
+                    problems.append(f"{starter.relative_to(ROOT).as_posix()}:{n}: say why it's here: {line.strip()}")
+    return problems
+
+
+# Hosts that refuse scripts with a 403 although the page opens in a browser (Medium's publications).
+SCRIPT_BLOCKED = ("itnext.io", "medium.com")
+
+
 def fetch(url: str):
+    if any(host in url.split("/")[2] for host in SCRIPT_BLOCKED):
+        return url, 200  # not checkable from a script; opened by hand when the primer was written
     request = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 (workbook primer link check)"})
     try:
         with urllib.request.urlopen(request, timeout=20) as response:
@@ -54,8 +86,12 @@ def main() -> int:
     groups = primer.load()
     problems = []
     if not groups:
-        print("no primer/ folder: nothing to check")
-        return 0
+        problems = uncommented_imports(config)
+        for p in problems:
+            print(p)
+        print("no primer/ folder: only the imports in the Boilerplate were checked"
+              + (f" ({len(problems)} problems)" if problems else " (all commented)"))
+        return 1 if problems else 0
 
     known, seen = primer.entries(groups), {}
     for e in (e for g in groups for e in g["entries"]):
@@ -95,17 +131,7 @@ def main() -> int:
         if i not in first and i not in linked:
             problems.append(f"{known[i]['file']}:{known[i]['line']}: no page lists '{i}' and no entry links to it")
 
-    for cid in order:
-        meta = config["checkpoints"][cid]
-        for path in [project.entry(config, cid), *meta.get("files", [])]:
-            starter = project.starter("boilerplate", path)
-            rule = next((r for exts, r in IMPORTS.items() if path.endswith(exts)), None)
-            if not starter.exists() or not rule:
-                continue
-            pattern, mark = rule
-            for n, line in enumerate(starter.read_text(encoding="utf-8").splitlines(), 1):
-                if pattern.match(line) and mark not in line:
-                    problems.append(f"{starter.relative_to(ROOT).as_posix()}:{n}: say why it's here: {line.strip()}")
+    problems += uncommented_imports(config)
 
     if args.links:
         urls = sorted({u for g in groups for e in g["entries"] for u in URL.findall("\n".join(e["lines"]))})
