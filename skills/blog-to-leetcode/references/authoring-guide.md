@@ -140,10 +140,17 @@ screen:
    requirement list, the rules and the examples should not repeat the same rule three times.
    Where an API choice has two plausible answers (`in` against `hasOwn`, copy against share),
    say which one the tests expect and why, or the learner will pick one at random.
-4. **How the checker calls it.** Late, short, and tied back to the code: "the line
-   `call createElement "div"` runs `createElement("div")`". Show the line grammar as a table and
-   the output format once. If the exercise needs a custom text format, this is the part
-   most likely to bury the idea, so keep it to what the learner needs to run an example by hand.
+4. **What the tests look at.** A short paragraph, in terms of the function: the tests call it with
+   arguments like the ones above and then look at what it returned or changed, and what it cost
+   if cost is tested (name each counter in one line, as things the code does). Do not document
+   the scenario language, the dump format or the counters' text spelling: the learner never
+   writes those, and every line spent on them is a line not spent on the function. The
+   text-format test case still sits in each example's input and output boxes; if it needs a
+   key, give it one sentence ("`dump` means show the node"), not a section. If a learner
+   starting from scratch needs the entry program's few lines, put them in that file's job text
+   in `workbook.json`, which the Start here card shows.
+   Examples follow the same rule: show each as the function calls (a code block with the
+   arguments and the result), then say what the test sees.
 
 The independent solver (`test-trust.md`) checks this as well as correctness: it reports whether it
 could state the contract before it wrote any code, and which sentences it had to guess at.
