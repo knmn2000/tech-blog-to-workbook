@@ -24,7 +24,7 @@ LANGUAGES = {
     "go": {"label": "Go", "ext": ".go", "tools": ["go"]},
     "rust": {"label": "Rust", "ext": ".rs", "tools": ["cargo", "rustc"]},
     "python": {"label": "Python", "ext": ".py", "tools": []},
-    "javascript": {"label": "JavaScript", "ext": ".js", "tools": ["node"]},
+    "javascript": {"label": "JavaScript", "ext": ".js", "tools": ["node"], "min": (22, 0)},  # raise it if the workbook needs a newer Node
     "typescript": {"label": "TypeScript", "ext": ".ts", "tools": ["node"], "min": (22, 6)},
     "lua": {"label": "Lua", "ext": ".lua", "tools": ["lua", "lua5.4", "lua54", "luajit"]},
 }
@@ -44,7 +44,8 @@ INSTALL = {
                "url": "https://www.python.org/downloads/"},
     "javascript": {"windows": "winget install OpenJS.NodeJS.LTS", "macos": "brew install node",
                    "linux": "install Node.js from https://nodejs.org/en/download (distribution packages are often old)",
-                   "url": "https://nodejs.org/"},
+                   "url": "https://nodejs.org/",
+                   "note": "Check what you have with `node --version`: a Node.js from a system package manager or an old installer may be older than the workbook needs."},
     "typescript": {"windows": "winget install OpenJS.NodeJS.LTS", "macos": "brew install node",
                    "linux": "install Node.js from https://nodejs.org/en/download (distribution packages are often old)",
                    "url": "https://nodejs.org/", "note": "TypeScript runs on Node.js 22.6 or newer; nothing else to install."},
@@ -66,6 +67,17 @@ def _version(tool: str) -> tuple:
         return (0, 0)
 
 
+def runtime_name(spec: dict) -> str:
+    """What a language's tool is called in a message: Node.js for the languages that run on node."""
+    return "Node.js" if "node" in spec["tools"] else spec["tools"][0]
+
+
+def minimum(spec: dict) -> str:
+    """The oldest version of the language's tool that works, as "26" or "22.6"."""
+    major, minor = spec["min"]
+    return f"{major}.{minor}" if minor else str(major)
+
+
 def find_tool(lang: str):
     """(path of the tool to use, or None, problem text or None)."""
     spec = LANGUAGES[lang]
@@ -77,8 +89,7 @@ def find_tool(lang: str):
             if spec.get("min"):
                 have = _version(path)
                 if have < spec["min"]:
-                    want = ".".join(map(str, spec["min"]))
-                    return None, f"{spec['label']} needs Node.js {want} or newer; this computer has {have[0]}.{have[1]}."
+                    return None, f"{spec['label']} needs {runtime_name(spec)} {minimum(spec)} or newer; this computer has {have[0]}.{have[1]}."
             return path, None
     return None, f"{spec['label']} isn't installed (or isn't on PATH): none of {', '.join(spec['tools'])} was found."
 

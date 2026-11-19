@@ -14,6 +14,7 @@ output. Starting an assignment copies its starters: the boilerplate by default
 
 import json
 import os
+import posixpath
 import re
 import shutil
 import sys
@@ -159,17 +160,33 @@ def use_starter(config: dict, cid: str, kind: str) -> list:
 # checkpoint that creates the file. "The reference after checkpoint N" leaves out the sections
 # of later checkpoints and the files they create: that's what -Ref builds and proves for N,
 # and what the Editorial for N shows, so it never gives away a later checkpoint.
+#
+# A section can also be replaced later: `// ---- Assignment 04, until 06: a fiber for every child ----`
+# is assignment 04's section, and it is left out as of assignment 06 and every later one (06 has
+# a section of its own that takes its place). The line shown for it before 06 doesn't say "until",
+# so an earlier Editorial doesn't name the assignment that replaces it.
 
-SECTION = re.compile(r"^[ \t]*(?://|#|--)[ \t]*-{2,}[ \t]*(?:Assignment|Checkpoint)[ \t]+(\d+)\b.*$", re.M)
+# Folders at the top of the reference project that are never part of it: installed packages and
+# build output.
+REFERENCE_SKIP = {"node_modules", "build"}
+
+SECTION = re.compile(r"^[ \t]*(?://|#|--)[ \t]*-{2,}[ \t]*(?:Assignment|Checkpoint)[ \t]+(\d+)\b"
+                     r"(?:[ \t]*[,;]?[ \t]*until[ \t]+(\d+)\b)?.*$", re.M)
+UNTIL = re.compile(r"\b((?:Assignment|Checkpoint)[ \t]+\d+)\b[ \t]*[,;]?[ \t]*until[ \t]+\d+\b")
 
 
 def as_of(text: str, upto: str) -> str:
-    """A reference file's text after checkpoint `upto`: later checkpoints' sections left out."""
+    """A reference file's text after checkpoint `upto`: later checkpoints' sections left out, and
+    so are the sections an earlier checkpoint marked `until` a checkpoint that has now come."""
     kept, start, keep = [], 0, True
     for m in SECTION.finditer(text):
         if keep:
             kept.append(text[start:m.start()])
-        start, keep = m.start(), int(m.group(1)) <= int(upto)
+        start = m.start()
+        keep = int(m.group(1)) <= int(upto) and not (m.group(2) and int(upto) >= int(m.group(2)))
+        if keep and m.group(2):  # still in force at `upto`: show its marker without the end
+            kept.append(UNTIL.sub(r"\1", m.group(0), count=1))
+            start = m.end()
     if keep:
         kept.append(text[start:])
     return "".join(kept).rstrip() + "\n"
@@ -185,8 +202,10 @@ def reference_as_of(config: dict, upto: str) -> dict:
     files = {}
     for p in sorted(base.rglob("*")):
         path = p.relative_to(base).as_posix()
-        if p.is_file() and path not in owned and "__pycache__" not in p.parts:
-            files[path] = p.read_text(encoding="utf-8")  # CMakeLists.txt, pyproject.toml, __init__.py
+        if path.split("/")[0] in REFERENCE_SKIP or "__pycache__" in p.parts:
+            continue
+        if p.is_file() and path not in owned:
+            files[path] = p.read_text(encoding="utf-8")  # CMakeLists.txt, pyproject.toml, package.json, __init__.py
     files.update({dest: (ROOT / src).read_text(encoding="utf-8")
                   for dest, src in config["project"].get("copy", {}).items()})
     for cid in config["checkpoints"]:
@@ -265,11 +284,42 @@ def py_imports(files: dict, path: str, include_dirs) -> list:
     return out
 
 
+# JavaScript: the module specifiers a file names. Line-anchored, so a commented-out import isn't
+# followed; an import list may span lines. A specifier that doesn't start with "." (react, node:fs)
+# is a package, not a project file.
+JS_FROM = re.compile(r"""^[ \t]*(?:import|export)\b(?:[^;'"`/]|/(?![/*])|//[^\n]*|/\*[\s\S]*?\*/)*?"""
+                     r"""\bfrom[ \t]*['"]([^'"\n]+)['"]""", re.M)
+JS_BARE_IMPORT = re.compile(r"""^[ \t]*import[ \t]*['"]([^'"\n]+)['"]""", re.M)
+JS_DYNAMIC = re.compile(r"""\bimport[ \t]*\([ \t]*['"]([^'"\n]+)['"][ \t]*\)""")
+
+
+def js_module(files: dict, importer: str, spec: str):
+    """The project file a relative specifier names, or None. `./x.js` is what ES modules write;
+    `./x` and `./dir` (for dir/index.js) are found too."""
+    if not spec.startswith("."):
+        return None
+    base = posixpath.normpath(posixpath.join(posixpath.dirname(importer), spec))
+    for candidate in (base, f"{base}.js", f"{base}.mjs", f"{base}/index.js"):
+        if candidate in files:
+            return candidate
+    return None
+
+
+def js_imports(files: dict, path: str) -> list:
+    """The project files a JavaScript file imports: import ... from, import '...', export ... from
+    and import('...'), with relative specifiers resolved against the importing file."""
+    text = files[path]
+    specs = JS_FROM.findall(text) + JS_BARE_IMPORT.findall(text) + JS_DYNAMIC.findall(text)
+    return [found for spec in specs if (found := js_module(files, path, spec))]
+
+
 def closure(files: dict, first: str, include_dirs=("src",)) -> list:
     """The files a program is built from, out of {path: text}: `first` and everything it uses.
     C and C++: every file it includes with #include "..." (found next to the including file or
     in an include folder), and the .cpp next to each header. Python: every project module it
-    imports, with the packages' __init__.py files."""
+    imports, with the packages' __init__.py files. JavaScript: every project file it imports
+    (import ... from, import '...', export ... from, import('...')), found from the importing
+    file's own folder."""
     found, queue = [], [first]
     while queue:
         path = queue.pop(0)
@@ -279,6 +329,9 @@ def closure(files: dict, first: str, include_dirs=("src",)) -> list:
         stem, _, ext = path.rpartition(".")
         if ext == "py":
             queue += py_imports(files, path, include_dirs)
+            continue
+        if ext in ("js", "mjs"):
+            queue += js_imports(files, path)
             continue
         if ext in ("h", "hpp"):
             queue += [f"{stem}.cpp", f"{stem}.cc"]

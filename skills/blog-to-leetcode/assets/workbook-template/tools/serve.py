@@ -29,6 +29,7 @@ from urllib.parse import parse_qs, unquote, urlsplit
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import build_book  # noqa: E402
+import langs  # noqa: E402
 import project  # noqa: E402
 from check import to_args  # noqa: E402
 from imageio import ImageError, png_bytes, read_image  # noqa: E402
@@ -39,8 +40,10 @@ IMAGE_ROOTS = ("build/cases/", "build/fresh/", "tests/")  # the only folders /fi
 MAX_BODY = 4 * 1024 * 1024
 CASE_ID = re.compile(r"^[\w.+-]+$")
 # Files of the project the page may create and edit.
-SOURCE_EXTS = {".c", ".cc", ".cpp", ".cxx", ".h", ".hpp", ".py", ".js", ".mjs", ".ts", ".rs", ".go", ".lua",
-               ".java", ".kt", ".cs", ".md", ".txt", ".json", ".toml", ".cmake"}
+SOURCE_EXTS = {".c", ".cc", ".cpp", ".cxx", ".h", ".hpp", ".py", ".js", ".mjs", ".cjs", ".ts", ".rs", ".go", ".lua",
+               ".java", ".kt", ".cs", ".md", ".txt", ".json", ".toml", ".cmake", ".html", ".css"}
+# Languages whose tool runs the code and is named by no build command, so the book checks it itself.
+RUNTIME_CHECKED = ("javascript", "typescript", "lua")
 SKIP_DIRS = {"build", ".git", "node_modules", "target", "__pycache__", ".cache"}  # never listed or served
 # Editors the "Open in your editor" button looks for: name, shell command, how it is told to open a
 # file at a line, and where a Mac app keeps the same command when it was never put on PATH.
@@ -106,6 +109,20 @@ def missing_tools(config: dict) -> list:
     return [tool for tool in dict.fromkeys(needed) if not ("/" in tool or "\\" in tool) and not shutil.which(tool)]
 
 
+def runtime_problem(config: dict):
+    """What's wrong with the program that runs the project's language (not there, or too old), or None.
+    Only for languages that are run by their tool (node, lua), since no build command names it."""
+    lang = config.get("project", {}).get("language", "")
+    if lang not in RUNTIME_CHECKED or lang not in langs.LANGUAGES:
+        return None
+    tool, problem = langs.find_tool(lang)
+    if tool:
+        return None
+    hint = langs.availability(lang)["install"]
+    note = "" if "needs" in problem else hint["note"]  # a version problem already says what is needed
+    return " ".join(part for part in (problem, f"Install it with: {hint['command']} (or see {hint['url']}).", note) if part)
+
+
 def first_time_setup(wb: Workbook):
     """Runs the workbook's setup step once (e.g. CMake configure). Returns a problem, or None.
     Before the project exists there's nothing to set up yet: the book offers to make it."""
@@ -113,6 +130,9 @@ def first_time_setup(wb: Workbook):
     if missing:
         return (f"The book can't build your code yet: {', '.join(missing)} isn't installed (or isn't on PATH). "
                 "Ask your coding assistant to set this workbook up, or see the README's Needs line.")
+    problem = runtime_problem(wb.config)
+    if problem:
+        return f"The book can't run your code yet: {problem}"
     setup = wb.config.get("setup")
     if not setup or not project.exists(wb.config) or (ROOT / setup["creates"]).exists():
         return None

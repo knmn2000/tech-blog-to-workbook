@@ -41,7 +41,8 @@ CODEMIRROR = "https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/"
 # File extension -> the CodeMirror mode that highlights it.
 EXT_MODES = {".cpp": "clike", ".cc": "clike", ".cxx": "clike", ".c": "clike", ".h": "clike", ".hpp": "clike",
              ".java": "clike", ".cs": "clike", ".kt": "clike", ".py": "python", ".js": "javascript",
-             ".mjs": "javascript", ".ts": "javascript", ".rs": "rust", ".go": "go", ".lua": "lua"}
+             ".mjs": "javascript", ".cjs": "javascript", ".json": "javascript", ".ts": "javascript", ".rs": "rust",
+             ".go": "go", ".lua": "lua"}
 # Mode -> the CodeMirror files it needs, after codemirror.min.js.
 MODE_FILES = {
     "clike": ["mode/clike/clike.min.js"], "python": ["mode/python/python.min.js"],
@@ -370,8 +371,14 @@ def solution_code(cid: str, config: dict) -> dict:
         WARNINGS.append(f"{cid}: the reference hasn't been checked; run the check with -Ref")
     meta = config["checkpoints"][cid]
     shown = [*meta.get("files", []), *meta.get("extends", []), project.entry(config, cid)]
-    return {"files": [{"path": p, "text": texts[p]} for p in shown if p in texts],
-            "also": [p for p in texts if p not in shown], "proof": proof}
+    # Files the workbook hands every learner (project.copy: a test harness, third-party code) aren't
+    # an earlier assignment's work, so they are listed apart from the files the learner wrote.
+    given = [p for p in texts if p in config["project"].get("copy", {}) and p not in shown]
+    out = {"files": [{"path": p, "text": texts[p]} for p in shown if p in texts],
+           "also": [p for p in texts if p not in shown and p not in given], "proof": proof}
+    if given:
+        out["given"] = given
+    return out
 
 
 def checkpoint(cid: str, meta: dict, config: dict) -> dict:
@@ -443,8 +450,13 @@ def project_data(config: dict) -> dict:
     folder, purposes = spec["dir"], spec.get("purposes", {})
     layout = [{"path": f"{folder}/{path}", "owner": cid, "purpose": purposes.get(path)}
               for cid in config["checkpoints"] for path in project.own_files(config, cid)]
-    return {"dir": folder, "label": spec["languageLabel"], "name": spec.get("name", ""), "build": spec.get("build", ""),
+    data = {"dir": folder, "label": spec["languageLabel"], "name": spec.get("name", ""), "build": spec.get("build", ""),
             "run": spec.get("run", ""), "author": spec.get("author"), "layout": layout}
+    if spec.get("authors"):  # a project built on several authors' work: each one's files, for the finish card
+        data["authors"] = [{"label": a["label"], "url": a["url"], "files": a["files"]} for a in spec["authors"]]
+    if spec.get("copy"):  # files the workbook puts in the project; the finish card doesn't count them as the learner's
+        data["given"] = list(spec["copy"])
+    return data
 
 
 def primer_data(config: dict, cps: list) -> list:
@@ -482,6 +494,14 @@ def primer_data(config: dict, cps: list) -> list:
                          for e in g["entries"]]} for g in groups]
 
 
+def book_sources(book: dict) -> list:
+    """The posts the book is built on: book.sources, or the one post of sourceUrl, sourceTitle and
+    author (a workbook made from a single post has no list)."""
+    listed = [{"url": s["url"], "title": s.get("title") or s["url"], "author": s.get("author", "")}
+              for s in book.get("sources") or [] if s.get("url")]
+    return listed or [{"url": book["sourceUrl"], "title": book["sourceTitle"], "author": book["author"]}]
+
+
 def build_page() -> str:
     """The whole book as one HTML string (tools/serve.py serves this directly)."""
     WARNINGS.clear()
@@ -489,10 +509,11 @@ def build_page() -> str:
     cps = [checkpoint(cid, meta, config) for cid, meta in sorted(config["checkpoints"].items())
            if (ROOT / meta["problem"]).exists() and (ROOT / meta["cases"]).exists()]
     book = config["book"]
+    sources = book_sources(book)
     data = {
         "key": re.sub(r"[^a-z0-9]+", "-", book["title"].lower()).strip("-"),
         "title": book["title"], "headline": book["headline"], "lede": book["lede"], "credits": book["credits"],
-        "sourceUrl": book["sourceUrl"], "sourceTitle": book["sourceTitle"], "author": book["author"],
+        "sourceUrl": sources[0]["url"], "sourceTitle": sources[0]["title"], "author": sources[0]["author"],
         # Shown as "run the checker in <folder>"; the folder's name unless workbook.json says otherwise,
         # so a shared book doesn't carry the author's local path.
         "folder": book.get("folder") or ROOT.name, "check": book.get("checkCommand", ".\\check {id}"), "shell": book.get("shell", "PowerShell"),
@@ -500,6 +521,8 @@ def build_page() -> str:
         "checkpoints": cps,
         "project": project_data(config),
     }
+    if book.get("sources"):  # several posts: the template credits each one
+        data["sources"] = sources
     used = {EXT_MODES.get(Path(f["path"]).suffix.lower()) for c in cps for f in c["files"]} - {None}
     modes = dict.fromkeys(f for mode in sorted(used) for f in MODE_FILES[mode])
     scripts = "\n".join(f'<script src="{CODEMIRROR}{f}"></script>' for f in modes)

@@ -1,4 +1,5 @@
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{TITLE}}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -890,7 +891,10 @@ span.CodeMirror-selectedtext { background: none; }
     $('#book-name').textContent = DATA.title;
     $$('[data-book-name]').forEach((el) => { el.textContent = DATA.title; });
     $$('[data-primer-link]').forEach((el) => { el.hidden = !PRIMER.length; });
-    $('#nav-src').innerHTML = `Built on <a href="${esc(DATA.sourceUrl)}" target="_blank" rel="noopener">“${esc(DATA.sourceTitle)}”</a> by ${esc(DATA.author)}`;
+    // One post, or several ("A and B", "A, B and C"): each one named with its author and linked.
+    const posts = (DATA.sources && DATA.sources.length ? DATA.sources : [{ url: DATA.sourceUrl, title: DATA.sourceTitle, author: DATA.author }])
+      .map((s) => `<a href="${esc(s.url)}" target="_blank" rel="noopener">“${esc(s.title)}”</a> by ${esc(s.author)}`);
+    $('#nav-src').innerHTML = 'Built on ' + (posts.length > 1 ? posts.slice(0, -1).join(', ') + ' and ' + posts[posts.length - 1] : posts[0]);
     $('#hero').innerHTML = `<span class="over">${CPS.length} assignments · any language</span><h1>${esc(DATA.headline)}</h1><p>${esc(DATA.lede)}</p>`;
     $('#credits').textContent = DATA.credits;
     $('#diff').innerHTML = ['All'].concat(DIFFS).map((d) =>
@@ -950,16 +954,25 @@ span.CodeMirror-selectedtext { background: none; }
     $('#side').prepend(card);
     const show = (all) => {
       // The assignment programs are test scaffolding: compare the project itself.
-      const mine = all.filter((f) => !f.startsWith('assignments/') && !f.startsWith('third_party/'));
+      // The files the workbook copies into the project (a harness, third-party code) aren't the learner's own.
+      const given = PROJECT.given || [];
+      const mine = all.filter((f) => !f.startsWith('assignments/') && !f.startsWith('third_party/') && !given.includes(f));
       const scaffolding = all.length - mine.length;
-      const authorFiles = PROJECT.author ? PROJECT.author.files : [];
-      const matched = new Set(treeMatch(mine, authorFiles));
+      const scaffoldingNote = given.length ? 'assignments/ and the files the workbook gives you' : 'assignments/ and third_party/';
+      // The authors whose project layouts the book compares with: one (project.author), or each of several.
+      const authors = (PROJECT.authors && PROJECT.authors.length ? PROJECT.authors : PROJECT.author ? [PROJECT.author] : [])
+        .filter((a) => a.files && a.files.length);
+      const matched = new Set(authors.flatMap((a) => treeMatch(mine, a.files)));
       const listing = (files, hit) => files.map((f) => (hit(f) ? `<span class="hit">${esc(f)}</span>` : esc(f))).join('\n');
-      $('#finish-files').innerHTML = (authorFiles.length ? `<div class="trees">
-          <div><h3>Yours</h3><pre>${listing(mine, (f) => matched.has(f))}${scaffolding ? `\n<span class="muted">+ assignments/ and third_party/ (${scaffolding} files)</span>` : ''}</pre></div>
-          <div><h3><a href="${esc(PROJECT.author.url)}" target="_blank" rel="noopener">The author's</a></h3><pre>${listing(authorFiles, (f) => [...matched].some((m) => sameFile(m, f)))}</pre></div></div>
-          <p class="note">${matched.size} of your files have a counterpart in ${esc(PROJECT.author.label)} (in green).</p>` : '')
-        + (LOCAL ? `<p class="note">Run what you built:</p>${cmdRow(PROJECT.build)}${cmdRow(PROJECT.run)}` : '');
+      const theirs = (a) => `<div><h3><a href="${esc(a.url)}" target="_blank" rel="noopener">${authors.length > 1 ? esc(a.label) : "The author's"}</a></h3><pre>${listing(a.files, (f) => [...matched].some((m) => sameFile(m, f)))}</pre></div>`;
+      const counts = authors.length > 1
+        ? `${matched.size} of your files have a counterpart in the authors' projects (in green): ${authors.map((a) => `${treeMatch(mine, a.files).length} in ${esc(a.label)}`).join(', ')}.`
+        : authors.length ? `${matched.size} of your files have a counterpart in ${esc(authors[0].label)} (in green).` : '';
+      $('#finish-files').innerHTML = (authors.length ? `<div class="trees">
+          <div><h3>Yours</h3><pre>${listing(mine, (f) => matched.has(f))}${scaffolding ? `\n<span class="muted">+ ${scaffoldingNote} (${scaffolding} files)</span>` : ''}</pre></div>
+          ${authors.map(theirs).join('')}</div>
+          <p class="note">${counts}</p>` : '')
+        + (LOCAL && (PROJECT.build || PROJECT.run) ? `<p class="note">Run what you built:</p>${PROJECT.build ? cmdRow(PROJECT.build) : ''}${PROJECT.run ? cmdRow(PROJECT.run) : ''}` : '');
     };
     if (!LOCAL) { show(PROJECT.layout.map((f) => shortName(f.path))); return; }
     api('/api/files').then((r) => show(r.files.map((f) => shortName(f.path)))).catch(() => {});
@@ -1212,7 +1225,8 @@ span.CodeMirror-selectedtext { background: none; }
           <p class="note">This solution follows the problem page and doesn't copy the blog's code. Yours can look different and still pass, because the checker compares only what your program writes.</p>
           ${files}<div class="sol-head"><code>${esc(sol.files[solFile].path)}</code><button class="btn" type="button" id="sol-copy">Copy</button></div>
           <pre class="sol-code" id="sol-code"></pre>
-          ${sol.also.length ? `<p class="note">It also uses earlier assignments' files: ${sol.also.map((u) => `<code>${esc(u)}</code>`).join(', ')}. Their Editorials show them.</p>` : ''}</section>` : '')
+          ${sol.also.length ? `<p class="note">It also uses earlier assignments' files: ${sol.also.map((u) => `<code>${esc(u)}</code>`).join(', ')}. Their Editorials show them.</p>` : ''}
+          ${sol.given && sol.given.length ? `<p class="note">It runs on files the workbook gives you, which you don't write: ${sol.given.map((u) => `<code>${esc(u)}</code>`).join(', ')}.</p>` : ''}</section>` : '')
       + (c.editorial ? `<section class="ed-sec"><h2>${esc(c.editorial.title)}</h2><div class="flow">${c.editorial.html}</div></section>` : '');
     if (sol) {
       const box = $('#sol-code'), text = sol.files[solFile].text;

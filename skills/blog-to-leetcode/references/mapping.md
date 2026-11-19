@@ -91,6 +91,12 @@ For each kernel:
 
 ## 5. Designing the contract
 
+Design it for the learner first and the checker second. Start with the function's own types (the
+arguments that go in, the value that comes out, the reason a non-obvious field exists), and write
+that as the part of the page the learner reads first. Only then design the text format that lets
+the checker call it. If you can't describe the contract without the format, the exercise is the
+format, and the learner will solve the format.
+
 - Make the contract text and line based. Input lines start with a keyword (`file <path>`, `record <offset>
   <length>`, `get user:42`), and so do output lines. Write one output record per input request,
   in order, in canonical formatting (plain integers, words instead of symbols); the checker

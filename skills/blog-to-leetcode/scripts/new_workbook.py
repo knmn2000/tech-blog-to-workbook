@@ -27,7 +27,7 @@ LANGS = SKILL / "assets" / "lang"
 # Launchers a learner runs on macOS or Linux: they need the executable bit.
 EXECUTABLES = ("check.sh", "study.sh", "study.command")
 
-# How each language's project is built and run. C++ and Python have templates so far; for
+# How each language's project is built and run. C++, Python and JavaScript have templates so far; for
 # another language, follow references/languages.md and add its skeleton under assets/lang/<lang>.
 # "python" in a command runs the Python that runs the checker (tools/check.py, to_args). {exe}
 # ends a program's name: the tools make it .exe on Windows and nothing on macOS and Linux
@@ -44,6 +44,18 @@ PROJECTS = {
             "build": "python -P tools/run_py.py --compile build/ref-src",
             "run": "python -P tools/run_py.py build/ref-src {id} {input} {output}"},
         "finish": {"build": "", "run": "python -P tools/run_py.py solutions -m {name}"},
+    },
+    "javascript": {
+        "label": "JavaScript", "aliases": ["js", "node", "nodejs"],
+        "requires": ["Node.js 22 or newer", "Python 3.11 or newer"],  # raise the Node version in tools/langs.py too
+        "setup": None,  # plain ES modules: nothing to configure
+        "build": "python -P tools/run_js.py --compile solutions",  # node --check on every file
+        "run": "python -P tools/run_js.py solutions {id} {input} {output}",
+        "reference": {
+            "snapshot": "build/ref-src",
+            "build": "python -P tools/run_js.py --compile build/ref-src",
+            "run": "python -P tools/run_js.py build/ref-src {id} {input} {output}"},
+        "finish": {"build": "", "run": "python -P tools/run_js.py solutions -m src/main.js"},
     },
     "cpp": {
         "label": "C++", "aliases": ["c++", "cxx"],

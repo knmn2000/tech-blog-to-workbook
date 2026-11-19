@@ -419,10 +419,16 @@ VERIFIED = ROOT / "_spoilers" / "verified.json"
 def reference_sources(config: dict, checkpoint: str) -> dict:
     """The reference program's own source files as they stand after this checkpoint: its entry
     program, then every project file it includes (recursively, with the .cpp next to each header),
-    as {path in the workbook: text}. Third-party headers aren't listed."""
+    then the files the checkpoint creates that nothing includes, as {path in the workbook: text}.
+    Third-party headers aren't listed."""
     files = project.reference_as_of(config, checkpoint)
     base = config["project"]["reference"]
-    return {f"{base}/{p}": files[p] for p in project.closure(files, project.entry(config, checkpoint))}
+    used = project.closure(files, project.entry(config, checkpoint))
+    # A file the assignment creates belongs to its solution even when the entry program never imports
+    # it (the finished program's main, which the tests don't start): the Editorial shows it, and the
+    # proof covers it.
+    used += [p for p in config["checkpoints"][checkpoint].get("files", []) if p in files and p not in used]
+    return {f"{base}/{p}": files[p] for p in used}
 
 
 def fingerprint(sources: dict) -> dict:
